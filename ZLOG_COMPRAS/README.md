@@ -21,7 +21,7 @@ Este projeto implementa um sistema completo de solicitação, aprovação, compr
 
 * **Compra Autorizada e Apresentação de Orçamentos:**
     * **Workflow:** Aprovadores poderão autorizar as solicitações. A lógica de aprovação pode ser implementada em um `FluxoAprovacaoService` e entidades relacionadas.
-    * **Orçamentos:** Funcionalidades permitirão registrar e comparar orçamentos de diferentes `Fornecedor`es para as solicitações aprovadas através de controladores e serviços como `OrcamentoController` e `OrcamentoService`, com a entidade `Orcamento`.
+    * **Orçamentos:** Funcionalidades permitirão registrar e comparar orçamentos de diferentes `Fornecedor` para as solicitações aprovadas através de controladores e serviços como `OrcamentoController` e `OrcamentoService`, com a entidade `Orcamento`.
 
 * **Criação de Mapa de Compras:**
     * **Lógica:** Um `MapaComprasService` poderá agregar as necessidades de compra de diversas solicitações aprovadas, facilitando a consolidação de pedidos. Este serviço consultaria as entidades `SolicitacaoCompra` e `ItemSolicitacaoCompra` com status apropriados.
@@ -60,7 +60,6 @@ Este projeto implementa um sistema completo de solicitação, aprovação, compr
 9.  **Segurança:** Implementar mecanismos de segurança para proteger a aplicação e os dados.
 
 ## Estrutura do Projeto Spring Boot
-
 src/
 ├── main/
 │   ├── java/
