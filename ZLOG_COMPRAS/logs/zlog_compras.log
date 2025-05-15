@@ -574,3 +574,40 @@
 2025-05-15T03:53:18.774-03:00  INFO 17812 --- [zlog_compras] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
 2025-05-15T03:53:18.811-03:00  INFO 17812 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2025-05-15T03:53:18.812-03:00  INFO 17812 --- [zlog_compras] [restartedMain] com.ZlogComprasApplication               : Started ZlogComprasApplication in 4.982 seconds (process running for 5.382)
+2025-05-15T09:30:02.687-03:00  INFO 12980 --- [zlog_compras] [restartedMain] com.ZlogComprasApplication               : Starting ZlogComprasApplication using Java 21.0.7 with PID 12980 (C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS\target\classes started by DELL in C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS)
+2025-05-15T09:30:02.690-03:00  INFO 12980 --- [zlog_compras] [restartedMain] com.ZlogComprasApplication               : No active profile set, falling back to 1 default profile: "default"
+2025-05-15T09:30:02.753-03:00  INFO 12980 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-05-15T09:30:02.754-03:00  INFO 12980 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-05-15T09:30:03.486-03:00  INFO 12980 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-15T09:30:03.633-03:00  INFO 12980 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 137 ms. Found 9 JPA repository interfaces.
+2025-05-15T09:30:04.107-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-15T09:30:04.126-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-15T09:30:04.127-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-15T09:30:04.169-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-15T09:30:04.170-03:00  INFO 12980 --- [zlog_compras] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1414 ms
+2025-05-15T09:30:04.304-03:00  INFO 12980 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-15T09:30:04.486-03:00  INFO 12980 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:5dfcf348-660b-4818-853e-e9d5d2748026 user=SA
+2025-05-15T09:30:04.488-03:00  INFO 12980 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-15T09:30:04.534-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-15T09:30:04.600-03:00  INFO 12980 --- [zlog_compras] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-05-15T09:30:04.638-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-15T09:30:04.931-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-15T09:30:05.011-03:00  INFO 12980 --- [zlog_compras] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-15T09:30:05.896-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-15T09:30:05.958-03:00  INFO 12980 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-15T09:30:06.446-03:00  WARN 12980 --- [zlog_compras] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-15T09:30:06.540-03:00 DEBUG 12980 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 24 mappings in 'requestMappingHandlerMapping'
+2025-05-15T09:30:06.657-03:00 DEBUG 12980 --- [zlog_compras] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-05-15T09:30:06.708-03:00 DEBUG 12980 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-05-15T09:30:06.781-03:00 DEBUG 12980 --- [zlog_compras] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-05-15T09:30:06.849-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:5dfcf348-660b-4818-853e-e9d5d2748026'
+2025-05-15T09:30:06.961-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-05-15T09:30:07.016-03:00  INFO 12980 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-05-15T09:30:07.025-03:00  INFO 12980 --- [zlog_compras] [restartedMain] com.ZlogComprasApplication               : Started ZlogComprasApplication in 4.866 seconds (process running for 5.425)

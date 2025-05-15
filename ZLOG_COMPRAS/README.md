@@ -60,3 +60,33 @@ Este projeto implementa um sistema completo de solicitação, aprovação, compr
 9.  **Segurança:** Implementar mecanismos de segurança para proteger a aplicação e os dados.
 
 ## Estrutura do Projeto Spring Boot
+
+src/
+├── main/
+│   ├── java/
+│   │   └── com/zlogcompras/
+│   │       ├── controller/
+│   │       ├── model/
+│   │       ├── repository/
+│   │       ├── service/
+│   │       └── ZlogComprasApplication.java
+│   └── resources/
+└── test/
+└── java/
+└── com/zlogcompras/
+
+## Como Executar a Aplicação
+
+1.  Certifique-se de ter o Java Development Kit instalado.
+2.  Utilize um gerenciador de dependências como Maven.
+3.  Navegue até o diretório raiz do projeto no seu terminal.
+4.  Execute o comando: `mvn spring-boot:run`
+5.  A aplicação estará disponível.
+
+## Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests para melhorias e novas funcionalidades.
+
+## Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE).
