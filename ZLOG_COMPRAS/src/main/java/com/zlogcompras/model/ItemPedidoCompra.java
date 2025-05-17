@@ -64,4 +64,14 @@ public class ItemPedidoCompra {
     public void setPrecoUnitario(Double precoUnitario) {
         this.precoUnitario = precoUnitario;
     }
+
+    public void setQuantidade(long quantidade2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setQuantidade'");
+    }
+
+    public void setPrecoUnitario(Object precoUnitario2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPrecoUnitario'");
+    }
 }

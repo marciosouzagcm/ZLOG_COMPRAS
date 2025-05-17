@@ -1,19 +1,19 @@
 package com.zlogcompras.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.zlogcompras.model.Orcamento;
+import com.zlogcompras.model.SolicitacaoCompra;
 
 public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
-    List<Orcamento> findBySolicitacaoCompraId(Long solicitacaoCompraId);
-    List<Orcamento> findByItemSolicitacaoCompraId(Long itemSolicitacaoCompraId);
+    List<Orcamento> findBySolicitacaoCompra(SolicitacaoCompra solicitacaoCompra);
+
+    List<Orcamento> findBySolicitacaoCompra_Id(Long solicitacaoCompraId);
+
     // Outros métodos personalizados, como buscar por fornecedor ou status poderiam ser adicionados aqui
     // Exemplo:
-    // List<Orcamento> findByFornecedorId(Long fornecedorId);
+    // List<Orcamento> findByFornecedor_Id(Long fornecedorId); // Assumindo relacionamento com Fornecedor
     // List<Orcamento> findByStatus(String status);
-
-    public void save(Optional<Orcamento> orcamento);
 }

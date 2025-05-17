@@ -1,12 +1,15 @@
 package com.zlogcompras.model;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,27 +20,75 @@ public class Orcamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private LocalDate dataCotacao;
+
+    private String observacoes;
+
+    private String condicoesPagamento;
+
     @ManyToOne
-    @JoinColumn(name = "solicitacao_compra_id")
+    private Fornecedor fornecedor;
+
+    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL)
+    private List<ItemOrcamento> itensOrcamento;
+
+    @ManyToOne
     private SolicitacaoCompra solicitacaoCompra;
 
-    @ManyToOne
-    @JoinColumn(name = "item_solicitacao_compra_id") // Adicione esta anotação
-    private ItemSolicitacaoCompra itemSolicitacaoCompra; // Adicione este campo
+    private String status; // Adicionado atributo status
 
-    private Long fornecedorId;
-    private LocalDate dataOrcamento;
-    private Double valorTotal;
-    private String numeroOrcamento;
-    private String status;
+    private Double valorTotal; // Adicionado atributo valorTotal
+
+    private String numeroOrcamento; // Adicionado atributo numeroOrcamento
 
     // Getters e Setters
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDate getDataCotacao() {
+        return dataCotacao;
+    }
+
+    public void setDataCotacao(LocalDate dataCotacao) {
+        this.dataCotacao = dataCotacao;
+    }
+
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
+    }
+
+    public String getCondicoesPagamento() {
+        return condicoesPagamento;
+    }
+
+    public void setCondicoesPagamento(String condicoesPagamento) {
+        this.condicoesPagamento = condicoesPagamento;
+    }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+
+    public List<ItemOrcamento> getItensOrcamento() {
+        return itensOrcamento;
+    }
+
+    public void setItensOrcamento(List<ItemOrcamento> itensOrcamento) {
+        this.itensOrcamento = itensOrcamento;
     }
 
     public SolicitacaoCompra getSolicitacaoCompra() {
@@ -48,20 +99,12 @@ public class Orcamento {
         this.solicitacaoCompra = solicitacaoCompra;
     }
 
-    public Long getFornecedorId() {
-        return fornecedorId;
+    public String getStatus() {
+        return status;
     }
 
-    public void setFornecedorId(Long fornecedorId) {
-        this.fornecedorId = fornecedorId;
-    }
-
-    public LocalDate getDataOrcamento() {
-        return dataOrcamento;
-    }
-
-    public void setDataOrcamento(LocalDate dataOrcamento) {
-        this.dataOrcamento = dataOrcamento;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Double getValorTotal() {
@@ -78,21 +121,5 @@ public class Orcamento {
 
     public void setNumeroOrcamento(String numeroOrcamento) {
         this.numeroOrcamento = numeroOrcamento;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public ItemSolicitacaoCompra getItemSolicitacaoCompra() { // Getter para o novo campo
-        return itemSolicitacaoCompra;
-    }
-
-    public void setItemSolicitacaoCompra(ItemSolicitacaoCompra itemSolicitacaoCompra) { // Setter para o novo campo
-        this.itemSolicitacaoCompra = itemSolicitacaoCompra;
     }
 }

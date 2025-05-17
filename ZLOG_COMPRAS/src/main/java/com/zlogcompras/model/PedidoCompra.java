@@ -59,4 +59,8 @@ public class PedidoCompra {
     public void setItens(List<ItemPedidoCompra> itens) {
         this.itens = itens;
     }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
