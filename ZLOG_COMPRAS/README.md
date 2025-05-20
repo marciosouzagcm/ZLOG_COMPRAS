@@ -60,7 +60,8 @@ Este projeto implementa um sistema completo de solicitação, aprovação, compr
 9.  **Segurança:** Implementar mecanismos de segurança para proteger a aplicação e os dados.
 
 ## Estrutura do Projeto Spring Boot
-src/
+src/:wq
+
 ├── main/
 │   ├── java/
 │   │   └── com/zlogcompras/

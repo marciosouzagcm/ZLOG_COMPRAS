@@ -1,53 +1,76 @@
 package com.zlogcompras.service;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.zlogcompras.model.ItemSolicitacaoCompra;
 import com.zlogcompras.model.SolicitacaoCompra;
-import com.zlogcompras.repository.ItemSolicitacaoCompraRepository;
 import com.zlogcompras.repository.SolicitacaoCompraRepository;
 
 @Service
 public class SolicitacaoCompraService {
 
-    @Autowired
-    private SolicitacaoCompraRepository solicitacaoCompraRepository;
+    private final SolicitacaoCompraRepository solicitacaoCompraRepository;
 
-    @Autowired
-    private ItemSolicitacaoCompraRepository itemSolicitacaoCompraRepository;
-
-    public SolicitacaoCompra criarSolicitacaoBase(SolicitacaoCompra solicitacao) {
-        solicitacao.setDataSolicitacao(LocalDate.now());
-        solicitacao.setStatus("Pendente");
-        return solicitacaoCompraRepository.save(solicitacao);
+    public SolicitacaoCompraService(SolicitacaoCompraRepository solicitacaoCompraRepository) {
+        this.solicitacaoCompraRepository = solicitacaoCompraRepository;
     }
 
-    public void salvarItensSolicitacao(SolicitacaoCompra solicitacao, List<ItemSolicitacaoCompra> itens) {
-        if (itens != null && !itens.isEmpty()) {
-            for (ItemSolicitacaoCompra item : itens) {
-                item.setSolicitacaoCompra(solicitacao);
-                itemSolicitacaoCompraRepository.save(item);
-            }
+    @Transactional
+    public SolicitacaoCompra atualizarSolicitacao(Long id, SolicitacaoCompra solicitacaoAtualizada) {
+        Optional<SolicitacaoCompra> solicitacaoExistenteOpt = solicitacaoCompraRepository.findById(id);
+
+        if (solicitacaoExistenteOpt.isPresent()) {
+            SolicitacaoCompra solicitacaoExistente = solicitacaoExistenteOpt.get();
+
+            solicitacaoExistente.setDataSolicitacao(solicitacaoAtualizada.getDataSolicitacao());
+            solicitacaoExistente.setSolicitante(solicitacaoAtualizada.getSolicitante());
+            solicitacaoExistente.setStatus(solicitacaoAtualizada.getStatus());
+            solicitacaoExistente.setItens(solicitacaoAtualizada.getItens());
+
+            return solicitacaoCompraRepository.save(solicitacaoExistente);
+        } else {
+            throw new RuntimeException("Solicitação de compra não encontrada com ID: " + id);
         }
     }
 
-    public SolicitacaoCompra buscarSolicitacaoPorId(Long id) {
-        return solicitacaoCompraRepository.findById(id).orElse(null);
+    @Transactional
+    public SolicitacaoCompra criarSolicitacao(SolicitacaoCompra solicitacaoCompra) {
+        return solicitacaoCompraRepository.save(solicitacaoCompra);
     }
 
-    public List<SolicitacaoCompra> listarTodasSolicitacoes() {
+    public Optional<SolicitacaoCompra> buscarSolicitacaoPorId(Long solicitacaoId) {
+        return solicitacaoCompraRepository.findById(solicitacaoId);
+    }
+
+    public List<SolicitacaoCompra> listarTodas() {
         return solicitacaoCompraRepository.findAll();
     }
 
+    @Transactional
+    public boolean deletarSolicitacao(Long id) {
+        if (solicitacaoCompraRepository.existsById(id)) {
+            solicitacaoCompraRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
     public void atualizarStatusSolicitacao(Long id, String novoStatus) {
-        SolicitacaoCompra solicitacao = buscarSolicitacaoPorId(id);
-        if (solicitacao != null) {
+        Optional<SolicitacaoCompra> solicitacaoOpt = solicitacaoCompraRepository.findById(id);
+        if (solicitacaoOpt.isPresent()) {
+            SolicitacaoCompra solicitacao = solicitacaoOpt.get();
             solicitacao.setStatus(novoStatus);
             solicitacaoCompraRepository.save(solicitacao);
+        } else {
+            throw new RuntimeException("Solicitação de compra não encontrada com ID: " + id);
         }
+    }
+
+    void atualizarSolicitacao(SolicitacaoCompra solicitacaoCompra) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

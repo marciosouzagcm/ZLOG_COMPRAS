@@ -1,8 +1,15 @@
 package com.zlogcompras.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "pedidos_compra")
@@ -61,6 +68,10 @@ public class PedidoCompra {
     }
 
     public void setFornecedor(Fornecedor fornecedor) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setValorTotal(Double valorTotal) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

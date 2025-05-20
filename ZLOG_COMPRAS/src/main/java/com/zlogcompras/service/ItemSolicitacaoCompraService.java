@@ -1,14 +1,13 @@
 package com.zlogcompras.service;
 
 import java.util.List;
-
-import com.zlogcompras.model.ItemSolicitacaoCompra;
-import com.zlogcompras.repository.ItemSolicitacaoCompraRepository;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.zlogcompras.model.ItemSolicitacaoCompra;
+import com.zlogcompras.repository.ItemSolicitacaoCompraRepository;
 
 @Service
 public class ItemSolicitacaoCompraService {
@@ -37,4 +36,8 @@ public class ItemSolicitacaoCompraService {
     }
 
     // Outros métodos conforme a necessidade
+
+    Optional<Object> buscarItemSolicitacaoPorMaterialServico(String materialServico) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

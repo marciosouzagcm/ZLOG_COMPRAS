@@ -1,10 +1,10 @@
 package com.zlogcompras.model.dto;
 
-import com.zlogcompras.model.ItemOrcamento;
-import com.zlogcompras.model.Fornecedor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.zlogcompras.model.ItemOrcamento;
 
 public class OrcamentoTabelaDTO {
 
@@ -12,16 +12,16 @@ public class OrcamentoTabelaDTO {
     private LocalDate dataCotacao;
     private String nomeFornecedor;
     private BigDecimal precoTotal;
-    private String prazoEntrega; // Pode ser String inicialmente
+    private String prazoEntrega;
     private String condicoesPagamento;
     private String observacoes;
-    private List<ItemOrcamento> itensOrcamento; // Podemos usar isso para detalhes, se necessário
+    private List<ItemOrcamento> itensOrcamento;
 
-    // Construtores
     public OrcamentoTabelaDTO() {
     }
 
-    public OrcamentoTabelaDTO(Long id, LocalDate dataCotacao, String nomeFornecedor, BigDecimal precoTotal, String prazoEntrega, String condicoesPagamento, String observacoes, List<ItemOrcamento> itensOrcamento) {
+    public OrcamentoTabelaDTO(Long id, LocalDate dataCotacao, String nomeFornecedor, BigDecimal precoTotal,
+            String prazoEntrega, String condicoesPagamento, String observacoes, List<ItemOrcamento> itensOrcamento) {
         this.id = id;
         this.dataCotacao = dataCotacao;
         this.nomeFornecedor = nomeFornecedor;
