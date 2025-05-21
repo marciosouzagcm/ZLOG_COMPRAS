@@ -1,7 +1,7 @@
 package com.zlogcompras.controller;
 
 import java.util.List;
-import java.util.Optional; // Usaremos o repositório diretamente aqui por simplicidade neste momento
+import java.util.Optional; // Importe o FornecedorService
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,53 +16,74 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zlogcompras.model.Fornecedor;
-import com.zlogcompras.repository.FornecedorRepository;
+import com.zlogcompras.service.FornecedorService;
 
 @RestController
 @RequestMapping("/api/fornecedores")
 public class FornecedorController {
 
-    @Autowired
-    private FornecedorRepository fornecedorRepository;
+    private final FornecedorService fornecedorService; // Injete o serviço
 
-    @GetMapping
-    public ResponseEntity<List<Fornecedor>> listarTodosFornecedores() {
-        List<Fornecedor> fornecedores = fornecedorRepository.findAll();
-        return new ResponseEntity<>(fornecedores, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Fornecedor> buscarFornecedorPorId(@PathVariable Long id) {
-        Optional<Fornecedor> fornecedor = fornecedorRepository.findById(id);
-        return fornecedor.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @Autowired // Injeção de dependência via construtor é preferível
+    public FornecedorController(FornecedorService fornecedorService) {
+        this.fornecedorService = fornecedorService;
     }
 
     @PostMapping
     public ResponseEntity<Fornecedor> criarFornecedor(@RequestBody Fornecedor fornecedor) {
-        Fornecedor novoFornecedor = fornecedorRepository.save(fornecedor);
-        return new ResponseEntity<>(novoFornecedor, HttpStatus.CREATED);
+        System.out.println("Controller: Recebida requisição POST para /api/fornecedores.");
+        System.out.println("Controller: Payload recebido (POST): " + fornecedor);
+        Fornecedor novoFornecedor = fornecedorService.criarFornecedor(fornecedor);
+        System.out.println("Controller: Fornecedor criado com ID: " + novoFornecedor.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Fornecedor>> listarTodosFornecedores() {
+        System.out.println("Controller: Recebida requisição GET para /api/fornecedores (listar todos).");
+        List<Fornecedor> fornecedores = fornecedorService.listarTodosFornecedores();
+        System.out.println("Controller: Total de fornecedores encontrados: " + fornecedores.size());
+        return ResponseEntity.ok(fornecedores);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Fornecedor> buscarFornecedorPorId(@PathVariable Long id) {
+        System.out.println("Controller: Recebida requisição GET para /api/fornecedores/" + id);
+        Optional<Fornecedor> fornecedor = fornecedorService.buscarFornecedorPorId(id);
+
+        if (fornecedor.isPresent()) {
+            System.out.println("Controller: Fornecedor com ID " + id + " encontrado.");
+            return ResponseEntity.ok(fornecedor.get());
+        } else {
+            System.out.println("Controller: Fornecedor com ID " + id + " NÃO encontrado.");
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Fornecedor> atualizarFornecedor(@PathVariable Long id, @RequestBody Fornecedor fornecedorAtualizado) {
-        Optional<Fornecedor> fornecedorExistente = fornecedorRepository.findById(id);
-        if (fornecedorExistente.isPresent()) {
-            fornecedorAtualizado.setId(id); // Garante que o ID seja o mesmo
-            Fornecedor fornecedorSalvo = fornecedorRepository.save(fornecedorAtualizado);
-            return new ResponseEntity<>(fornecedorSalvo, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Fornecedor> atualizarFornecedor(@PathVariable Long id, @RequestBody Fornecedor fornecedor) {
+        System.out.println("Controller: Recebida requisição PUT para /api/fornecedores/" + id + ".");
+        System.out.println("Controller: Payload recebido (PUT): " + fornecedor);
+        try {
+            Fornecedor fornecedorAtualizado = fornecedorService.atualizarFornecedor(id, fornecedor);
+            System.out.println("Controller: Fornecedor com ID " + id + " atualizado com sucesso.");
+            return ResponseEntity.ok(fornecedorAtualizado);
+        } catch (RuntimeException e) {
+            System.out.println("Controller: Erro ao atualizar fornecedor com ID " + id + ": " + e.getMessage());
+            return ResponseEntity.notFound().build(); // Retorna 404 se o fornecedor não for encontrado
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarFornecedor(@PathVariable Long id) {
-        if (fornecedorRepository.existsById(id)) {
-            fornecedorRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        System.out.println("Controller: Recebida requisição DELETE para /api/fornecedores/" + id);
+        boolean deletado = fornecedorService.deletarFornecedor(id);
+        if (deletado) {
+            System.out.println("Controller: Fornecedor com ID " + id + " deletado com sucesso.");
+            return ResponseEntity.noContent().build();
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            System.out.println("Controller: Erro: Fornecedor com ID " + id + " não encontrado para deleção.");
+            return ResponseEntity.notFound().build();
         }
     }
 }

@@ -1,85 +1,812 @@
-2025-05-19T14:29:08.624-03:00  INFO 4476 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Starting ZlogComprasApplication using Java 17.0.15 with PID 4476 (C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS\target\classes started by DELL in C:\Users\DELL\ZLOG_COMPRAS)
-2025-05-19T14:29:08.642-03:00  INFO 4476 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : No active profile set, falling back to 1 default profile: "default"
-2025-05-19T14:29:08.850-03:00  INFO 4476 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2025-05-19T14:29:08.855-03:00  INFO 4476 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2025-05-19T14:29:11.128-03:00  INFO 4476 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-05-19T14:29:11.297-03:00  INFO 4476 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 140 ms. Found 10 JPA repository interfaces.
-2025-05-19T14:29:20.291-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Starting ZlogComprasApplication using Java 17.0.15 with PID 11088 (C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS\target\classes started by DELL in C:\Users\DELL\ZLOG_COMPRAS)
-2025-05-19T14:29:20.297-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : No active profile set, falling back to 1 default profile: "default"
-2025-05-19T14:29:20.422-03:00  INFO 11088 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2025-05-19T14:29:20.423-03:00  INFO 11088 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2025-05-19T14:29:21.866-03:00  INFO 11088 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-05-19T14:29:22.119-03:00  INFO 11088 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 227 ms. Found 10 JPA repository interfaces.
-2025-05-19T14:29:23.510-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-05-19T14:29:23.539-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-05-19T14:29:23.540-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2025-05-19T14:29:23.641-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-05-19T14:29:23.642-03:00  INFO 11088 --- [zlog_compras] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3217 ms
-2025-05-19T14:29:23.983-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-05-19T14:29:24.396-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:zlog_compras # URL padr√£o para banco de dados em mem√≥ria user=SA
-2025-05-19T14:29:24.401-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-05-19T14:29:24.518-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-05-19T14:29:24.693-03:00  INFO 11088 --- [zlog_compras] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
-2025-05-19T14:29:24.805-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-05-19T14:29:25.437-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-05-19T14:29:25.623-03:00  INFO 11088 --- [zlog_compras] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-05-21T09:03:51.509-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Starting ZlogComprasApplication using Java 17.0.15 with PID 13604 (C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS\target\classes started by DELL in C:\Users\DELL\ZLOG_COMPRAS)
+2025-05-21T09:03:51.529-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T09:03:51.688-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-05-21T09:03:51.691-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-05-21T09:03:52.884-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T09:03:52.973-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 75 ms. Found 11 JPA repository interfaces.
+2025-05-21T09:03:53.760-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-21T09:03:53.777-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-21T09:03:53.778-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-21T09:03:53.829-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-21T09:03:53.830-03:00  INFO 13604 --- [zlog_compras] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2136 ms
+2025-05-21T09:03:54.013-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2025-05-21T09:03:54.039-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T09:03:54.103-03:00  INFO 13604 --- [zlog_compras] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-05-21T09:03:54.147-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T09:03:54.521-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T09:03:54.579-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T09:03:54.957-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@66f0fa
+2025-05-21T09:03:54.960-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T09:03:55.007-03:00  WARN 13604 --- [zlog_compras] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T09:03:55.036-03:00  INFO 13604 --- [zlog_compras] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
-	Database version: 2.3.232
+	Database version: 8.0.36
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-05-19T14:29:27.253-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-05-19T14:29:27.363-03:00  INFO 11088 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-05-19T14:29:28.297-03:00  WARN 11088 --- [zlog_compras] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-05-19T14:29:28.480-03:00 DEBUG 11088 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 26 mappings in 'requestMappingHandlerMapping'
-2025-05-19T14:29:28.631-03:00 DEBUG 11088 --- [zlog_compras] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2025-05-19T14:29:28.705-03:00 DEBUG 11088 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-05-19T14:29:28.796-03:00 DEBUG 11088 --- [zlog_compras] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-05-19T14:29:28.870-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:zlog_compras # URL padr√£o para banco de dados em mem√≥ria'
-2025-05-19T14:29:29.011-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2025-05-19T14:29:29.091-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-05-19T14:29:29.112-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Started ZlogComprasApplication in 9.582 seconds (process running for 10.14)
-2025-05-19T14:31:42.582-03:00  INFO 11088 --- [zlog_compras] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 2 class path changes (2 additions, 0 deletions, 0 modifications)
-2025-05-19T14:31:42.590-03:00  INFO 11088 --- [zlog_compras] [Thread-5] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-05-19T14:31:42.689-03:00  INFO 11088 --- [zlog_compras] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-05-19T14:31:42.694-03:00  INFO 11088 --- [zlog_compras] [Thread-5] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-05-19T14:31:42.726-03:00  WARN 11088 --- [zlog_compras] [Thread-5] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
-2025-05-19T14:31:42.728-03:00  INFO 11088 --- [zlog_compras] [Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-05-19T14:31:42.747-03:00  INFO 11088 --- [zlog_compras] [Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-05-19T14:31:42.931-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Starting ZlogComprasApplication using Java 17.0.15 with PID 11088 (C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS\target\classes started by DELL in C:\Users\DELL\ZLOG_COMPRAS)
-2025-05-19T14:31:42.932-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : No active profile set, falling back to 1 default profile: "default"
-2025-05-19T14:31:43.365-03:00  INFO 11088 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-05-19T14:31:43.449-03:00  INFO 11088 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 81 ms. Found 10 JPA repository interfaces.
-2025-05-19T14:31:43.662-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-05-19T14:31:43.668-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-05-19T14:31:43.673-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2025-05-19T14:31:43.731-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-05-19T14:31:43.732-03:00  INFO 11088 --- [zlog_compras] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 789 ms
-2025-05-19T14:31:43.806-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
-2025-05-19T14:31:43.809-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:zlog_compras # URL padr√£o para banco de dados em mem√≥ria user=SA
-2025-05-19T14:31:43.810-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
-2025-05-19T14:31:43.813-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-05-19T14:31:43.821-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-05-19T14:31:43.854-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-05-19T14:31:43.858-03:00  INFO 11088 --- [zlog_compras] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-05-21T09:03:56.092-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T09:03:56.183-03:00  INFO 13604 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T09:03:56.248-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] .c.JpaMetamodelMappingContextFactoryBean : Initializing JpaMetamodelMappingContextÖ
+2025-05-21T09:03:56.268-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] .c.JpaMetamodelMappingContextFactoryBean : Finished initializing JpaMetamodelMappingContext
+2025-05-21T09:03:56.310-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.368-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.454-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.541-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Estoque.findByCodigoMaterial'
+2025-05-21T09:03:56.545-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Estoque.findByCodigoMaterial
+2025-05-21T09:03:56.549-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.640-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.645-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.649-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc'
+2025-05-21T09:03:56.650-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc
+2025-05-21T09:03:56.650-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.670-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.691-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.699-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemSolicitacaoCompra.deleteBySolicitacaoCompra'
+2025-05-21T09:03:56.700-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemSolicitacaoCompra.deleteBySolicitacaoCompra
+2025-05-21T09:03:56.701-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.704-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemSolicitacaoCompra.findBySolicitacaoCompraId'
+2025-05-21T09:03:56.706-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemSolicitacaoCompra.findBySolicitacaoCompraId
+2025-05-21T09:03:56.707-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.830-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.835-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.861-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.870-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.874-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findBySolicitacaoCompra_Id'
+2025-05-21T09:03:56.875-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompra_Id
+2025-05-21T09:03:56.875-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.877-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findBySolicitacaoCompra'
+2025-05-21T09:03:56.878-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompra
+2025-05-21T09:03:56.878-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.882-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByFornecedor_Id'
+2025-05-21T09:03:56.884-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByFornecedor_Id
+2025-05-21T09:03:56.884-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.887-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByDataCotacaoBetween'
+2025-05-21T09:03:56.889-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByDataCotacaoBetween
+2025-05-21T09:03:56.890-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.895-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByStatus'
+2025-05-21T09:03:56.896-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByStatus
+2025-05-21T09:03:56.897-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.907-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.908-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.911-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemOrcamento.findByOrcamento_Id'
+2025-05-21T09:03:56.913-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemOrcamento.findByOrcamento_Id
+2025-05-21T09:03:56.913-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.923-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.924-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.943-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.953-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.964-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.965-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:56.968-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemPedidoCompra.findByPedidoCompraId'
+2025-05-21T09:03:56.969-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemPedidoCompra.findByPedidoCompraId
+2025-05-21T09:03:56.969-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:57.007-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:57.011-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:57.078-03:00  WARN 13604 --- [zlog_compras] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T09:03:57.193-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.EstoqueController:
+	{GET [/api/estoque/{codigoMaterial}]}: buscarEstoquePorCodigo(String)
+2025-05-21T09:03:57.201-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.FornecedorController:
+	{DELETE [/api/fornecedores/{id}]}: deletarFornecedor(Long)
+	{POST [/api/fornecedores]}: criarFornecedor(Fornecedor)
+	{PUT [/api/fornecedores/{id}]}: atualizarFornecedor(Long,Fornecedor)
+	{GET [/api/fornecedores/{id}]}: buscarFornecedorPorId(Long)
+	{GET [/api/fornecedores]}: listarTodosFornecedores()
+2025-05-21T09:03:57.205-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.OrcamentoController:
+	{PUT [/api/orcamentos/{id}]}: atualizarOrcamento(Long,Orcamento)
+	{POST [/api/orcamentos]}: criarOrcamento(Orcamento)
+	{GET [/api/orcamentos]}: listarTodosOrcamentos()
+	{PUT [/api/orcamentos/{id}/aprovar]}: aprovarOrcamentoGerarPedido(Long)
+	{GET [/api/orcamentos/{id}]}: buscarOrcamentoPorId(Long)
+	{GET [/api/orcamentos/solicitacao/{solicitacaoId}]}: listarOrcamentosPorSolicitacao(Long)
+2025-05-21T09:03:57.208-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.PedidoCompraController:
+	{POST [/api/pedidos-compra]}: criarPedidoCompra(PedidoCompra)
+	{GET [/api/pedidos-compra]}: listarTodosPedidosCompra()
+	{GET [/api/pedidos-compra/{id}]}: buscarPedidoCompraPorId(Long)
+	{PUT [/api/pedidos-compra/{id}/status]}: atualizarStatusPedidoCompra(Long,String)
+	{PUT [/api/pedidos-compra/{id}]}: atualizarPedidoCompra(Long,PedidoCompra)
+2025-05-21T09:03:57.210-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProcessoCompraController:
+	{POST [/api/processo-compra/iniciar/{solicitacaoId}]}: iniciarProcessoCompra(Long)
+2025-05-21T09:03:57.213-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProdutoController:
+	{PUT [/api/produtos/{id}]}: atualizarProduto(Long,Produto)
+	{DELETE [/api/produtos/{id}]}: deletarProduto(Long)
+	{GET [/api/produtos/{id}]}: buscarProdutoPorId(Long)
+	{POST [/api/produtos]}: criarProduto(Produto)
+	{GET [/api/produtos]}: listarTodosProdutos()
+2025-05-21T09:03:57.216-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.SolicitacaoCompraController:
+	{POST [/api/solicitacoes]}: criarSolicitacao(SolicitacaoCompra)
+	{DELETE [/api/solicitacoes/{id}]}: deletarSolicitacao(Long)
+	{GET [/api/solicitacoes]}: listarTodasSolicitacoes()
+	{PUT [/api/solicitacoes/{id}]}: atualizarSolicitacao(Long,SolicitacaoCompra)
+	{GET [/api/solicitacoes/{id}]}: buscarSolicitacaoPorId(Long)
+2025-05-21T09:03:57.220-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.b.a.w.s.e.BasicErrorController:
+	{ [/error]}: error(HttpServletRequest)
+	{ [/error], produces [text/html]}: errorHtml(HttpServletRequest,HttpServletResponse)
+2025-05-21T09:03:57.224-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 30 mappings in 'requestMappingHandlerMapping'
+2025-05-21T09:03:57.327-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-05-21T09:03:57.368-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-05-21T09:03:57.427-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-05-21T09:03:57.461-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:57.465-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:57.467-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'NotaFiscal.findByPedidoCompraId'
+2025-05-21T09:03:57.468-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query NotaFiscal.findByPedidoCompraId
+2025-05-21T09:03:57.468-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:03:57.489-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3306/zlog_compras_database?createDatabaseIfNotExist=true&serverTimezone=America/Sao_Paulo'
+2025-05-21T09:03:57.572-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-05-21T09:03:57.631-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-05-21T09:03:57.644-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Started ZlogComprasApplication in 6.75 seconds (process running for 7.225)
+2025-05-21T09:05:47.349-03:00  INFO 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-21T09:05:47.349-03:00  INFO 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-05-21T09:05:47.349-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-05-21T09:05:47.349-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-05-21T09:05:47.349-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-05-21T09:05:47.349-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@7552c50c
+2025-05-21T09:05:47.349-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@47d4decd
+2025-05-21T09:05:47.349-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-05-21T09:05:47.349-03:00  INFO 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-05-21T09:05:47.371-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/api/fornecedores", parameters={}
+2025-05-21T09:05:47.399-03:00 TRACE 13604 --- [zlog_compras] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#criarFornecedor(Fornecedor)
+2025-05-21T09:05:47.405-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:05:47.436-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.method.HandlerMethod             : Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.zlogcompras.model.Fornecedor> com.zlogcompras.controller.FornecedorController.criarFornecedor(com.zlogcompras.model.Fornecedor): Content-Type 'text/plain;charset=UTF-8' is not supported
+2025-05-21T09:05:47.438-03:00  WARN 13604 --- [zlog_compras] [http-nio-8080-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpMediaTypeNotSupportedException: Content-Type 'text/plain;charset=UTF-8' is not supported]
+2025-05-21T09:05:47.438-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:05:47.438-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 415 UNSUPPORTED_MEDIA_TYPE
+2025-05-21T09:05:47.453-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/error", parameters={}
+2025-05-21T09:05:47.459-03:00 TRACE 13604 --- [zlog_compras] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : 2 matching mappings: [{ [/error]}, { [/error], produces [text/html]}]
+2025-05-21T09:05:47.459-03:00 TRACE 13604 --- [zlog_compras] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-05-21T09:05:47.460-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:05:47.487-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:05:47.487-03:00 TRACE 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Wed May 21 09:05:47 BRT 2025, status=415, error=Unsupported Media Type, trace=org.springframework.web.HttpMediaTypeNotSupportedException: Content-Type 'text/plain;charset=UTF-8' is not supported
+	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodArgumentResolver.readWithMessageConverters(AbstractMessageConverterMethodArgumentResolver.java:236)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.readWithMessageConverters(RequestResponseBodyMethodProcessor.java:176)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.resolveArgument(RequestResponseBodyMethodProcessor.java:150)
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:227)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:181)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+, message=Content-Type 'text/plain;charset=UTF-8' is not supported., path=/api/fornecedores}]
+2025-05-21T09:05:47.527-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:05:47.529-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 415
+2025-05-21T09:06:42.179-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/api/fornecedores", parameters={}
+2025-05-21T09:06:42.179-03:00 TRACE 13604 --- [zlog_compras] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#criarFornecedor(Fornecedor)
+2025-05-21T09:06:42.179-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:06:42.230-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.s.web.method.HandlerMethod             : Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.zlogcompras.model.Fornecedor> com.zlogcompras.controller.FornecedorController.criarFornecedor(com.zlogcompras.model.Fornecedor): JSON parse error: Not supported yet.
+2025-05-21T09:06:42.230-03:00  WARN 13604 --- [zlog_compras] [http-nio-8080-exec-2] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Not supported yet.]
+2025-05-21T09:06:42.230-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:06:42.230-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2025-05-21T09:06:42.230-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/error", parameters={}
+2025-05-21T09:06:42.230-03:00 TRACE 13604 --- [zlog_compras] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : 2 matching mappings: [{ [/error]}, { [/error], produces [text/html]}]
+2025-05-21T09:06:42.230-03:00 TRACE 13604 --- [zlog_compras] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-05-21T09:06:42.230-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:06:42.230-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:06:42.230-03:00 TRACE 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Wed May 21 09:06:42 BRT 2025, status=400, error=Bad Request, trace=org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Not supported yet.
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:409)
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.read(AbstractJackson2HttpMessageConverter.java:357)
+	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodArgumentResolver.readWithMessageConverters(AbstractMessageConverterMethodArgumentResolver.java:204)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.readWithMessageConverters(RequestResponseBodyMethodProcessor.java:176)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.resolveArgument(RequestResponseBodyMethodProcessor.java:150)
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:227)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:181)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: com.fasterxml.jackson.databind.JsonMappingException: Not supported yet.
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 2, column: 13] (through reference chain: com.zlogcompras.model.Fornecedor["nome"])
+	at com.fasterxml.jackson.databind.JsonMappingException.from(JsonMappingException.java:276)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty._throwAsIOE(SettableBeanProperty.java:628)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty._throwAsIOE(SettableBeanProperty.java:616)
+	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:143)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:399)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:185)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+	at com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2131)
+	at com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1501)
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:398)
+	... 51 more
+Caused by: java.lang.UnsupportedOperationException: Not supported yet.
+	at com.zlogcompras.model.Fornecedor.setNome(Fornecedor.java:138)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:141)
+	... 57 more
+, message=JSON parse error: Not supported yet., path=/api/fornecedores}]
+2025-05-21T09:06:42.230-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:06:42.230-03:00 DEBUG 13604 --- [zlog_compras] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 400
+2025-05-21T09:08:57.841-03:00  INFO 13604 --- [zlog_compras] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 16 class path changes (0 additions, 1 deletion, 15 modifications)
+2025-05-21T09:08:57.851-03:00  INFO 13604 --- [zlog_compras] [Thread-5] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-05-21T09:08:57.891-03:00  INFO 13604 --- [zlog_compras] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-05-21T09:08:57.891-03:00  INFO 13604 --- [zlog_compras] [Thread-5] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T09:08:57.907-03:00  INFO 13604 --- [zlog_compras] [Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-21T09:08:57.931-03:00  INFO 13604 --- [zlog_compras] [Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-21T09:08:58.052-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Starting ZlogComprasApplication using Java 17.0.15 with PID 13604 (C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS\target\classes started by DELL in C:\Users\DELL\ZLOG_COMPRAS)
+2025-05-21T09:08:58.053-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T09:08:58.424-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T09:08:58.472-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 46 ms. Found 10 JPA repository interfaces.
+2025-05-21T09:08:58.650-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-21T09:08:58.652-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-21T09:08:58.653-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-21T09:08:58.683-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-21T09:08:58.683-03:00  INFO 13604 --- [zlog_compras] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 626 ms
+2025-05-21T09:08:58.752-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2025-05-21T09:08:58.753-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T09:08:58.756-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T09:08:58.782-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T09:08:58.784-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-05-21T09:08:58.815-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@270f37be
+2025-05-21T09:08:58.815-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-05-21T09:08:58.818-03:00  WARN 13604 --- [zlog_compras] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T09:08:58.819-03:00  INFO 13604 --- [zlog_compras] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
 	Database driver: undefined/unknown
-	Database version: 2.3.232
+	Database version: 8.0.36
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-05-19T14:31:44.129-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-05-19T14:31:44.166-03:00  INFO 11088 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-05-19T14:31:44.509-03:00  WARN 11088 --- [zlog_compras] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-05-19T14:31:44.545-03:00 DEBUG 11088 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 26 mappings in 'requestMappingHandlerMapping'
-2025-05-19T14:31:44.592-03:00 DEBUG 11088 --- [zlog_compras] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2025-05-19T14:31:44.603-03:00 DEBUG 11088 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-05-19T14:31:44.618-03:00 DEBUG 11088 --- [zlog_compras] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-05-19T14:31:44.695-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:zlog_compras # URL padr√£o para banco de dados em mem√≥ria'
-2025-05-19T14:31:44.722-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2025-05-19T14:31:44.740-03:00  INFO 11088 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-05-19T14:31:44.746-03:00  INFO 11088 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Started ZlogComprasApplication in 1.898 seconds (process running for 145.772)
-2025-05-19T14:31:44.752-03:00  INFO 11088 --- [zlog_compras] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2025-05-21T09:08:58.848-03:00  WARN 13604 --- [zlog_compras] [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Fornecedor
+2025-05-21T09:08:58.849-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-05-21T09:08:58.852-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-05-21T09:08:58.853-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2025-05-21T09:08:58.865-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-05-21T09:08:58.909-03:00 ERROR 13604 --- [zlog_compras] [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Fornecedor
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1818) ~[spring-beans-6.2.6.jar:6.2.6]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.6.jar:6.2.6]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.6.jar:6.2.6]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.6.jar:6.2.6]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-6.2.6.jar:6.2.6]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.6.jar:6.2.6]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.6.jar:6.2.6]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:970) ~[spring-context-6.2.6.jar:6.2.6]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.6.jar:6.2.6]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.5.jar:3.4.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753) ~[spring-boot-3.4.5.jar:3.4.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.5.jar:3.4.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.5.jar:3.4.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1362) ~[spring-boot-3.4.5.jar:3.4.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1351) ~[spring-boot-3.4.5.jar:3.4.5]
+	at com.zlogcompras.ZlogComprasApplication.main(ZlogComprasApplication.java:10) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.4.5.jar:3.4.5]
+Caused by: java.lang.NoClassDefFoundError: Fornecedor
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3402) ~[na:na]
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2504) ~[na:na]
+	at org.hibernate.annotations.common.reflection.java.JavaXClass.getDeclaredMethodProperties(JavaXClass.java:134) ~[hibernate-commons-annotations-7.0.3.Final.jar:7.0.3.Final]
+	at org.hibernate.annotations.common.reflection.java.JavaXClass.getDeclaredProperties(JavaXClass.java:172) ~[hibernate-commons-annotations-7.0.3.Final.jar:7.0.3.Final]
+	at org.hibernate.annotations.common.reflection.java.JavaXClass.getDeclaredProperties(JavaXClass.java:164) ~[hibernate-commons-annotations-7.0.3.Final.jar:7.0.3.Final]
+	at org.hibernate.boot.model.internal.InheritanceState.determineDefaultAccessType(InheritanceState.java:269) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.boot.model.internal.InheritanceState.getElementsToProcess(InheritanceState.java:226) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.boot.model.internal.InheritanceState.postProcess(InheritanceState.java:162) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.boot.model.internal.EntityBinder.handleIdentifier(EntityBinder.java:410) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.boot.model.internal.EntityBinder.bindEntityClass(EntityBinder.java:251) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.boot.model.internal.AnnotationBinder.bindClass(AnnotationBinder.java:401) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.boot.model.source.internal.annotations.AnnotationMetadataSourceProcessorImpl.processEntityHierarchies(AnnotationMetadataSourceProcessorImpl.java:257) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess$1.processEntityHierarchies(MetadataBuildingProcess.java:281) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:324) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1442) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1513) ~[hibernate-core-6.6.13.Final.jar:6.6.13.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.6.jar:6.2.6]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.6.jar:6.2.6]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.6.jar:6.2.6]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.6.jar:6.2.6]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.6.jar:6.2.6]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1865) ~[spring-beans-6.2.6.jar:6.2.6]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1814) ~[spring-beans-6.2.6.jar:6.2.6]
+	... 20 common frames omitted
+Caused by: java.lang.ClassNotFoundException: Fornecedor
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525) ~[na:na]
+	at java.base/java.lang.Class.forName0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.forName(Class.java:467) ~[na:na]
+	at org.springframework.boot.devtools.restart.classloader.RestartClassLoader.loadClass(RestartClassLoader.java:121) ~[spring-boot-devtools-3.4.5.jar:3.4.5]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525) ~[na:na]
+	... 44 common frames omitted
+
+2025-05-21T09:09:03.671-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Starting ZlogComprasApplication using Java 17.0.15 with PID 13604 (C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS\target\classes started by DELL in C:\Users\DELL\ZLOG_COMPRAS)
+2025-05-21T09:09:03.681-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T09:09:04.344-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T09:09:04.443-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 84 ms. Found 11 JPA repository interfaces.
+2025-05-21T09:09:04.680-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-21T09:09:04.686-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-21T09:09:04.692-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-21T09:09:04.784-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2025-05-21T09:09:04.786-03:00  INFO 13604 --- [zlog_compras] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1099 ms
+2025-05-21T09:09:04.880-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2025-05-21T09:09:04.917-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T09:09:04.926-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T09:09:05.003-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T09:09:05.041-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2025-05-21T09:09:05.110-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1936eee5
+2025-05-21T09:09:05.116-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2025-05-21T09:09:05.119-03:00  WARN 13604 --- [zlog_compras] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T09:09:05.123-03:00  INFO 13604 --- [zlog_compras] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-3)']
+	Database driver: undefined/unknown
+	Database version: 8.0.36
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T09:09:05.758-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T09:09:05.874-03:00  INFO 13604 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T09:09:05.906-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] .c.JpaMetamodelMappingContextFactoryBean : Initializing JpaMetamodelMappingContextÖ
+2025-05-21T09:09:05.910-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] .c.JpaMetamodelMappingContextFactoryBean : Finished initializing JpaMetamodelMappingContext
+2025-05-21T09:09:05.912-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.926-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.930-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Estoque.findByCodigoMaterial'
+2025-05-21T09:09:05.933-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Estoque.findByCodigoMaterial
+2025-05-21T09:09:05.936-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.948-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.954-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.958-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc'
+2025-05-21T09:09:05.959-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc
+2025-05-21T09:09:05.959-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.969-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.981-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.984-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemSolicitacaoCompra.deleteBySolicitacaoCompra'
+2025-05-21T09:09:05.984-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemSolicitacaoCompra.deleteBySolicitacaoCompra
+2025-05-21T09:09:05.984-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:05.984-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemSolicitacaoCompra.findBySolicitacaoCompraId'
+2025-05-21T09:09:05.984-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemSolicitacaoCompra.findBySolicitacaoCompraId
+2025-05-21T09:09:05.988-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.012-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.017-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.042-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.049-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.052-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findBySolicitacaoCompra_Id'
+2025-05-21T09:09:06.054-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompra_Id
+2025-05-21T09:09:06.054-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.057-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findBySolicitacaoCompra'
+2025-05-21T09:09:06.058-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompra
+2025-05-21T09:09:06.059-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.061-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByFornecedor_Id'
+2025-05-21T09:09:06.062-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByFornecedor_Id
+2025-05-21T09:09:06.062-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.064-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByDataCotacaoBetween'
+2025-05-21T09:09:06.064-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByDataCotacaoBetween
+2025-05-21T09:09:06.064-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.075-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByStatus'
+2025-05-21T09:09:06.077-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByStatus
+2025-05-21T09:09:06.078-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.091-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.096-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.103-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemOrcamento.findByOrcamento_Id'
+2025-05-21T09:09:06.104-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemOrcamento.findByOrcamento_Id
+2025-05-21T09:09:06.105-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.142-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.144-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.164-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.170-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.180-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.182-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.185-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemPedidoCompra.findByPedidoCompraId'
+2025-05-21T09:09:06.186-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemPedidoCompra.findByPedidoCompraId
+2025-05-21T09:09:06.186-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.257-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.292-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.357-03:00  WARN 13604 --- [zlog_compras] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T09:09:06.382-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.EstoqueController:
+	{GET [/api/estoque/{codigoMaterial}]}: buscarEstoquePorCodigo(String)
+2025-05-21T09:09:06.390-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.FornecedorController:
+	{DELETE [/api/fornecedores/{id}]}: deletarFornecedor(Long)
+	{POST [/api/fornecedores]}: criarFornecedor(Fornecedor)
+	{PUT [/api/fornecedores/{id}]}: atualizarFornecedor(Long,Fornecedor)
+	{GET [/api/fornecedores/{id}]}: buscarFornecedorPorId(Long)
+	{GET [/api/fornecedores]}: listarTodosFornecedores()
+2025-05-21T09:09:06.395-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.OrcamentoController:
+	{PUT [/api/orcamentos/{id}]}: atualizarOrcamento(Long,Orcamento)
+	{POST [/api/orcamentos]}: criarOrcamento(Orcamento)
+	{GET [/api/orcamentos]}: listarTodosOrcamentos()
+	{PUT [/api/orcamentos/{id}/aprovar]}: aprovarOrcamentoGerarPedido(Long)
+	{GET [/api/orcamentos/{id}]}: buscarOrcamentoPorId(Long)
+	{GET [/api/orcamentos/solicitacao/{solicitacaoId}]}: listarOrcamentosPorSolicitacao(Long)
+2025-05-21T09:09:06.400-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.PedidoCompraController:
+	{POST [/api/pedidos-compra]}: criarPedidoCompra(PedidoCompra)
+	{GET [/api/pedidos-compra]}: listarTodosPedidosCompra()
+	{GET [/api/pedidos-compra/{id}]}: buscarPedidoCompraPorId(Long)
+	{PUT [/api/pedidos-compra/{id}/status]}: atualizarStatusPedidoCompra(Long,String)
+	{PUT [/api/pedidos-compra/{id}]}: atualizarPedidoCompra(Long,PedidoCompra)
+2025-05-21T09:09:06.403-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProcessoCompraController:
+	{POST [/api/processo-compra/iniciar/{solicitacaoId}]}: iniciarProcessoCompra(Long)
+2025-05-21T09:09:06.408-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProdutoController:
+	{PUT [/api/produtos/{id}]}: atualizarProduto(Long,Produto)
+	{DELETE [/api/produtos/{id}]}: deletarProduto(Long)
+	{GET [/api/produtos/{id}]}: buscarProdutoPorId(Long)
+	{POST [/api/produtos]}: criarProduto(Produto)
+	{GET [/api/produtos]}: listarTodosProdutos()
+2025-05-21T09:09:06.421-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.SolicitacaoCompraController:
+	{POST [/api/solicitacoes]}: criarSolicitacao(SolicitacaoCompra)
+	{DELETE [/api/solicitacoes/{id}]}: deletarSolicitacao(Long)
+	{GET [/api/solicitacoes]}: listarTodasSolicitacoes()
+	{PUT [/api/solicitacoes/{id}]}: atualizarSolicitacao(Long,SolicitacaoCompra)
+	{GET [/api/solicitacoes/{id}]}: buscarSolicitacaoPorId(Long)
+2025-05-21T09:09:06.427-03:00 TRACE 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.b.a.w.s.e.BasicErrorController:
+	{ [/error]}: error(HttpServletRequest)
+	{ [/error], produces [text/html]}: errorHtml(HttpServletRequest,HttpServletResponse)
+2025-05-21T09:09:06.429-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 30 mappings in 'requestMappingHandlerMapping'
+2025-05-21T09:09:06.471-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-05-21T09:09:06.482-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-05-21T09:09:06.497-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-05-21T09:09:06.513-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.517-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.519-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'NotaFiscal.findByPedidoCompraId'
+2025-05-21T09:09:06.519-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query NotaFiscal.findByPedidoCompraId
+2025-05-21T09:09:06.520-03:00 DEBUG 13604 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:06.534-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3306/zlog_compras_database?createDatabaseIfNotExist=true&serverTimezone=America/Sao_Paulo'
+2025-05-21T09:09:06.558-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-05-21T09:09:06.582-03:00  INFO 13604 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-05-21T09:09:06.588-03:00  INFO 13604 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Started ZlogComprasApplication in 3.12 seconds (process running for 316.169)
+2025-05-21T09:09:06.594-03:00  INFO 13604 --- [zlog_compras] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2025-05-21T09:09:31.582-03:00  INFO 3140 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Starting ZlogComprasApplication using Java 17.0.15 with PID 3140 (C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS\target\classes started by DELL in c:\Users\DELL\ZLOG_COMPRAS)
+2025-05-21T09:09:31.586-03:00  INFO 3140 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T09:09:31.664-03:00  INFO 3140 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-05-21T09:09:31.665-03:00  INFO 3140 --- [zlog_compras] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-05-21T09:09:32.614-03:00  INFO 3140 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T09:09:32.699-03:00  INFO 3140 --- [zlog_compras] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 73 ms. Found 11 JPA repository interfaces.
+2025-05-21T09:09:33.501-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-21T09:09:33.522-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-21T09:09:33.523-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-21T09:09:33.588-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-21T09:09:33.588-03:00  INFO 3140 --- [zlog_compras] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1923 ms
+2025-05-21T09:09:33.796-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2025-05-21T09:09:33.832-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T09:09:33.914-03:00  INFO 3140 --- [zlog_compras] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-05-21T09:09:33.967-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T09:09:34.329-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T09:09:34.383-03:00  INFO 3140 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T09:09:34.732-03:00  INFO 3140 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@68389e06
+2025-05-21T09:09:34.735-03:00  INFO 3140 --- [zlog_compras] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T09:09:34.808-03:00  WARN 3140 --- [zlog_compras] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T09:09:34.851-03:00  INFO 3140 --- [zlog_compras] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.36
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T09:09:36.083-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T09:09:36.215-03:00  INFO 3140 --- [zlog_compras] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T09:09:36.285-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] .c.JpaMetamodelMappingContextFactoryBean : Initializing JpaMetamodelMappingContextÖ
+2025-05-21T09:09:36.314-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] .c.JpaMetamodelMappingContextFactoryBean : Finished initializing JpaMetamodelMappingContext
+2025-05-21T09:09:36.359-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.424-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.510-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.581-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Estoque.findByCodigoMaterial'
+2025-05-21T09:09:36.585-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Estoque.findByCodigoMaterial
+2025-05-21T09:09:36.590-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.711-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.719-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.725-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc'
+2025-05-21T09:09:36.727-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc
+2025-05-21T09:09:36.728-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.757-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.800-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.809-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemSolicitacaoCompra.findBySolicitacaoCompraId'
+2025-05-21T09:09:36.812-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemSolicitacaoCompra.findBySolicitacaoCompraId
+2025-05-21T09:09:36.815-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:36.830-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemSolicitacaoCompra.deleteBySolicitacaoCompra'
+2025-05-21T09:09:36.833-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemSolicitacaoCompra.deleteBySolicitacaoCompra
+2025-05-21T09:09:36.835-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.129-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.144-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.183-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.208-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.219-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByFornecedor_Id'
+2025-05-21T09:09:37.231-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByFornecedor_Id
+2025-05-21T09:09:37.235-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.244-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findBySolicitacaoCompra_Id'
+2025-05-21T09:09:37.247-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompra_Id
+2025-05-21T09:09:37.248-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.252-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByDataCotacaoBetween'
+2025-05-21T09:09:37.259-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByDataCotacaoBetween
+2025-05-21T09:09:37.262-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.269-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findBySolicitacaoCompra'
+2025-05-21T09:09:37.274-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompra
+2025-05-21T09:09:37.363-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.380-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'Orcamento.findByStatus'
+2025-05-21T09:09:37.382-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByStatus
+2025-05-21T09:09:37.383-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.400-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.419-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.424-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemOrcamento.findByOrcamento_Id'
+2025-05-21T09:09:37.426-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemOrcamento.findByOrcamento_Id
+2025-05-21T09:09:37.428-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.444-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.445-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.477-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.485-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.498-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.500-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.503-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'ItemPedidoCompra.findByPedidoCompraId'
+2025-05-21T09:09:37.504-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemPedidoCompra.findByPedidoCompraId
+2025-05-21T09:09:37.507-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.592-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.607-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:37.719-03:00  WARN 3140 --- [zlog_compras] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T09:09:37.889-03:00 TRACE 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.EstoqueController:
+	{GET [/api/estoque/{codigoMaterial}]}: buscarEstoquePorCodigo(String)
+2025-05-21T09:09:37.899-03:00 TRACE 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.FornecedorController:
+	{GET [/api/fornecedores]}: listarTodosFornecedores()
+	{PUT [/api/fornecedores/{id}]}: atualizarFornecedor(Long,Fornecedor)
+	{GET [/api/fornecedores/{id}]}: buscarFornecedorPorId(Long)
+	{POST [/api/fornecedores]}: criarFornecedor(Fornecedor)
+	{DELETE [/api/fornecedores/{id}]}: deletarFornecedor(Long)
+2025-05-21T09:09:37.908-03:00 TRACE 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.OrcamentoController:
+	{GET [/api/orcamentos]}: listarTodosOrcamentos()
+	{GET [/api/orcamentos/{id}]}: buscarOrcamentoPorId(Long)
+	{PUT [/api/orcamentos/{id}/aprovar]}: aprovarOrcamentoGerarPedido(Long)
+	{GET [/api/orcamentos/solicitacao/{solicitacaoId}]}: listarOrcamentosPorSolicitacao(Long)
+	{POST [/api/orcamentos]}: criarOrcamento(Orcamento)
+	{PUT [/api/orcamentos/{id}]}: atualizarOrcamento(Long,Orcamento)
+2025-05-21T09:09:37.913-03:00 TRACE 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.PedidoCompraController:
+	{GET [/api/pedidos-compra/{id}]}: buscarPedidoCompraPorId(Long)
+	{GET [/api/pedidos-compra]}: listarTodosPedidosCompra()
+	{PUT [/api/pedidos-compra/{id}]}: atualizarPedidoCompra(Long,PedidoCompra)
+	{PUT [/api/pedidos-compra/{id}/status]}: atualizarStatusPedidoCompra(Long,String)
+	{POST [/api/pedidos-compra]}: criarPedidoCompra(PedidoCompra)
+2025-05-21T09:09:37.916-03:00 TRACE 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProcessoCompraController:
+	{POST [/api/processo-compra/iniciar/{solicitacaoId}]}: iniciarProcessoCompra(Long)
+2025-05-21T09:09:37.921-03:00 TRACE 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProdutoController:
+	{GET [/api/produtos]}: listarTodosProdutos()
+	{GET [/api/produtos/{id}]}: buscarProdutoPorId(Long)
+	{PUT [/api/produtos/{id}]}: atualizarProduto(Long,Produto)
+	{POST [/api/produtos]}: criarProduto(Produto)
+	{DELETE [/api/produtos/{id}]}: deletarProduto(Long)
+2025-05-21T09:09:37.929-03:00 TRACE 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.SolicitacaoCompraController:
+	{GET [/api/solicitacoes/{id}]}: buscarSolicitacaoPorId(Long)
+	{GET [/api/solicitacoes]}: listarTodasSolicitacoes()
+	{PUT [/api/solicitacoes/{id}]}: atualizarSolicitacao(Long,SolicitacaoCompra)
+	{DELETE [/api/solicitacoes/{id}]}: deletarSolicitacao(Long)
+	{POST [/api/solicitacoes]}: criarSolicitacao(SolicitacaoCompra)
+2025-05-21T09:09:37.948-03:00 TRACE 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.b.a.w.s.e.BasicErrorController:
+	{ [/error]}: error(HttpServletRequest)
+	{ [/error], produces [text/html]}: errorHtml(HttpServletRequest,HttpServletResponse)
+2025-05-21T09:09:37.954-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 30 mappings in 'requestMappingHandlerMapping'
+2025-05-21T09:09:38.133-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-05-21T09:09:38.198-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-05-21T09:09:38.267-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-05-21T09:09:38.298-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:38.301-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:38.304-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query 'NotaFiscal.findByPedidoCompraId'
+2025-05-21T09:09:38.305-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query NotaFiscal.findByPedidoCompraId
+2025-05-21T09:09:38.306-03:00 DEBUG 3140 --- [zlog_compras] [restartedMain] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-05-21T09:09:38.325-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3306/zlog_compras_database?createDatabaseIfNotExist=true&serverTimezone=America/Sao_Paulo'
+2025-05-21T09:09:38.445-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-05-21T09:09:38.538-03:00  INFO 3140 --- [zlog_compras] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-05-21T09:09:38.558-03:00  INFO 3140 --- [zlog_compras] [restartedMain] com.zlogcompras.ZlogComprasApplication   : Started ZlogComprasApplication in 7.475 seconds (process running for 7.841)
+2025-05-21T09:10:02.357-03:00  INFO 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-21T09:10:02.357-03:00  INFO 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-05-21T09:10:02.360-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-05-21T09:10:02.360-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-05-21T09:10:02.360-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-05-21T09:10:02.361-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3a87f8ac
+2025-05-21T09:10:02.363-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@3c9dd5bd
+2025-05-21T09:10:02.364-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-05-21T09:10:02.365-03:00  INFO 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2025-05-21T09:10:02.377-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/api/fornecedores", parameters={}
+2025-05-21T09:10:02.390-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#criarFornecedor(Fornecedor)
+2025-05-21T09:10:02.392-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:10:02.487-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Fornecedor{id=null, nome='Fornecedor Alfa Ltda.', cnpj='12.345.678/0001-90', contato='Jo„o Silva', t (truncated)...]
+2025-05-21T09:10:02.499-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1094649037<open>)] for JPA transaction
+2025-05-21T09:10:02.499-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.zlogcompras.service.FornecedorService.criarFornecedor]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2025-05-21T09:10:02.505-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@6cdeae03]
+2025-05-21T09:10:02.511-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1094649037<open>)] for JPA transaction
+2025-05-21T09:10:02.512-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2025-05-21T09:10:02.588-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2025-05-21T09:10:02.588-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1094649037<open>)]
+2025-05-21T09:10:02.610-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.orm.jpa.JpaTransactionManager        : Not closing pre-bound JPA EntityManager after transaction
+2025-05-21T09:10:02.628-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:10:02.632-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [Fornecedor{id=1, nome='Fornecedor Alfa Ltda.', cnpj='12.345.678/0001-90', contato='Jo„o Silva', telefone='(11) 98765-4321', email='contato@alfa.com', version=0}]
+2025-05-21T09:10:02.644-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:10:02.644-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 201 CREATED
+2025-05-21T09:11:22.667-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/api/fornecedores", parameters={}
+2025-05-21T09:11:22.667-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#criarFornecedor(Fornecedor)
+2025-05-21T09:11:22.667-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:11:22.667-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Fornecedor{id=null, nome='Fornecedor Beta Conexıes Ltda.', cnpj='24.145.978/0001-90', contato='Jo„o  (truncated)...]
+2025-05-21T09:11:22.667-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1871842780<open>)] for JPA transaction
+2025-05-21T09:11:22.667-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.zlogcompras.service.FornecedorService.criarFornecedor]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2025-05-21T09:11:22.667-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@6155fe5e]
+2025-05-21T09:11:22.667-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1871842780<open>)] for JPA transaction
+2025-05-21T09:11:22.667-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2025-05-21T09:11:22.685-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2025-05-21T09:11:22.685-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1871842780<open>)]
+2025-05-21T09:11:22.690-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.orm.jpa.JpaTransactionManager        : Not closing pre-bound JPA EntityManager after transaction
+2025-05-21T09:11:22.691-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:11:22.691-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [Fornecedor{id=2, nome='Fornecedor Beta Conexıes Ltda.', cnpj='24.145.978/0001-90', contato='Jo„o Silva', telefone='(21) 98762-9946', email='contato@beta.com', version=0}]
+2025-05-21T09:11:22.693-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:11:22.693-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 201 CREATED
+2025-05-21T09:12:10.982-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/fornecedores", parameters={}
+2025-05-21T09:12:10.982-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#listarTodosFornecedores()
+2025-05-21T09:12:10.982-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:12:10.988-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(2067322147<open>)] for JPA transaction
+2025-05-21T09:12:10.988-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [org.springframework.data.jpa.repository.support.SimpleJpaRepository.findAll]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly
+2025-05-21T09:12:10.992-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@71fa2b26]
+2025-05-21T09:12:11.153-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2025-05-21T09:12:11.153-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(2067322147<open>)]
+2025-05-21T09:12:11.153-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.orm.jpa.JpaTransactionManager        : Not closing pre-bound JPA EntityManager after transaction
+2025-05-21T09:12:11.153-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:12:11.153-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[Fornecedor{id=1, nome='Fornecedor Alfa Ltda.', cnpj='12.345.678/0001-90', contato='Jo„o Silva', telefone='(11) 98765-4321', email='contato@alfa.com', version=0}, Fornecedor{id=2, nome='Fornecedor Beta Conexıes Ltda.', cnpj='24.145.978/0001-90', contato='Jo„o Silva', telefone='(21) 98762-9946', email='contato@beta.com', version=0}]]
+2025-05-21T09:12:11.163-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:12:11.165-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-05-21T09:12:26.414-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/fornecedores/1", parameters={}
+2025-05-21T09:12:26.414-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#buscarFornecedorPorId(Long)
+2025-05-21T09:12:26.414-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:12:26.414-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(102030724<open>)] for JPA transaction
+2025-05-21T09:12:26.414-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [org.springframework.data.jpa.repository.support.SimpleJpaRepository.findById]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly
+2025-05-21T09:12:26.425-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@2b42341d]
+2025-05-21T09:12:26.449-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2025-05-21T09:12:26.449-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(102030724<open>)]
+2025-05-21T09:12:26.449-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.orm.jpa.JpaTransactionManager        : Not closing pre-bound JPA EntityManager after transaction
+2025-05-21T09:12:26.449-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:12:26.449-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [Fornecedor{id=1, nome='Fornecedor Alfa Ltda.', cnpj='12.345.678/0001-90', contato='Jo„o Silva', telefone='(11) 98765-4321', email='contato@alfa.com', version=0}]
+2025-05-21T09:12:26.449-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:12:26.459-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-05-21T09:12:34.316-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/fornecedores/2", parameters={}
+2025-05-21T09:12:34.317-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#buscarFornecedorPorId(Long)
+2025-05-21T09:12:34.317-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:12:34.318-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1178101955<open>)] for JPA transaction
+2025-05-21T09:12:34.318-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [org.springframework.data.jpa.repository.support.SimpleJpaRepository.findById]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly
+2025-05-21T09:12:34.320-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@48ff8e74]
+2025-05-21T09:12:34.323-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2025-05-21T09:12:34.323-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1178101955<open>)]
+2025-05-21T09:12:34.324-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.orm.jpa.JpaTransactionManager        : Not closing pre-bound JPA EntityManager after transaction
+2025-05-21T09:12:34.324-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:12:34.324-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [Fornecedor{id=2, nome='Fornecedor Beta Conexıes Ltda.', cnpj='24.145.978/0001-90', contato='Jo„o Silva', telefone='(21) 98762-9946', email='contato@beta.com', version=0}]
+2025-05-21T09:12:34.327-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:12:34.327-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-05-21T09:17:54.983-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : PUT "/api/fornecedores/1", parameters={}
+2025-05-21T09:17:54.983-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#atualizarFornecedor(Long, Fornecedor)
+2025-05-21T09:17:54.983-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:17:54.983-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Fornecedor{id=1, nome='Fornecedor Alfa Ltda. (Atualizado)', cnpj='12.345.678/0001-90', contato='Mari (truncated)...]
+2025-05-21T09:17:54.983-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(2030771131<open>)] for JPA transaction
+2025-05-21T09:17:54.983-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.zlogcompras.service.FornecedorService.atualizarFornecedor]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2025-05-21T09:17:54.995-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@c5708e8]
+2025-05-21T09:17:54.996-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(2030771131<open>)] for JPA transaction
+2025-05-21T09:17:54.997-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2025-05-21T09:17:55.002-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(2030771131<open>)] for JPA transaction
+2025-05-21T09:17:55.002-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2025-05-21T09:17:55.018-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2025-05-21T09:17:55.018-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(2030771131<open>)]
+2025-05-21T09:17:55.054-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.orm.jpa.JpaTransactionManager        : Not closing pre-bound JPA EntityManager after transaction
+2025-05-21T09:17:55.055-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:17:55.055-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [Fornecedor{id=1, nome='Fornecedor Alfa Ltda. (Atualizado)', cnpj='12.345.678/0001-90', contato='Maria Souza', telefone='(11) 91234-5678', email='contato.atualizado@alfa.com', version=1}]
+2025-05-21T09:17:55.056-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:17:55.057-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-05-21T09:24:13.466-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : DELETE "/api/fornecedores/1", parameters={}
+2025-05-21T09:24:13.487-03:00 TRACE 3140 --- [zlog_compras] [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.zlogcompras.controller.FornecedorController#deletarFornecedor(Long)
+2025-05-21T09:24:13.487-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.j.s.OpenEntityManagerInViewInterceptor : Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:24:13.487-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1159778090<open>)] for JPA transaction
+2025-05-21T09:24:13.487-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.zlogcompras.service.FornecedorService.deletarFornecedor]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2025-05-21T09:24:13.487-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@4be739fe]
+2025-05-21T09:24:13.487-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1159778090<open>)] for JPA transaction
+2025-05-21T09:24:13.487-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2025-05-21T09:24:13.845-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1159778090<open>)] for JPA transaction
+2025-05-21T09:24:13.845-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2025-05-21T09:24:13.852-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2025-05-21T09:24:13.852-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1159778090<open>)]
+2025-05-21T09:24:13.869-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.orm.jpa.JpaTransactionManager        : Not closing pre-bound JPA EntityManager after transaction
+2025-05-21T09:24:13.871-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-05-21T09:24:13.874-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Nothing to write: null body
+2025-05-21T09:24:13.874-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+2025-05-21T09:24:13.874-03:00 DEBUG 3140 --- [zlog_compras] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 204 NO_CONTENT

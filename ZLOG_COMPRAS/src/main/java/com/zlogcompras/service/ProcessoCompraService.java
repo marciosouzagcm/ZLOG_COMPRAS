@@ -38,7 +38,8 @@ public class ProcessoCompraService {
 
     @Transactional
     public void iniciarProcessoCompra(ItemSolicitacaoCompra itemSolicitacao) {
-        Optional<SolicitacaoCompra> optSolicitacao = solicitacaoCompraService.buscarSolicitacaoPorId(itemSolicitacao.getSolicitacaoCompra().getId());
+        Optional<SolicitacaoCompra> optSolicitacao = solicitacaoCompraService
+                .buscarSolicitacaoPorId(itemSolicitacao.getSolicitacaoCompra().getId());
         optSolicitacao.ifPresent(solicitacao -> {
             solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Compra Autorizada");
             solicitarOrcamentos(List.of(itemSolicitacao));
@@ -74,8 +75,8 @@ public class ProcessoCompraService {
     @Transactional
     private void simularCriacaoOrcamentosPorItem(List<ItemSolicitacaoCompra> itens) {
         for (ItemSolicitacaoCompra item : itens) {
-            Fornecedor fornecedor1 = fornecedorService.buscarFornecedorPorId(1L);
-            Fornecedor fornecedor2 = fornecedorService.buscarFornecedorPorId(2L);
+            Optional<Fornecedor> fornecedor1 = fornecedorService.buscarFornecedorPorId(1L);
+            Optional<Fornecedor> fornecedor2 = fornecedorService.buscarFornecedorPorId(2L);
 
             if (fornecedor1 != null) {
                 Orcamento orcamento1 = new Orcamento();
@@ -132,24 +133,27 @@ public class ProcessoCompraService {
         pedidoCompra.setValorTotal(orcamentoSelecionado.getValorTotal());
 
         List<ItemPedidoCompra> itensPedido = solicitacao.getItens().stream()
-            .filter(itemSolicitacao -> "Orçamento Solicitado".equalsIgnoreCase(itemSolicitacao.getStatus()) ||
-                                       "Compra Autorizada".equalsIgnoreCase(itemSolicitacao.getStatus()))
-            .map(itemSolicitacao -> {
-                ItemPedidoCompra itemPedido = new ItemPedidoCompra();
-                itemPedido.setMaterialServico(itemSolicitacao.getMaterialServico());
-                itemPedido.setQuantidade(itemSolicitacao.getQuantidade());
-                itemPedido.setPrecoUnitario(itemSolicitacao.getQuantidade() > 0 ? (orcamentoSelecionado.getValorTotal() / itemSolicitacao.getQuantidade()) : 0.0);
-                itemPedido.setPedidoCompra(pedidoCompra);
-                return itemPedido;
-            })
-            .toList();
+                .filter(itemSolicitacao -> "Orçamento Solicitado".equalsIgnoreCase(itemSolicitacao.getStatus()) ||
+                        "Compra Autorizada".equalsIgnoreCase(itemSolicitacao.getStatus()))
+                .map(itemSolicitacao -> {
+                    ItemPedidoCompra itemPedido = new ItemPedidoCompra();
+                    itemPedido.setMaterialServico(itemSolicitacao.getMaterialServico());
+                    itemPedido.setQuantidade(itemSolicitacao.getQuantidade());
+                    itemPedido.setPrecoUnitario(itemSolicitacao.getQuantidade() > 0
+                            ? (orcamentoSelecionado.getValorTotal() / itemSolicitacao.getQuantidade())
+                            : 0.0);
+                    itemPedido.setPedidoCompra(pedidoCompra);
+                    return itemPedido;
+                })
+                .toList();
         pedidoCompra.setItens(itensPedido);
 
         PedidoCompra novoPedido = pedidoCompraService.criarPedidoCompra(pedidoCompra);
         solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Gerada OC");
 
         solicitacao.getItens().forEach(itemSolicitacao -> {
-            if (itensPedido.stream().anyMatch(ip -> ip.getMaterialServico().equals(itemSolicitacao.getMaterialServico()))) {
+            if (itensPedido.stream()
+                    .anyMatch(ip -> ip.getMaterialServico().equals(itemSolicitacao.getMaterialServico()))) {
                 itemSolicitacao.setStatus("Em Pedido");
             }
         });
@@ -181,17 +185,19 @@ public class ProcessoCompraService {
                 pedidoCompraService.atualizarStatusPedidoCompra(pedidoId, "Estoque Atualizado");
 
                 Optional<SolicitacaoCompra> optSolicitacao = pedido.getItens().stream()
-                    .findFirst()
-                    .map(ItemPedidoCompra::getMaterialServico)
-                    .map(materialServico -> itemSolicitacaoCompraService.buscarItemSolicitacaoPorMaterialServico(materialServico))
-                    .map(optional -> optional.orElse(null))
-                    .filter(obj -> obj != null)
-                    .filter(obj -> obj instanceof ItemSolicitacaoCompra)
-                    .map(obj -> ((ItemSolicitacaoCompra) obj).getSolicitacaoCompra());
+                        .findFirst()
+                        .map(ItemPedidoCompra::getMaterialServico)
+                        .map(materialServico -> itemSolicitacaoCompraService
+                                .buscarItemSolicitacaoPorMaterialServico(materialServico))
+                        .map(optional -> optional.orElse(null))
+                        .filter(obj -> obj != null)
+                        .filter(obj -> obj instanceof ItemSolicitacaoCompra)
+                        .map(obj -> ((ItemSolicitacaoCompra) obj).getSolicitacaoCompra());
 
                 optSolicitacao.ifPresent(solicitacao -> {
                     boolean todosItensRecebidos = solicitacao.getItens().stream()
-                            .allMatch(item -> "Em Pedido".equalsIgnoreCase(item.getStatus()) || "Recebido".equalsIgnoreCase(item.getStatus()));
+                            .allMatch(item -> "Em Pedido".equalsIgnoreCase(item.getStatus())
+                                    || "Recebido".equalsIgnoreCase(item.getStatus()));
                     if (todosItensRecebidos) {
                         solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Concluída");
                     }
@@ -201,7 +207,8 @@ public class ProcessoCompraService {
     }
 
     @Transactional
-    public void processoPrestacaoContas(Long pedidoId, String numeroNotaFiscal, LocalDate dataNotaFiscal, Double valorNota) {
+    public void processoPrestacaoContas(Long pedidoId, String numeroNotaFiscal, LocalDate dataNotaFiscal,
+            Double valorNota) {
         pedidoCompraService.buscarPedidoCompraPorId(pedidoId).ifPresent(pedido -> {
             // pedido.setNumeroNotaFiscal(numeroNotaFiscal);
             // pedido.setDataNotaFiscal(dataNotaFiscal);

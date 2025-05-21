@@ -2,6 +2,7 @@ package com.zlogcompras.model;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -121,5 +122,10 @@ public class Orcamento {
 
     public void setNumeroOrcamento(String numeroOrcamento) {
         this.numeroOrcamento = numeroOrcamento;
+    }
+
+    public void setFornecedor(Optional<Fornecedor> fornecedor1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setFornecedor'");
     }
 }
