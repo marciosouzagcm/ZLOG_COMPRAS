@@ -1,28 +1,41 @@
-package com.zlogcompras.controller; // Ajuste o pacote conforme a sua estrutura
+package com.zlogcompras.controller;
 
+import com.zlogcompras.model.dto.OrcamentoRequestDTO;
 import com.zlogcompras.model.dto.OrcamentoResponseDTO;
+import com.zlogcompras.model.dto.OrcamentoListaDTO; // Certifique-se que está importado
 import com.zlogcompras.service.OrcamentoService;
-import com.zlogcompras.mapper.OrcamentoMapper; // Assumindo que você tem um mapper
+import com.zlogcompras.mapper.OrcamentoMapper;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/orcamentos") // Adicione um path base para o controller
+@RequestMapping("/api/orcamentos")
 public class OrcamentoController {
 
     private final OrcamentoService orcamentoService;
-    private final OrcamentoMapper orcamentoMapper; // Injete o mapper
+    private final OrcamentoMapper orcamentoMapper;
 
-    // Construtor para injeção de dependências (recomendado pelo Spring)
     public OrcamentoController(OrcamentoService orcamentoService, OrcamentoMapper orcamentoMapper) {
         this.orcamentoService = orcamentoService;
         this.orcamentoMapper = orcamentoMapper;
+    }
+
+    /**
+     * Busca todos os orçamentos existentes.
+     * Retorna uma lista de OrcamentoListaDTO.
+     *
+     * @return ResponseEntity contendo uma lista de OrcamentoListaDTO e status OK.
+     */
+    @GetMapping
+    public ResponseEntity<List<OrcamentoListaDTO>> listarTodosOrcamentos() { // Mudado o tipo de retorno para List<OrcamentoListaDTO>
+        List<OrcamentoListaDTO> orcamentos = orcamentoService.listarTodosOrcamentos(); // Chama o serviço que já retorna o DTO correto
+        return ResponseEntity.ok(orcamentos);
     }
 
     /**
@@ -34,20 +47,52 @@ public class OrcamentoController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<OrcamentoResponseDTO> buscarOrcamentoPorId(@PathVariable Long id) {
-        // O serviço retorna um Optional<Orcamento>.
-        // Se presente, mapeamos para OrcamentoResponseDTO usando o mapper.
-        // Se não presente, lançamos uma exceção que o Spring converte para HTTP 404.
         OrcamentoResponseDTO orcamentoResponseDTO = orcamentoService.buscarOrcamentoPorId(id)
-                .map(orcamentoMapper::toResponseDto) // Converte a entidade para o DTO de resposta
+                .map(orcamentoMapper::toResponseDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado com ID: " + id));
 
-        // Envolve o DTO de resposta em um ResponseEntity com status HTTP 200 (OK).
         return ResponseEntity.ok(orcamentoResponseDTO);
     }
 
-    // Você pode adicionar outros métodos CRUD aqui, como:
-    // @PostMapping
-    // @PutMapping("/{id}")
-    // @DeleteMapping("/{id}")
-    // @GetMapping
+    /**
+     * Cria um novo orçamento.
+     * Retorna o OrcamentoResponseDTO do orçamento recém-criado com status 201 Created.
+     *
+     * @param orcamentoRequestDTO O DTO contendo os dados para criação do orçamento.
+     * @return ResponseEntity contendo OrcamentoResponseDTO e status Created.
+     */
+    @PostMapping
+    public ResponseEntity<OrcamentoResponseDTO> criarOrcamento(@Valid @RequestBody OrcamentoRequestDTO orcamentoRequestDTO) {
+        OrcamentoResponseDTO novoOrcamento = orcamentoService.criarOrcamento(orcamentoRequestDTO); // Método renomeado
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoOrcamento);
+    }
+
+    /**
+     * Atualiza um orçamento existente pelo seu ID.
+     * Retorna o OrcamentoResponseDTO do orçamento atualizado com status 200 OK.
+     * Lança 404 Not Found se o orçamento não for encontrado.
+     *
+     * @param id O ID do orçamento a ser atualizado.
+     * @param orcamentoRequestDTO O DTO contendo os dados atualizados do orçamento.
+     * @return ResponseEntity contendo OrcamentoResponseDTO e status OK.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<OrcamentoResponseDTO> atualizarOrcamento(@PathVariable Long id, @Valid @RequestBody OrcamentoRequestDTO orcamentoRequestDTO) {
+        OrcamentoResponseDTO orcamentoAtualizado = orcamentoService.atualizarOrcamento(id, orcamentoRequestDTO);
+        return ResponseEntity.ok(orcamentoAtualizado);
+    }
+
+    /**
+     * Deleta um orçamento pelo seu ID.
+     * Retorna 204 No Content se a exclusão for bem-sucedida.
+     * Lança 404 Not Found se o orçamento não for encontrado.
+     *
+     * @param id O ID do orçamento a ser deletado.
+     * @return ResponseEntity com status No Content.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarOrcamento(@PathVariable Long id) {
+        orcamentoService.deletarOrcamento(id);
+        return ResponseEntity.noContent().build();
+    }
 }

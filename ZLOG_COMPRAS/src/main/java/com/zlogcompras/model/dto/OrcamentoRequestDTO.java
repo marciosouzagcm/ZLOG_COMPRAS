@@ -27,9 +27,8 @@ public class OrcamentoRequestDTO { // Renomeado para OrcamentoRequestDTO
     // dataCotacao pode ser nulo na entrada, para ser gerado no backend com LocalDate.now()
     private LocalDate dataCotacao;
 
-    @NotNull(message = "O valor total é obrigatório.")
-    @Positive(message = "O valor total deve ser positivo.")
-    private BigDecimal valorTotal;
+    // REMOVIDAS AS ANOTAÇÕES DE VALIDAÇÃO DO VALOR TOTAL
+    private BigDecimal valorTotal; // <--- AGORA SEM @NotNull e @Positive
 
     @NotBlank(message = "O número do orçamento é obrigatório.")
     @Size(max = 50, message = "O número do orçamento não pode exceder 50 caracteres.")
@@ -161,12 +160,12 @@ public class OrcamentoRequestDTO { // Renomeado para OrcamentoRequestDTO
     @Override
     public String toString() {
         return "OrcamentoRequestDTO{" +
-               "solicitacaoCompraId=" + solicitacaoCompraId +
-               ", fornecedorId=" + fornecedorId +
-               ", valorTotal=" + valorTotal +
-               ", numeroOrcamento='" + numeroOrcamento + '\'' +
-               ", status='" + status + '\'' +
-               ", itensOrcamento=" + (itensOrcamento != null ? itensOrcamento.size() : 0) +
-               '}';
+                "solicitacaoCompraId=" + solicitacaoCompraId +
+                ", fornecedorId=" + fornecedorId +
+                ", valorTotal=" + valorTotal +
+                ", numeroOrcamento='" + numeroOrcamento + '\'' +
+                ", status='" + status + '\'' +
+                ", itensOrcamento=" + (itensOrcamento != null ? itensOrcamento.size() : 0) +
+                '}';
     }
 }

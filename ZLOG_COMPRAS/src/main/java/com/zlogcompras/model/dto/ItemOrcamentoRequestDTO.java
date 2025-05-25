@@ -6,13 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-public class ItemOrcamentoRequestDTO { // Renomeado para ItemOrcamentoRequestDTO
+public class ItemOrcamentoRequestDTO {
 
-    // private Long id; // ID não é enviado em requisições de criação/atualização de itens aninhados
+    private Long id; // Adicionar o ID para permitir atualizações de itens existentes
 
     @NotNull(message = "O ID do produto é obrigatório.")
     @Positive(message = "O ID do produto deve ser um número positivo.")
-    private Long produtoId; // Referencia o Produto pelo ID
+    private Long produtoId;
 
     @NotNull(message = "A quantidade é obrigatória.")
     @DecimalMin(value = "0.01", message = "A quantidade deve ser maior que zero.")
@@ -23,14 +23,15 @@ public class ItemOrcamentoRequestDTO { // Renomeado para ItemOrcamentoRequestDTO
     private BigDecimal precoUnitarioCotado;
 
     @Size(max = 500, message = "As observações não podem exceder 500 caracteres.")
-    private String observacoes; // Opcional
+    private String observacoes;
 
     // Construtor padrão
     public ItemOrcamentoRequestDTO() {
     }
 
     // Construtor completo
-    public ItemOrcamentoRequestDTO(Long produtoId, BigDecimal quantidade, BigDecimal precoUnitarioCotado, String observacoes) {
+    public ItemOrcamentoRequestDTO(Long id, Long produtoId, BigDecimal quantidade, BigDecimal precoUnitarioCotado, String observacoes) {
+        this.id = id; // Adicionar id ao construtor
         this.produtoId = produtoId;
         this.quantidade = quantidade;
         this.precoUnitarioCotado = precoUnitarioCotado;
@@ -38,6 +39,14 @@ public class ItemOrcamentoRequestDTO { // Renomeado para ItemOrcamentoRequestDTO
     }
 
     // --- Getters e Setters ---
+    public Long getId() { // Alterar o retorno para Long
+        return id;
+    }
+
+    public void setId(Long id) { // Adicionar setter para id
+        this.id = id;
+    }
+
     public Long getProdutoId() {
         return produtoId;
     }
@@ -73,13 +82,10 @@ public class ItemOrcamentoRequestDTO { // Renomeado para ItemOrcamentoRequestDTO
     @Override
     public String toString() {
         return "ItemOrcamentoRequestDTO{" +
-               "produtoId=" + produtoId +
-               ", quantidade=" + quantidade +
-               ", precoUnitarioCotado=" + precoUnitarioCotado +
-               '}';
-    }
-
-    public Object getId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+                "id=" + id + // Incluir id no toString
+                ", produtoId=" + produtoId +
+                ", quantidade=" + quantidade +
+                ", precoUnitarioCotado=" + precoUnitarioCotado +
+                '}';
     }
 }

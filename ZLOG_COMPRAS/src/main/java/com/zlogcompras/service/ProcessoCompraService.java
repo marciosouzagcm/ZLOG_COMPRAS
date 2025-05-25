@@ -20,8 +20,8 @@ import com.zlogcompras.model.PedidoCompra;
 import com.zlogcompras.model.SolicitacaoCompra;
 import com.zlogcompras.model.StatusOrcamento;
 import static com.zlogcompras.model.StatusOrcamento.SELECIONADO;
-import com.zlogcompras.model.dto.ItemOrcamentoInputDTO;
-import com.zlogcompras.model.dto.OrcamentoInputDTO;
+import com.zlogcompras.model.dto.ItemOrcamentoRequestDTO;
+import com.zlogcompras.model.dto.OrcamentoRequestDTO;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -98,13 +98,12 @@ public class ProcessoCompraService {
 
     @Transactional
     private void simularCriacaoOrcamentosPorItem(List<ItemSolicitacaoCompra> itens) {
-        // AJUSTADO: fornercedorService.buscarFornecedorPorId agora retorna Optional<Fornecedor>
         Fornecedor fornecedor1 = fornecedorService.buscarFornecedorPorId(1L)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Fornecedor com ID 1 não encontrado para simulação de orçamento."));
 
         Fornecedor fornecedor2 = fornecedorService.buscarFornecedorPorId(2L)
-            .orElseThrow(() -> new EntityNotFoundException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         "Fornecedor com ID 2 não encontrado para simulação de orçamento."));
 
 
@@ -112,53 +111,44 @@ public class ProcessoCompraService {
             logger.debug("Simulando orçamentos para o item de solicitação ID: {}", item.getId());
 
             // --- Orçamento para Fornecedor 1 ---
-            OrcamentoInputDTO orcamentoDto1 = new OrcamentoInputDTO();
+            OrcamentoRequestDTO orcamentoDto1 = new OrcamentoRequestDTO();
             orcamentoDto1.setSolicitacaoCompraId(item.getSolicitacaoCompra().getId());
             orcamentoDto1.setFornecedorId(fornecedor1.getId());
             orcamentoDto1.setDataCotacao(LocalDate.now());
             BigDecimal precoUnitario1 = BigDecimal.valueOf(Math.random() * 50 + 50).setScale(2, RoundingMode.HALF_UP);
 
-            // REMOVIDO: orcamentoDto1.setValorTotal(...) - Valor total deve ser calculado no serviço/mapper
-            // O OrcamentoInputDTO não deve ter o campo valorTotal se ele for calculado
-            // Se o campo ainda existe no OrcamentoInputDTO para outro propósito, ajuste aqui.
-            // Caso contrário, esta linha deve ser removida.
-
             orcamentoDto1.setNumeroOrcamento("ORC_" + item.getId() + "_FORN1");
 
-            ItemOrcamentoInputDTO itemOrcamentoInputDTO1 = new ItemOrcamentoInputDTO();
-            itemOrcamentoInputDTO1.setProdutoId(item.getProduto().getId());
-            itemOrcamentoInputDTO1.setQuantidade(item.getQuantidade());
-            itemOrcamentoInputDTO1.setPrecoUnitario(precoUnitario1);
-            orcamentoDto1.setItensOrcamento(List.of(itemOrcamentoInputDTO1));
+            ItemOrcamentoRequestDTO itemOrcamentoRequestDTO1 = new ItemOrcamentoRequestDTO();
+            itemOrcamentoRequestDTO1.setProdutoId(item.getProduto().getId());
+            itemOrcamentoRequestDTO1.setQuantidade(item.getQuantidade());
+            itemOrcamentoRequestDTO1.setPrecoUnitarioCotado(precoUnitario1);
+            orcamentoDto1.setItensOrcamento(List.of(itemOrcamentoRequestDTO1));
 
-            // CORRIGIDO: Atribuindo StatusOrcamento diretamente ao DTO
-            orcamentoDto1.setStatus(StatusOrcamento.COTADO);
+            // CORRIGIDO: Convertendo StatusOrcamento para String usando .name()
+            orcamentoDto1.setStatus(StatusOrcamento.COTADO.name()); // <--- AQUI
 
-            orcamentoService.salvarOrcamento(orcamentoDto1);
+            orcamentoService.criarOrcamento(orcamentoDto1);
 
             // --- Orçamento para Fornecedor 2 ---
-            OrcamentoInputDTO orcamentoDto2 = new OrcamentoInputDTO();
+            OrcamentoRequestDTO orcamentoDto2 = new OrcamentoRequestDTO();
             orcamentoDto2.setSolicitacaoCompraId(item.getSolicitacaoCompra().getId());
             orcamentoDto2.setFornecedorId(fornecedor2.getId());
             orcamentoDto2.setDataCotacao(LocalDate.now().plusDays(1));
             BigDecimal precoUnitario2 = BigDecimal.valueOf(Math.random() * 60 + 60).setScale(2, RoundingMode.HALF_UP);
 
-            // REMOVIDO: orcamentoDto2.setValorTotal(...) - Valor total deve ser calculado no serviço/mapper
-            // Se o campo ainda existe no OrcamentoInputDTO para outro propósito, ajuste aqui.
-            // Caso contrário, esta linha deve ser removida.
-
             orcamentoDto2.setNumeroOrcamento("ORC_" + item.getId() + "_FORN2");
 
-            ItemOrcamentoInputDTO itemOrcamentoInputDTO2 = new ItemOrcamentoInputDTO();
-            itemOrcamentoInputDTO2.setProdutoId(item.getProduto().getId());
-            itemOrcamentoInputDTO2.setQuantidade(item.getQuantidade());
-            itemOrcamentoInputDTO2.setPrecoUnitario(precoUnitario2);
-            orcamentoDto2.setItensOrcamento(List.of(itemOrcamentoInputDTO2));
+            ItemOrcamentoRequestDTO itemOrcamentoRequestDTO2 = new ItemOrcamentoRequestDTO();
+            itemOrcamentoRequestDTO2.setProdutoId(item.getProduto().getId());
+            itemOrcamentoRequestDTO2.setQuantidade(item.getQuantidade());
+            itemOrcamentoRequestDTO2.setPrecoUnitarioCotado(precoUnitario2);
+            orcamentoDto2.setItensOrcamento(List.of(itemOrcamentoRequestDTO2));
 
-            // CORRIGIDO: Atribuindo StatusOrcamento diretamente ao DTO
-            orcamentoDto2.setStatus(StatusOrcamento.COTADO);
+            // CORRIGIDO: Convertendo StatusOrcamento para String usando .name()
+            orcamentoDto2.setStatus(StatusOrcamento.COTADO.name()); // <--- E AQUI
 
-            orcamentoService.salvarOrcamento(orcamentoDto2);
+            orcamentoService.criarOrcamento(orcamentoDto2);
 
             item.setStatus("Orçamento Solicitado");
         }
@@ -177,8 +167,11 @@ public class ProcessoCompraService {
         logger.info("Aprovando orçamento ID: {} e gerando pedido.", orcamentoId);
         Orcamento orcamentoSelecionado = buscarOrcamentoPorId(orcamentoId);
 
-        orcamentoSelecionado.setStatus(SELECIONADO);
-        orcamentoService.atualizarOrcamento(orcamentoSelecionado);
+        // A linha abaixo foi removida, pois a lógica de aprovação do status e a
+        // geração do pedido já são feitas no OrcamentoService.aprovarOrcamentoGerarPedido(orcamentoId).
+        // orcamentoSelecionado.setStatus(SELECIONADO);
+
+        orcamentoService.aprovarOrcamentoGerarPedido(orcamentoId);
 
         SolicitacaoCompra solicitacao = orcamentoSelecionado.getSolicitacaoCompra();
         solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Compra Aprovada");
@@ -208,8 +201,7 @@ public class ProcessoCompraService {
                     ItemPedidoCompra itemPedido = new ItemPedidoCompra();
                     itemPedido.setProduto(itemOrcamento.getProduto());
                     itemPedido.setQuantidade(itemOrcamento.getQuantidade());
-                    // CORREÇÃO: Substituído getPrecoUnitario() por getPrecoUnitarioCotado()
-                    itemPedido.setPrecoUnitario(itemOrcamento.getPrecoUnitarioCotado()); // LINHA 211 CORRIGIDA
+                    itemPedido.setPrecoUnitario(itemOrcamento.getPrecoUnitarioCotado());
                     itemPedido.setPedidoCompra(novoPedido);
                     return itemPedido;
                 })
@@ -279,7 +271,7 @@ public class ProcessoCompraService {
 
     @Transactional
     public void processoPrestacaoContas(Long pedidoId, String numeroNotaFiscal, LocalDate dataNotaFiscal,
-                                         BigDecimal valorNota) {
+                                        BigDecimal valorNota) {
         logger.info("Iniciando processo de prestação de contas para Pedido ID: {} com NF: {}", pedidoId,
                 numeroNotaFiscal);
         PedidoCompra pedido = pedidoCompraService.buscarPedidoCompraPorId(pedidoId)
