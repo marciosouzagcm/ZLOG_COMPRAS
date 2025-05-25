@@ -14,7 +14,7 @@ public interface SolicitacaoCompraRepository extends JpaRepository<SolicitacaoCo
     @EntityGraph(attributePaths = "itens")
     List<SolicitacaoCompra> findAll();
 
-    @Override
+    @Override // Sobrescreve o findById padrão
     @EntityGraph(attributePaths = "itens")
-    Optional<SolicitacaoCompra> findById(Long id);
+    Optional<SolicitacaoCompra> findById(Long id); // CORRIGIDO: O parâmetro deve ser o tipo do ID (Long)
 }

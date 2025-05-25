@@ -1,9 +1,13 @@
 package com.zlogcompras.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,59 +18,79 @@ import com.zlogcompras.model.ItemSolicitacaoCompra;
 import com.zlogcompras.model.Orcamento;
 import com.zlogcompras.model.PedidoCompra;
 import com.zlogcompras.model.SolicitacaoCompra;
+import com.zlogcompras.model.StatusOrcamento;
+import static com.zlogcompras.model.StatusOrcamento.SELECIONADO;
+import com.zlogcompras.model.dto.ItemOrcamentoInputDTO;
+import com.zlogcompras.model.dto.OrcamentoInputDTO;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ProcessoCompraService {
 
-    @Autowired
-    private SolicitacaoCompraService solicitacaoCompraService;
+    private static final Logger logger = LoggerFactory.getLogger(ProcessoCompraService.class);
+
+    private final SolicitacaoCompraService solicitacaoCompraService;
+    private final ItemSolicitacaoCompraService itemSolicitacaoCompraService;
+    private final PedidoCompraService pedidoCompraService;
+    private final OrcamentoService orcamentoService;
+    private final FornecedorService fornecedorService;
+    private final EstoqueService estoqueService;
+    private final ProdutoService produtoService;
 
     @Autowired
-    private ItemSolicitacaoCompraService itemSolicitacaoCompraService;
-
-    @Autowired
-    private PedidoCompraService pedidoCompraService;
-
-    @Autowired
-    private OrcamentoService orcamentoService;
-
-    @Autowired
-    private FornecedorService fornecedorService;
-
-    @Autowired
-    private EstoqueService estoqueService;
+    public ProcessoCompraService(SolicitacaoCompraService solicitacaoCompraService,
+                                 ItemSolicitacaoCompraService itemSolicitacaoCompraService,
+                                 PedidoCompraService pedidoCompraService,
+                                 OrcamentoService orcamentoService,
+                                 FornecedorService fornecedorService,
+                                 EstoqueService estoqueService,
+                                 ProdutoService produtoService) {
+        this.solicitacaoCompraService = solicitacaoCompraService;
+        this.itemSolicitacaoCompraService = itemSolicitacaoCompraService;
+        this.pedidoCompraService = pedidoCompraService;
+        this.orcamentoService = orcamentoService;
+        this.fornecedorService = fornecedorService;
+        this.estoqueService = estoqueService;
+        this.produtoService = produtoService;
+    }
 
     @Transactional
     public void iniciarProcessoCompra(ItemSolicitacaoCompra itemSolicitacao) {
-        Optional<SolicitacaoCompra> optSolicitacao = solicitacaoCompraService
-                .buscarSolicitacaoPorId(itemSolicitacao.getSolicitacaoCompra().getId());
-        optSolicitacao.ifPresent(solicitacao -> {
-            solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Compra Autorizada");
-            solicitarOrcamentos(List.of(itemSolicitacao));
-        });
+        logger.info("Iniciando processo de compra para o item de solicitação ID: {}", itemSolicitacao.getId());
+        SolicitacaoCompra solicitacao = solicitacaoCompraService
+                .buscarSolicitacaoPorId(itemSolicitacao.getSolicitacaoCompra().getId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Solicitação de compra pai não encontrada para o item."));
+
+        solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Compra Autorizada");
+        solicitarOrcamentos(List.of(itemSolicitacao));
     }
 
     @Transactional
     public void iniciarProcessoCompraPorSolicitacaoId(Long solicitacaoId) {
-        Optional<SolicitacaoCompra> optSolicitacao = solicitacaoCompraService.buscarSolicitacaoPorId(solicitacaoId);
-        optSolicitacao.ifPresentOrElse(solicitacao -> {
-            List<ItemSolicitacaoCompra> itensParaComprar = solicitacao.getItens().stream()
-                    .filter(item -> "Aguardando Compra".equalsIgnoreCase(item.getStatus()))
-                    .toList();
+        logger.info("Iniciando processo de compra para a solicitação ID: {}", solicitacaoId);
+        SolicitacaoCompra solicitacao = solicitacaoCompraService.buscarSolicitacaoPorId(solicitacaoId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Solicitação de compra não encontrada com ID: " + solicitacaoId));
 
-            if (!itensParaComprar.isEmpty()) {
-                solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Compra em Andamento");
-                solicitarOrcamentos(itensParaComprar);
-            } else {
-                System.out.println("Não há itens aguardando compra na solicitação " + solicitacaoId);
-            }
-        }, () -> System.out.println("Solicitação de compra não encontrada com ID: " + solicitacaoId));
+        List<ItemSolicitacaoCompra> itensParaComprar = solicitacao.getItens().stream()
+                .filter(item -> "Aguardando Compra".equalsIgnoreCase(item.getStatus()))
+                .collect(Collectors.toList());
+
+        if (!itensParaComprar.isEmpty()) {
+            solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Compra em Andamento");
+            solicitarOrcamentos(itensParaComprar);
+        } else {
+            logger.info("Não há itens aguardando compra na solicitação {}.", solicitacaoId);
+        }
     }
 
     @Transactional
     public void solicitarOrcamentos(List<ItemSolicitacaoCompra> itens) {
         if (!itens.isEmpty()) {
             Long solicitacaoId = itens.get(0).getSolicitacaoCompra().getId();
+            logger.info("Solicitando orçamentos para a solicitação ID: {}", solicitacaoId);
             solicitacaoCompraService.atualizarStatusSolicitacao(solicitacaoId, "Aguardando Orçamento");
             simularCriacaoOrcamentosPorItem(itens);
         }
@@ -74,147 +98,200 @@ public class ProcessoCompraService {
 
     @Transactional
     private void simularCriacaoOrcamentosPorItem(List<ItemSolicitacaoCompra> itens) {
+        // AJUSTADO: fornercedorService.buscarFornecedorPorId agora retorna Optional<Fornecedor>
+        Fornecedor fornecedor1 = fornecedorService.buscarFornecedorPorId(1L)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Fornecedor com ID 1 não encontrado para simulação de orçamento."));
+
+        Fornecedor fornecedor2 = fornecedorService.buscarFornecedorPorId(2L)
+            .orElseThrow(() -> new EntityNotFoundException(
+                        "Fornecedor com ID 2 não encontrado para simulação de orçamento."));
+
+
         for (ItemSolicitacaoCompra item : itens) {
-            Optional<Fornecedor> fornecedor1 = fornecedorService.buscarFornecedorPorId(1L);
-            Optional<Fornecedor> fornecedor2 = fornecedorService.buscarFornecedorPorId(2L);
+            logger.debug("Simulando orçamentos para o item de solicitação ID: {}", item.getId());
 
-            if (fornecedor1 != null) {
-                Orcamento orcamento1 = new Orcamento();
-                orcamento1.setSolicitacaoCompra(item.getSolicitacaoCompra());
-                orcamento1.setFornecedor(fornecedor1);
-                orcamento1.setDataCotacao(LocalDate.now());
-                orcamento1.setValorTotal(Math.random() * 50 + 50);
-                orcamento1.setNumeroOrcamento("ORC_" + item.getId() + "_1");
-                orcamentoService.salvarOrcamento(orcamento1);
-            }
+            // --- Orçamento para Fornecedor 1 ---
+            OrcamentoInputDTO orcamentoDto1 = new OrcamentoInputDTO();
+            orcamentoDto1.setSolicitacaoCompraId(item.getSolicitacaoCompra().getId());
+            orcamentoDto1.setFornecedorId(fornecedor1.getId());
+            orcamentoDto1.setDataCotacao(LocalDate.now());
+            BigDecimal precoUnitario1 = BigDecimal.valueOf(Math.random() * 50 + 50).setScale(2, RoundingMode.HALF_UP);
 
-            if (fornecedor2 != null) {
-                Orcamento orcamento2 = new Orcamento();
-                orcamento2.setSolicitacaoCompra(item.getSolicitacaoCompra());
-                orcamento2.setFornecedor(fornecedor2);
-                orcamento2.setDataCotacao(LocalDate.now().plusDays(1));
-                orcamento2.setValorTotal(Math.random() * 60 + 60);
-                orcamento2.setNumeroOrcamento("ORC_" + item.getId() + "_2");
-                orcamentoService.salvarOrcamento(orcamento2);
-            }
+            // REMOVIDO: orcamentoDto1.setValorTotal(...) - Valor total deve ser calculado no serviço/mapper
+            // O OrcamentoInputDTO não deve ter o campo valorTotal se ele for calculado
+            // Se o campo ainda existe no OrcamentoInputDTO para outro propósito, ajuste aqui.
+            // Caso contrário, esta linha deve ser removida.
+
+            orcamentoDto1.setNumeroOrcamento("ORC_" + item.getId() + "_FORN1");
+
+            ItemOrcamentoInputDTO itemOrcamentoInputDTO1 = new ItemOrcamentoInputDTO();
+            itemOrcamentoInputDTO1.setProdutoId(item.getProduto().getId());
+            itemOrcamentoInputDTO1.setQuantidade(item.getQuantidade());
+            itemOrcamentoInputDTO1.setPrecoUnitario(precoUnitario1);
+            orcamentoDto1.setItensOrcamento(List.of(itemOrcamentoInputDTO1));
+
+            // CORRIGIDO: Atribuindo StatusOrcamento diretamente ao DTO
+            orcamentoDto1.setStatus(StatusOrcamento.COTADO);
+
+            orcamentoService.salvarOrcamento(orcamentoDto1);
+
+            // --- Orçamento para Fornecedor 2 ---
+            OrcamentoInputDTO orcamentoDto2 = new OrcamentoInputDTO();
+            orcamentoDto2.setSolicitacaoCompraId(item.getSolicitacaoCompra().getId());
+            orcamentoDto2.setFornecedorId(fornecedor2.getId());
+            orcamentoDto2.setDataCotacao(LocalDate.now().plusDays(1));
+            BigDecimal precoUnitario2 = BigDecimal.valueOf(Math.random() * 60 + 60).setScale(2, RoundingMode.HALF_UP);
+
+            // REMOVIDO: orcamentoDto2.setValorTotal(...) - Valor total deve ser calculado no serviço/mapper
+            // Se o campo ainda existe no OrcamentoInputDTO para outro propósito, ajuste aqui.
+            // Caso contrário, esta linha deve ser removida.
+
+            orcamentoDto2.setNumeroOrcamento("ORC_" + item.getId() + "_FORN2");
+
+            ItemOrcamentoInputDTO itemOrcamentoInputDTO2 = new ItemOrcamentoInputDTO();
+            itemOrcamentoInputDTO2.setProdutoId(item.getProduto().getId());
+            itemOrcamentoInputDTO2.setQuantidade(item.getQuantidade());
+            itemOrcamentoInputDTO2.setPrecoUnitario(precoUnitario2);
+            orcamentoDto2.setItensOrcamento(List.of(itemOrcamentoInputDTO2));
+
+            // CORRIGIDO: Atribuindo StatusOrcamento diretamente ao DTO
+            orcamentoDto2.setStatus(StatusOrcamento.COTADO);
+
+            orcamentoService.salvarOrcamento(orcamentoDto2);
+
             item.setStatus("Orçamento Solicitado");
-            solicitacaoCompraService.atualizarSolicitacao(item.getSolicitacaoCompra());
         }
 
         if (!itens.isEmpty()) {
+            solicitacaoCompraService.atualizarSolicitacao(itens.get(0).getSolicitacaoCompra().getId(),
+                    itens.get(0).getSolicitacaoCompra());
             solicitacaoCompraService.atualizarStatusSolicitacao(itens.get(0).getSolicitacaoCompra().getId(),
                     "Orçamentos Recebidos");
+            logger.info("Orçamentos recebidos para a solicitação ID: {}", itens.get(0).getSolicitacaoCompra().getId());
         }
     }
 
     @Transactional
     public void aprovarOrcamentoGerarPedido(Long orcamentoId) {
-        Optional<Orcamento> orcamentoOptional = orcamentoService.buscarOrcamentoPorId(orcamentoId);
-        if (orcamentoOptional.isPresent()) {
-            Orcamento orcamentoSelecionado = orcamentoOptional.get();
-            orcamentoSelecionado.setStatus("Selecionado");
-            orcamentoService.salvarOrcamento(orcamentoSelecionado);
+        logger.info("Aprovando orçamento ID: {} e gerando pedido.", orcamentoId);
+        Orcamento orcamentoSelecionado = buscarOrcamentoPorId(orcamentoId);
 
-            SolicitacaoCompra solicitacao = orcamentoSelecionado.getSolicitacaoCompra();
-            solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Compra Aprovada");
+        orcamentoSelecionado.setStatus(SELECIONADO);
+        orcamentoService.atualizarOrcamento(orcamentoSelecionado);
 
-            gerarOrdemDeCompra(solicitacao, orcamentoSelecionado);
-        } else {
-            System.out.println("Orçamento não encontrado com ID: " + orcamentoId);
-        }
+        SolicitacaoCompra solicitacao = orcamentoSelecionado.getSolicitacaoCompra();
+        solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Compra Aprovada");
+
+        gerarOrdemDeCompra(solicitacao, orcamentoSelecionado);
+    }
+
+    private Orcamento buscarOrcamentoPorId(Long orcamentoId) {
+        return orcamentoService.buscarOrcamentoPorId(orcamentoId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Orçamento não encontrado com ID: " + orcamentoId));
     }
 
     @Transactional
     private void gerarOrdemDeCompra(SolicitacaoCompra solicitacao, Orcamento orcamentoSelecionado) {
-        PedidoCompra pedidoCompra = new PedidoCompra();
-        pedidoCompra.setFornecedor(orcamentoSelecionado.getFornecedor());
-        pedidoCompra.setDataPedido(LocalDate.now());
-        pedidoCompra.setStatus("Pendente");
-        pedidoCompra.setValorTotal(orcamentoSelecionado.getValorTotal());
+        logger.info("Gerando Ordem de Compra para solicitação ID: {} com orçamento ID: {}", solicitacao.getId(),
+                orcamentoSelecionado.getId());
 
-        List<ItemPedidoCompra> itensPedido = solicitacao.getItens().stream()
-                .filter(itemSolicitacao -> "Orçamento Solicitado".equalsIgnoreCase(itemSolicitacao.getStatus()) ||
-                        "Compra Autorizada".equalsIgnoreCase(itemSolicitacao.getStatus()))
-                .map(itemSolicitacao -> {
+        PedidoCompra novoPedido = new PedidoCompra();
+        novoPedido.setFornecedor(orcamentoSelecionado.getFornecedor());
+        novoPedido.setDataPedido(LocalDate.now());
+        novoPedido.setStatus("Pendente");
+        novoPedido.setValorTotal(orcamentoSelecionado.getValorTotal());
+
+        List<ItemPedidoCompra> itensPedido = orcamentoSelecionado.getItensOrcamento().stream()
+                .map(itemOrcamento -> {
                     ItemPedidoCompra itemPedido = new ItemPedidoCompra();
-                    itemPedido.setMaterialServico(itemSolicitacao.getMaterialServico());
-                    itemPedido.setQuantidade(itemSolicitacao.getQuantidade());
-                    itemPedido.setPrecoUnitario(itemSolicitacao.getQuantidade() > 0
-                            ? (orcamentoSelecionado.getValorTotal() / itemSolicitacao.getQuantidade())
-                            : 0.0);
-                    itemPedido.setPedidoCompra(pedidoCompra);
+                    itemPedido.setProduto(itemOrcamento.getProduto());
+                    itemPedido.setQuantidade(itemOrcamento.getQuantidade());
+                    // CORREÇÃO: Substituído getPrecoUnitario() por getPrecoUnitarioCotado()
+                    itemPedido.setPrecoUnitario(itemOrcamento.getPrecoUnitarioCotado()); // LINHA 211 CORRIGIDA
+                    itemPedido.setPedidoCompra(novoPedido);
                     return itemPedido;
                 })
-                .toList();
-        pedidoCompra.setItens(itensPedido);
+                .collect(Collectors.toList());
 
-        PedidoCompra novoPedido = pedidoCompraService.criarPedidoCompra(pedidoCompra);
+        novoPedido.setItens(itensPedido);
+
+        PedidoCompra pedidoSalvo = pedidoCompraService.criarPedidoCompra(novoPedido);
+
         solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Gerada OC");
+        logger.info("Ordem de Compra (ID: {}) gerada para solicitação ID: {}", pedidoSalvo.getId(),
+                solicitacao.getId());
 
         solicitacao.getItens().forEach(itemSolicitacao -> {
-            if (itensPedido.stream()
-                    .anyMatch(ip -> ip.getMaterialServico().equals(itemSolicitacao.getMaterialServico()))) {
+            boolean itemIncluidoNoPedido = itensPedido.stream()
+                    .anyMatch(ip -> ip.getProduto().getId().equals(itemSolicitacao.getProduto().getId()) &&
+                                    ip.getQuantidade().compareTo(itemSolicitacao.getQuantidade()) == 0);
+            if (itemIncluidoNoPedido) {
                 itemSolicitacao.setStatus("Em Pedido");
             }
         });
-        solicitacaoCompraService.atualizarSolicitacao(solicitacao);
+        solicitacaoCompraService.atualizarSolicitacao(solicitacao.getId(), solicitacao);
     }
 
     @Transactional
     public void enviarOrdemDeCompra(Long pedidoId) {
+        logger.info("Enviando Ordem de Compra ID: {} para o fornecedor.", pedidoId);
         pedidoCompraService.atualizarStatusPedidoCompra(pedidoId, "Enviado Fornecedor");
     }
 
     @Transactional
     public void gerenciarEntregaRecebimento(Long pedidoId) {
+        logger.info("Gerenciando entrega/recebimento para Pedido ID: {}", pedidoId);
         pedidoCompraService.atualizarStatusPedidoCompra(pedidoId, "Recebido");
     }
 
     @Transactional
     public void enviarParaObra(Long pedidoId) {
+        logger.info("Enviando Pedido ID: {} para a obra.", pedidoId);
         pedidoCompraService.atualizarStatusPedidoCompra(pedidoId, "Enviada Obra");
     }
 
     @Transactional
     public void atualizarEstoqueRecebimento(Long pedidoId) {
-        Optional<PedidoCompra> pedidoOptional = pedidoCompraService.buscarPedidoCompraPorId(pedidoId);
-        pedidoOptional.ifPresent(pedido -> {
-            if ("Recebido".equals(pedido.getStatus())) {
-                pedido.getItens().forEach(item -> estoqueService.receberMaterial(item.getMaterialServico(),
-                        item.getQuantidade(), "PEDIDO_" + pedido.getId()));
-                pedidoCompraService.atualizarStatusPedidoCompra(pedidoId, "Estoque Atualizado");
+        logger.info("Atualizando estoque após recebimento do Pedido ID: {}", pedidoId);
+        PedidoCompra pedido = pedidoCompraService.buscarPedidoCompraPorId(pedidoId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Pedido de compra não encontrado com ID: " + pedidoId));
 
-                Optional<SolicitacaoCompra> optSolicitacao = pedido.getItens().stream()
-                        .findFirst()
-                        .map(ItemPedidoCompra::getMaterialServico)
-                        .map(materialServico -> itemSolicitacaoCompraService
-                                .buscarItemSolicitacaoPorMaterialServico(materialServico))
-                        .map(optional -> optional.orElse(null))
-                        .filter(obj -> obj != null)
-                        .filter(obj -> obj instanceof ItemSolicitacaoCompra)
-                        .map(obj -> ((ItemSolicitacaoCompra) obj).getSolicitacaoCompra());
+        if ("Recebido".equals(pedido.getStatus())) {
+            pedido.getItens().forEach(itemPedido -> {
+                String codigoMaterial = itemPedido.getProduto().getCodigo();
+                BigDecimal quantidadeRecebida = itemPedido.getQuantidade();
+                logger.debug("Recebendo material: {} - Quantidade: {} para o pedido ID: {}", codigoMaterial,
+                        quantidadeRecebida, pedido.getId());
+                estoqueService.receberMaterial(codigoMaterial, quantidadeRecebida, "PEDIDO_" + pedido.getId());
+            });
 
-                optSolicitacao.ifPresent(solicitacao -> {
-                    boolean todosItensRecebidos = solicitacao.getItens().stream()
-                            .allMatch(item -> "Em Pedido".equalsIgnoreCase(item.getStatus())
-                                    || "Recebido".equalsIgnoreCase(item.getStatus()));
-                    if (todosItensRecebidos) {
-                        solicitacaoCompraService.atualizarStatusSolicitacao(solicitacao.getId(), "Concluída");
-                    }
-                });
-            }
-        });
+            pedidoCompraService.atualizarStatusPedidoCompra(pedidoId, "Estoque Atualizado");
+            logger.info("Estoque atualizado para o Pedido ID: {}", pedidoId);
+        } else {
+            logger.warn(
+                    "Tentativa de atualizar estoque para Pedido ID: {} que não está no status 'Recebido'. Status atual: {}",
+                    pedidoId, pedido.getStatus());
+        }
     }
 
     @Transactional
     public void processoPrestacaoContas(Long pedidoId, String numeroNotaFiscal, LocalDate dataNotaFiscal,
-            Double valorNota) {
-        pedidoCompraService.buscarPedidoCompraPorId(pedidoId).ifPresent(pedido -> {
-            // pedido.setNumeroNotaFiscal(numeroNotaFiscal);
-            // pedido.setDataNotaFiscal(dataNotaFiscal);
-            // pedido.setValorNotaFiscal(valorNota);
-            pedidoCompraService.atualizarStatusPedidoCompra(pedidoId, "Contabilizado");
-            System.out.println("Pedido " + pedidoId + " contabilizado com NF: " + numeroNotaFiscal);
-        });
+                                         BigDecimal valorNota) {
+        logger.info("Iniciando processo de prestação de contas para Pedido ID: {} com NF: {}", pedidoId,
+                numeroNotaFiscal);
+        PedidoCompra pedido = pedidoCompraService.buscarPedidoCompraPorId(pedidoId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Pedido de compra não encontrado com ID: " + pedidoId));
+
+        pedido.setNumeroNotaFiscal(numeroNotaFiscal);
+        pedido.setDataNotaFiscal(dataNotaFiscal);
+        pedido.setValorNotaFiscal(valorNota);
+        pedidoCompraService.atualizarPedido(pedido);
+
+        pedidoCompraService.atualizarStatusPedidoCompra(pedidoId, "Contabilizado");
+        logger.info("Pedido {} contabilizado com NF: {}", pedidoId, numeroNotaFiscal);
     }
 }

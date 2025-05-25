@@ -2,73 +2,86 @@ package com.zlogcompras.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.zlogcompras.mapper.FornecedorMapper;
 import com.zlogcompras.model.Fornecedor;
+import com.zlogcompras.model.dto.FornecedorRequestDTO;
+import com.zlogcompras.model.dto.FornecedorResponseDTO;
 import com.zlogcompras.repository.FornecedorRepository;
 
 @Service
 public class FornecedorService {
 
     private final FornecedorRepository fornecedorRepository;
+    private final FornecedorMapper fornecedorMapper;
 
-    @Autowired // Injeção de dependência via construtor (preferível)
-    public FornecedorService(FornecedorRepository fornecedorRepository) {
+    @Autowired
+    public FornecedorService(FornecedorRepository fornecedorRepository, FornecedorMapper fornecedorMapper) {
         this.fornecedorRepository = fornecedorRepository;
-    }
-
-    @Transactional // Garante que a operação seja uma transação de banco de dados
-    public Fornecedor criarFornecedor(Fornecedor fornecedor) {
-        // Você pode adicionar lógicas de negócio aqui, como validações
-        // Ex: Validar CNPJ, verificar se já existe um fornecedor com o mesmo CNPJ
-        System.out.println("Serviço: Criando fornecedor: " + fornecedor.getNome());
-        return fornecedorRepository.save(fornecedor);
-    }
-
-    public List<Fornecedor> listarTodosFornecedores() {
-        System.out.println("Serviço: Listando todos os fornecedores.");
-        return fornecedorRepository.findAll();
-    }
-
-    public Optional<Fornecedor> buscarFornecedorPorId(Long id) { // ID deve ser Long, não long
-        System.out.println("Serviço: Buscando fornecedor por ID: " + id);
-        return fornecedorRepository.findById(id);
+        this.fornecedorMapper = fornecedorMapper;
     }
 
     @Transactional
-    public Fornecedor atualizarFornecedor(Long id, Fornecedor fornecedorAtualizado) {
-        System.out.println("Serviço: Tentando atualizar fornecedor com ID: " + id);
-        return fornecedorRepository.findById(id)
-                .map(fornecedorExistente -> {
-                    // Atualiza os campos do fornecedor existente com os dados do fornecedorAtualizado
-                    fornecedorExistente.setNome(fornecedorAtualizado.getNome());
-                    fornecedorExistente.setCnpj(fornecedorAtualizado.getCnpj());
-                    fornecedorExistente.setContato(fornecedorAtualizado.getContato());
-                    fornecedorExistente.setTelefone(fornecedorAtualizado.getTelefone());
-                    fornecedorExistente.setEmail(fornecedorAtualizado.getEmail());
-                    // O campo 'version' é gerenciado automaticamente pelo @Version do JPA
+    public FornecedorResponseDTO criarFornecedor(FornecedorRequestDTO fornecedorRequestDTO) {
+        Fornecedor fornecedor = fornecedorMapper.toEntity(fornecedorRequestDTO);
 
-                    System.out.println("Serviço: Fornecedor com ID " + id + " atualizado.");
-                    return fornecedorRepository.save(fornecedorExistente); // Salva as alterações
-                })
-                .orElseThrow(() -> {
-                    System.out.println("Serviço: Fornecedor com ID " + id + " não encontrado para atualização.");
-                    return new RuntimeException("Fornecedor não encontrado com ID: " + id);
-                });
-    }
-
-    @Transactional
-    public boolean deletarFornecedor(Long id) {
-        System.out.println("Serviço: Tentando deletar fornecedor com ID: " + id);
-        if (fornecedorRepository.existsById(id)) {
-            fornecedorRepository.deleteById(id);
-            System.out.println("Serviço: Fornecedor com ID " + id + " deletado.");
-            return true;
+        if (fornecedorRepository.findByCnpj(fornecedor.getCnpj()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um fornecedor cadastrado com este CNPJ.");
         }
-        System.out.println("Serviço: Fornecedor com ID " + id + " não encontrado para deleção.");
-        return false;
+
+        System.out.println("Serviço: Criando fornecedor: " + fornecedor.getNome());
+
+        Fornecedor novoFornecedor = fornecedorRepository.save(fornecedor);
+
+        return fornecedorMapper.toResponseDto(novoFornecedor);
+    }
+
+    public List<FornecedorResponseDTO> listarTodosFornecedores() {
+        System.out.println("Serviço: Listando todos os fornecedores.");
+        List<Fornecedor> fornecedores = fornecedorRepository.findAll();
+        return fornecedorMapper.toListaDtoList(fornecedores);
+    }
+
+    // AJUSTADO: Agora retorna Optional<Fornecedor>
+    public Optional<Fornecedor> buscarFornecedorPorId(Long id) {
+        System.out.println("Serviço: Buscando fornecedor por ID: " + id);
+        return fornecedorRepository.findById(id); // Retorna Optional<Fornecedor>
+    }
+
+    @Transactional
+    public FornecedorResponseDTO atualizarFornecedor(Long id, FornecedorRequestDTO fornecedorRequestDTO) {
+        System.out.println("Serviço: Tentando atualizar fornecedor com ID: " + id);
+
+        Fornecedor fornecedorExistente = fornecedorRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado com ID: " + id));
+
+        if (!fornecedorExistente.getCnpj().equals(fornecedorRequestDTO.getCnpj())) {
+            Optional<Fornecedor> fornecedorComMesmoCnpj = fornecedorRepository.findByCnpj(fornecedorRequestDTO.getCnpj());
+            if (fornecedorComMesmoCnpj.isPresent() && !fornecedorComMesmoCnpj.get().getId().equals(id)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro fornecedor com o CNPJ informado.");
+            }
+        }
+
+        fornecedorMapper.updateEntityFromDto(fornecedorRequestDTO, fornecedorExistente);
+
+        System.out.println("Serviço: Fornecedor com ID " + id + " atualizado.");
+
+        Fornecedor fornecedorAtualizado = fornecedorRepository.save(fornecedorExistente);
+        return fornecedorMapper.toResponseDto(fornecedorAtualizado);
+    }
+
+    @Transactional
+    public void deletarFornecedor(Long id) {
+        System.out.println("Serviço: Tentando deletar fornecedor com ID: " + id);
+        if (!fornecedorRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado com ID: " + id);
+        }
+        fornecedorRepository.deleteById(id);
+        System.out.println("Serviço: Fornecedor com ID " + id + " deletado.");
     }
 }

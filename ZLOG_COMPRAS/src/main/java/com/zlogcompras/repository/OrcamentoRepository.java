@@ -18,4 +18,6 @@ public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
     List<Orcamento> findByDataCotacaoBetween(LocalDate dataInicio, LocalDate dataFim);
 
         List<Orcamento> findByStatus(String status);
+
+        List<Orcamento> findBySolicitacaoCompraId(Long solicitacaoId);
     }

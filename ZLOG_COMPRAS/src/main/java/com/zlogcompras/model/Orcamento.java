@@ -1,17 +1,30 @@
 package com.zlogcompras.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime; // Adicionado para dataCriacao e dataAtualizacao
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType; // Adicionado para @Enumerated
+import jakarta.persistence.Enumerated; // Adicionado para @Enumerated
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist; // Adicionado para dataCriacao
+import jakarta.persistence.PreUpdate; // Adicionado para dataAtualizacao
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "orcamentos")
@@ -21,75 +34,92 @@ public class Orcamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate dataCotacao;
-
-    private String observacoes;
-
-    private String condicoesPagamento;
-
-    @ManyToOne
-    private Fornecedor fornecedor;
-
-    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL)
-    private List<ItemOrcamento> itensOrcamento;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "solicitacao_compra_id", nullable = false)
     private SolicitacaoCompra solicitacaoCompra;
 
-    private String status; // Adicionado atributo status
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fornecedor_id", nullable = false)
+    private Fornecedor fornecedor;
 
-    private Double valorTotal; // Adicionado atributo valorTotal
+    @Column(name = "data_cotacao", nullable = false)
+    private LocalDate dataCotacao;
 
-    private String numeroOrcamento; // Adicionado atributo numeroOrcamento
+    // Removida a anotação @JsonFormat para BigDecimal (se não for estritamente necessária)
+    @Column(name = "valor_total", nullable = false, precision = 12, scale = 2)
+    private BigDecimal valorTotal;
 
-    // Getters e Setters
+    @Column(name = "numero_orcamento", nullable = false)
+    private String numeroOrcamento;
 
+    @Column(name = "prazo_entrega")
+    private String prazoEntrega;
+
+    @Column(name = "condicoes_pagamento")
+    private String condicoesPagamento;
+
+    @Column(name = "observacoes")
+    private String observacoes;
+
+    @Enumerated(EnumType.STRING) // Mapeia o enum como String no banco de dados
+    @Column(nullable = false)
+    private StatusOrcamento status; // Alterado o tipo de String para StatusOrcamento
+
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    private LocalDateTime dataCriacao;
+
+    @Column(name = "data_atualizacao", nullable = false)
+    private LocalDateTime dataAtualizacao;
+
+    @Version
+    private Long version;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ItemOrcamento> itensOrcamento = new ArrayList<>();
+
+    // Construtor padrão
+    public Orcamento() {
+        this.status = StatusOrcamento.AGUARDANDO_APROVACAO; // Usando o enum
+    }
+
+    // Construtor com campos
+    public Orcamento(SolicitacaoCompra solicitacaoCompra, Fornecedor fornecedor, LocalDate dataCotacao,
+                     BigDecimal valorTotal, String numeroOrcamento, String prazoEntrega,
+                     String condicoesPagamento, String observacoes, List<ItemOrcamento> itensOrcamento) {
+        this.solicitacaoCompra = solicitacaoCompra;
+        this.fornecedor = fornecedor;
+        this.dataCotacao = dataCotacao;
+        this.valorTotal = valorTotal;
+        this.numeroOrcamento = numeroOrcamento;
+        this.prazoEntrega = prazoEntrega;
+        this.condicoesPagamento = condicoesPagamento;
+        this.observacoes = observacoes;
+        this.status = StatusOrcamento.AGUARDANDO_APROVACAO; // Usando o enum
+        if (itensOrcamento != null) {
+            this.setItensOrcamento(itensOrcamento);
+        }
+    }
+
+    // PrePersist e PreUpdate para gerenciar datas de criação e atualização
+    @PrePersist
+    protected void onCreate() {
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    // --- Getters e Setters ---
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LocalDate getDataCotacao() {
-        return dataCotacao;
-    }
-
-    public void setDataCotacao(LocalDate dataCotacao) {
-        this.dataCotacao = dataCotacao;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
-    }
-
-    public String getCondicoesPagamento() {
-        return condicoesPagamento;
-    }
-
-    public void setCondicoesPagamento(String condicoesPagamento) {
-        this.condicoesPagamento = condicoesPagamento;
-    }
-
-    public Fornecedor getFornecedor() {
-        return fornecedor;
-    }
-
-    public void setFornecedor(Fornecedor fornecedor) {
-        this.fornecedor = fornecedor;
-    }
-
-    public List<ItemOrcamento> getItensOrcamento() {
-        return itensOrcamento;
-    }
-
-    public void setItensOrcamento(List<ItemOrcamento> itensOrcamento) {
-        this.itensOrcamento = itensOrcamento;
     }
 
     public SolicitacaoCompra getSolicitacaoCompra() {
@@ -100,19 +130,27 @@ public class Orcamento {
         this.solicitacaoCompra = solicitacaoCompra;
     }
 
-    public String getStatus() {
-        return status;
+    public Fornecedor getFornecedor() {
+        return fornecedor;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
     }
 
-    public Double getValorTotal() {
+    public LocalDate getDataCotacao() {
+        return dataCotacao;
+    }
+
+    public void setDataCotacao(LocalDate dataCotacao) {
+        this.dataCotacao = dataCotacao;
+    }
+
+    public BigDecimal getValorTotal() {
         return valorTotal;
     }
 
-    public void setValorTotal(Double valorTotal) {
+    public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
 
@@ -124,8 +162,114 @@ public class Orcamento {
         this.numeroOrcamento = numeroOrcamento;
     }
 
-    public void setFornecedor(Optional<Fornecedor> fornecedor1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFornecedor'");
+    public String getPrazoEntrega() {
+        return prazoEntrega;
+    }
+
+    public void setPrazoEntrega(String prazoEntrega) {
+        this.prazoEntrega = prazoEntrega;
+    }
+
+    public String getCondicoesPagamento() {
+        return condicoesPagamento;
+    }
+
+    public void setCondicoesPagamento(String condicoesPagamento) {
+        this.condicoesPagamento = condicoesPagamento;
+    }
+
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
+    }
+
+    public StatusOrcamento getStatus() { // Retorna StatusOrcamento
+        return status;
+    }
+
+    public void setStatus(StatusOrcamento status) { // Recebe StatusOrcamento
+        this.status = status;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public List<ItemOrcamento> getItensOrcamento() {
+        return itensOrcamento;
+    }
+
+    public void setItensOrcamento(List<ItemOrcamento> itensOrcamento) {
+        this.itensOrcamento.clear();
+        if (itensOrcamento != null) {
+            for (ItemOrcamento item : itensOrcamento) {
+                addItemOrcamento(item);
+            }
+        }
+    }
+
+    public void addItemOrcamento(ItemOrcamento item) {
+        if (item != null) {
+            this.itensOrcamento.add(item);
+            item.setOrcamento(this);
+        }
+    }
+
+    public void removeItemOrcamento(ItemOrcamento item) {
+        if (item != null && this.itensOrcamento.contains(item)) {
+            this.itensOrcamento.remove(item);
+            item.setOrcamento(null);
+        }
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Orcamento orcamento = (Orcamento) o;
+        return Objects.equals(id, orcamento.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Orcamento{" +
+                "id=" + id +
+                ", solicitacaoCompraId=" + (solicitacaoCompra != null ? solicitacaoCompra.getId() : "null") +
+                ", fornecedorId=" + (fornecedor != null ? fornecedor.getId() : "null") +
+                ", dataCotacao=" + dataCotacao +
+                ", valorTotal=" + valorTotal +
+                ", numeroOrcamento='" + numeroOrcamento + '\'' +
+                ", status='" + status + '\'' +
+                ", itensOrcamentoCount=" + (itensOrcamento != null ? itensOrcamento.size() : 0) +
+                ", version=" + version +
+                '}';
     }
 }

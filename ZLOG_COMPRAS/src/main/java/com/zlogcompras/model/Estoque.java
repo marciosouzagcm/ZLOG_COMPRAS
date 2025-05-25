@@ -1,11 +1,15 @@
 package com.zlogcompras.model;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.Table; // Importar BigDecimal
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "estoque")
@@ -15,13 +19,26 @@ public class Estoque {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String codigoMaterial;
-    private String descricao;
-    private Integer quantidade;
-    private String unidadeMedida;
+    @Column(nullable = false, unique = true)
+    private String codigoMaterial; // Código do material em estoque
 
-    // Getters e Setters
+    @Column(nullable = false, precision = 10, scale = 2) // Corrigido para 2 casas decimais
+    private BigDecimal quantidade; // Alterado para BigDecimal
+
+    @Version
+    private Long version;
+
+    // Construtor padrão
+    public Estoque() {
+    }
+
+    // Construtor com campos
+    public Estoque(String codigoMaterial, BigDecimal quantidade) {
+        this.codigoMaterial = codigoMaterial;
+        this.quantidade = quantidade;
+    }
+
+    // --- Getters e Setters ---
     public Long getId() {
         return id;
     }
@@ -38,27 +55,44 @@ public class Estoque {
         this.codigoMaterial = codigoMaterial;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public Integer getQuantidade() {
+    public BigDecimal getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(Integer quantidade) {
+    public void setQuantidade(BigDecimal quantidade) {
         this.quantidade = quantidade;
     }
 
-    public String getUnidadeMedida() {
-        return unidadeMedida;
+    public Long getVersion() {
+        return version;
     }
 
-    public void setUnidadeMedida(String unidadeMedida) {
-        this.unidadeMedida = unidadeMedida;
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    // --- Métodos equals e hashCode ---
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Estoque estoque = (Estoque) o;
+        return Objects.equals(id, estoque.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    // --- Método toString ---
+    @Override
+    public String toString() {
+        return "Estoque{" +
+                "id=" + id +
+                ", codigoMaterial='" + codigoMaterial + '\'' +
+                ", quantidade=" + quantidade +
+                ", version=" + version +
+                '}';
     }
 }

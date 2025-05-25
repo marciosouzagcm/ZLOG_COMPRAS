@@ -1,13 +1,14 @@
 package com.zlogcompras.model;
 
-import java.util.Optional;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonBackReference; // Importar JsonBackReference
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "itens_solicitacao_compra")
 public class ItemSolicitacaoCompra {
@@ -24,84 +26,126 @@ public class ItemSolicitacaoCompra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String materialServico;
+    @ManyToOne
+    @JoinColumn(name = "solicitacao_compra_id", nullable = false)
+    @JsonBackReference // Adicionado para lidar com a referência de volta na relação bidirecional
+    private SolicitacaoCompra solicitacaoCompra;
 
-    @Column(nullable = false)
-    private Integer quantidade;
+    @ManyToOne
+    @JoinColumn(name = "produto_id", nullable = false)
+    private Produto produto;
 
-    private String descricao;
+    @Column(nullable = false, precision = 10, scale = 3)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00")
+    private BigDecimal quantidade;
 
-    @Column(nullable = false)
-    private String status;
+    private String descricaoAdicional; // Campo opcional
+
+    private String status; // Status do item na solicitação (ex: "Pendente", "Aprovado", "Rejeitado")
 
     @Version
     private Long version;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "solicitacao_compra_id", nullable = false)
-    private SolicitacaoCompra solicitacaoCompra;
-
+    // Construtor padrão
     public ItemSolicitacaoCompra() {
-        this.status = "Pendente";
     }
 
-    // Construtor com campos básicos
-    public ItemSolicitacaoCompra(String materialServico, Integer quantidade, String descricao, String status) {
-        this.materialServico = materialServico;
+    // Construtor com campos
+    public ItemSolicitacaoCompra(SolicitacaoCompra solicitacaoCompra, Produto produto, BigDecimal quantidade,
+            String descricaoAdicional, String status) {
+        this.solicitacaoCompra = solicitacaoCompra;
+        this.produto = produto;
         this.quantidade = quantidade;
-        this.descricao = descricao;
+        this.descricaoAdicional = descricaoAdicional;
         this.status = status;
     }
 
-    // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getMaterialServico() { return materialServico; }
-    public void setMaterialServico(String materialServico) { this.materialServico = materialServico; }
-    public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
-    public SolicitacaoCompra getSolicitacaoCompra() { return solicitacaoCompra; }
-    public void setSolicitacaoCompra(SolicitacaoCompra solicitacaoCompra) { this.solicitacaoCompra = solicitacaoCompra; }
+    // --- Getters ---
+    public Long getId() {
+        return id;
+    }
 
+    public SolicitacaoCompra getSolicitacaoCompra() {
+        return solicitacaoCompra;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public BigDecimal getQuantidade() {
+        return quantidade;
+    }
+
+    public String getDescricaoAdicional() {
+        return descricaoAdicional;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    // --- Setters ---
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSolicitacaoCompra(SolicitacaoCompra solicitacaoCompra) {
+        this.solicitacaoCompra = solicitacaoCompra;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    public void setQuantidade(BigDecimal quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public void setDescricaoAdicional(String descricaoAdicional) {
+        this.descricaoAdicional = descricaoAdicional;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    // --- Métodos equals e hashCode (apenas pelo ID para consistência com
+    // SolicitacaoCompra) ---
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ItemSolicitacaoCompra that = (ItemSolicitacaoCompra) o;
-        return id != null && id.equals(that.id);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return Objects.hash(id);
     }
 
-    // Atualize cada item existente individualmente
-    public void atualizarItens(SolicitacaoCompra solicitacaoAtualizada, SolicitacaoCompra solicitacaoExistente) {
-        Set<ItemSolicitacaoCompra> itensAtualizados = solicitacaoAtualizada.getItens();
-        for (ItemSolicitacaoCompra itemAtualizado : itensAtualizados) {
-            Optional<ItemSolicitacaoCompra> itemExistenteOpt = solicitacaoExistente.getItens().stream()
-                .filter(i -> i.getId().equals(itemAtualizado.getId()))
-                .findFirst();
-            if (itemExistenteOpt.isPresent()) {
-                ItemSolicitacaoCompra itemExistente = itemExistenteOpt.get();
-                itemExistente.setMaterialServico(itemAtualizado.getMaterialServico());
-                itemExistente.setQuantidade(itemAtualizado.getQuantidade());
-                itemExistente.setDescricao(itemAtualizado.getDescricao());
-                itemExistente.setStatus(itemAtualizado.getStatus());
-                // ...atualize os campos necessários...
-            } else {
-                // Se for um novo item, adicione normalmente
-                solicitacaoExistente.addItem(itemAtualizado);
-            }
-        }
+    // --- Método toString ---
+    @Override
+    public String toString() {
+        return "ItemSolicitacaoCompra{" +
+                "id=" + id +
+                ", solicitacaoCompraId=" + (solicitacaoCompra != null ? solicitacaoCompra.getId() : "null") +
+                ", produtoId=" + (produto != null ? produto.getId() : "null") +
+                ", quantidade=" + quantidade +
+                ", descricaoAdicional='" + descricaoAdicional + '\'' +
+                ", status='" + status + '\'' +
+                ", version=" + version +
+                '}';
     }
 }

@@ -67,4 +67,8 @@ public class PedidoCompraService {
     }
 
     // Métodos para buscar pedidos por fornecedor, status, etc., podem ser adicionados aqui
+
+    void atualizarPedido(PedidoCompra pedido) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

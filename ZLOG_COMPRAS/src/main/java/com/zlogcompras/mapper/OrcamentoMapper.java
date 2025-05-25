@@ -1,0 +1,131 @@
+package com.zlogcompras.mapper;
+
+import java.util.List;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy; // Para lidar com warnings
+
+import com.zlogcompras.model.ItemOrcamento;
+import com.zlogcompras.model.Orcamento;
+import com.zlogcompras.model.Produto;
+import com.zlogcompras.model.StatusOrcamento;
+import com.zlogcompras.model.dto.ItemOrcamentoInputDTO;
+import com.zlogcompras.model.dto.ItemOrcamentoResponseDTO;
+import com.zlogcompras.model.dto.OrcamentoInputDTO;
+import com.zlogcompras.model.dto.OrcamentoListaDTO;
+import com.zlogcompras.model.dto.OrcamentoResponseDTO;
+
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+public interface OrcamentoMapper {
+
+    // --- Mapeamento para criar/atualizar Orcamento (InputDTO para Entidade) ---
+    @Mapping(source = "solicitacaoCompraId", target = "solicitacaoCompra.id")
+    @Mapping(source = "fornecedorId", target = "fornecedor.id")
+    @Mapping(source = "status", target = "status", qualifiedByName = "mapStringToStatusOrcamento")
+    @Mapping(target = "id", ignore = true) // ID é gerado pelo banco, não pelo DTO
+    @Mapping(target = "version", ignore = true) // Version é gerenciado pelo JPA, não pelo DTO
+    @Mapping(target = "dataCriacao", ignore = true) // Data de criação é setada na entidade
+    @Mapping(target = "dataAtualizacao", ignore = true) // Data de atualização é setada na entidade
+    @Mapping(target = "valorTotal", ignore = true) // Valor total é calculado no serviço/entidade, não vem do DTO
+    @Mapping(source = "observacoesGerais", target = "observacoes")
+    @Mapping(source = "condicoesPagamento", target = "condicoesPagamento")
+    @Mapping(source = "prazoEntrega", target = "prazoEntrega")
+    Orcamento toEntity(OrcamentoInputDTO orcamentoInputDTO);
+
+    // Mapeamento para atualizar uma entidade existente
+    @Mapping(source = "solicitacaoCompraId", target = "solicitacaoCompra.id")
+    @Mapping(source = "fornecedorId", target = "fornecedor.id")
+    @Mapping(source = "status", target = "status", qualifiedByName = "mapStringToStatusOrcamento")
+    @Mapping(target = "itensOrcamento", ignore = true) // Itens devem ser atualizados separadamente, ou use
+                                                        // @IterableMapping
+    @Mapping(target = "id", ignore = true) // Nunca atualize o ID da entidade através do DTO de input
+    @Mapping(target = "version", ignore = true) // Versão gerenciada pelo JPA
+    @Mapping(target = "dataCriacao", ignore = true)
+    @Mapping(target = "dataAtualizacao", ignore = true)
+    @Mapping(target = "valorTotal", ignore = true)
+    @Mapping(source = "observacoesGerais", target = "observacoes")
+    @Mapping(source = "condicoesPagamento", target = "condicoesPagamento")
+    @Mapping(source = "prazoEntrega", target = "prazoEntrega")
+    void updateEntityFromDto(OrcamentoInputDTO orcamentoInputDTO, @MappingTarget Orcamento orcamento);
+
+    // --- Mapeamento de Entidade para OrcamentoResponseDTO ---
+    @Mapping(source = "solicitacaoCompra.id", target = "solicitacaoCompraId")
+    @Mapping(source = "fornecedor.nome", target = "nomeFornecedor")
+    @Mapping(source = "fornecedor.cnpj", target = "cnpjFornecedor")
+    @Mapping(source = "solicitacaoCompra.descricao", target = "descricaoSolicitacaoCompra")
+    @Mapping(source = "status", target = "status", qualifiedByName = "mapStatusOrcamentoToString")
+    // MapStruct lida com Listas, chamando toItemOrcamentoResponseDtoList
+    @Mapping(source = "itensOrcamento", target = "itensOrcamento")
+    OrcamentoResponseDTO toResponseDto(Orcamento orcamento);
+
+    // --- Mapeamento de Entidade para OrcamentoListaDTO (visão de lista/resumo) ---
+    @Mapping(source = "solicitacaoCompra.id", target = "solicitacaoCompraId")
+    @Mapping(source = "fornecedor.nome", target = "nomeFornecedor")
+    OrcamentoListaDTO toListaDto(Orcamento orcamento);
+
+    List<OrcamentoListaDTO> toListaDtoList(List<Orcamento> orcamentos);
+
+    // --- Mapeamento de ItemOrcamentoInputDTO para ItemOrcamento (Entidade) ---
+    @Mapping(source = "precoUnitario", target = "precoUnitarioCotado")
+    @Mapping(target = "orcamento", ignore = true) // Orcamento é setado manualmente no serviço
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(source = "produtoId", target = "produto", qualifiedByName = "mapProdutoIdToProduto")
+    ItemOrcamento toItemOrcamentoEntity(ItemOrcamentoInputDTO itemOrcamentoInputDTO);
+
+    // --- Mapeamento de ItemOrcamento (Entidade) para ItemOrcamentoResponseDTO ---
+    @Mapping(source = "produto.id", target = "produtoId")
+    @Mapping(source = "produto.nome", target = "nomeProduto")
+    @Mapping(source = "produto.codigo", target = "codigoProduto") // Mapeia o código do Produto
+    @Mapping(source = "produto.unidadeMedida", target = "unidadeMedidaProduto") // Mapeia a unidade de medida do Produto
+    // CORREÇÃO FINAL: Mapeia 'precoUnitarioCotado' da entidade para 'precoUnitarioCotado' do DTO de resposta
+    @Mapping(source = "precoUnitarioCotado", target = "precoUnitarioCotado") // <--- ESTA É A LINHA CORRIGIDA
+    @Mapping(source = "observacoes", target = "observacoes")
+    @Mapping(source = "version", target = "version")
+    @Mapping(target = "subtotal", ignore = true) // Subtotal é calculado no DTO/serviço
+    ItemOrcamentoResponseDTO toItemOrcamentoResponseDto(ItemOrcamento itemOrcamento);
+
+
+    List<ItemOrcamentoResponseDTO> toItemOrcamentoResponseDtoList(List<ItemOrcamento> itensOrcamento);
+
+    // --- Métodos de Conversão para Enum/String ---
+    @Named("mapStringToStatusOrcamento")
+    default StatusOrcamento mapStringToStatusOrcamento(String statusString) {
+        if (statusString == null || statusString.isEmpty()) {
+            return null;
+        }
+        try {
+            return StatusOrcamento.valueOf(statusString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            // Logar o erro aqui seria uma boa prática
+            throw new IllegalArgumentException("Status de orçamento inválido: " + statusString);
+        }
+    }
+
+    @Named("mapStatusOrcamentoToString")
+    default String mapStatusOrcamentoToString(StatusOrcamento statusEnum) {
+        if (statusEnum == null) {
+            return null;
+        }
+        return statusEnum.name();
+    }
+
+    // --- Método auxiliar para mapear um ID para uma entidade Produto ---
+    // Usado quando o DTO de entrada fornece apenas o ID do produto,
+    // e a entidade ItemOrcamento precisa da referência completa do Produto.
+    @Named("mapProdutoIdToProduto")
+    default Produto mapProdutoIdToProduto(Long produtoId) {
+        if (produtoId == null) {
+            return null;
+        }
+        Produto produto = new Produto();
+        produto.setId(produtoId);
+        // Em um cenário real, você buscaria a entidade Produto completa do banco de
+        // dados aqui,
+        // mas para mapeamento simples de ID para referência, isso é suficiente.
+        return produto;
+    }
+}
