@@ -1,35 +1,39 @@
 package com.zlogcompras.model.dto;
 
 import java.math.BigDecimal;
-
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotBlank;
 
 public class ItemSolicitacaoCompraRequestDTO {
 
-    @NotNull(message = "O ID do produto é obrigatório.")
-    @Min(value = 1, message = "O ID do produto deve ser um número positivo.")
-    private Long produtoId; // Referencia o Produto pelo ID
+    private Long id; // <--- Adicionado para permitir atualizações de itens existentes
 
-    @NotNull(message = "A quantidade é obrigatória.")
-    @DecimalMin(value = "0.01", message = "A quantidade deve ser maior que zero.")
+    @NotNull(message = "O ID do produto é obrigatório")
+    private Long produtoId;
+
+    @NotNull(message = "A quantidade é obrigatória")
+    @Positive(message = "A quantidade deve ser um valor positivo")
     private BigDecimal quantidade;
 
-    private String descricaoAdicional; // Opcional, para adicionar detalhes além da descrição do Produto
+    private String descricaoAdicional; // Opcional
+
+    @NotBlank(message = "O status do item é obrigatório")
+    private String status; // Será mapeado para o Enum StatusItemSolicitacao
 
     // Construtor padrão
     public ItemSolicitacaoCompraRequestDTO() {
     }
 
-    // Construtor com todos os campos
-    public ItemSolicitacaoCompraRequestDTO(Long produtoId, BigDecimal quantidade, String descricaoAdicional) {
-        this.produtoId = produtoId;
-        this.quantidade = quantidade;
-        this.descricaoAdicional = descricaoAdicional;
+    // Getters e Setters
+    public Long getId() {
+        return id;
     }
 
-    // --- Getters e Setters ---
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getProdutoId() {
         return produtoId;
     }
@@ -54,12 +58,11 @@ public class ItemSolicitacaoCompraRequestDTO {
         this.descricaoAdicional = descricaoAdicional;
     }
 
-    @Override
-    public String toString() {
-        return "ItemSolicitacaoCompraRequestDTO{" +
-               "produtoId=" + produtoId +
-               ", quantidade=" + quantidade +
-               ", descricaoAdicional='" + descricaoAdicional + '\'' +
-               '}';
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

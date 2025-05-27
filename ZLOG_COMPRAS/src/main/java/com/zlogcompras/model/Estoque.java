@@ -1,44 +1,80 @@
 package com.zlogcompras.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column; // Import adicionado para JsonIgnoreProperties
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table; // Importar BigDecimal
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // Mantido para compatibilidade com frameworks
 @Entity
-@Table(name = "estoque")
+@Table(name = "estoques")
 public class Estoque {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String codigoMaterial; // Código do material em estoque
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "produto_id", nullable = false)
+    private Produto produto;
 
-    @Column(nullable = false, precision = 10, scale = 2) // Corrigido para 2 casas decimais
-    private BigDecimal quantidade; // Alterado para BigDecimal
+    @Column(name = "quantidade_atual", nullable = false, precision = 10, scale = 3)
+    private BigDecimal quantidadeAtual;
+
+    @Column(name = "data_entrada")
+    private LocalDate dataEntrada;
+
+    @Column(name = "localizacao", length = 100)
+    private String localizacao;
 
     @Version
     private Long version;
 
-    // Construtor padrão
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    private LocalDateTime dataCriacao;
+
+    @Column(name = "data_atualizacao", nullable = false)
+    private LocalDateTime dataAtualizacao;
+
     public Estoque() {
+        this.quantidadeAtual = BigDecimal.ZERO;
+        this.dataEntrada = LocalDate.now();
     }
 
-    // Construtor com campos
-    public Estoque(String codigoMaterial, BigDecimal quantidade) {
-        this.codigoMaterial = codigoMaterial;
-        this.quantidade = quantidade;
+    public Estoque(Produto produto, BigDecimal quantidadeAtual, LocalDate dataEntrada, String localizacao) {
+        this.produto = produto;
+        this.quantidadeAtual = quantidadeAtual;
+        this.dataEntrada = dataEntrada;
+        this.localizacao = localizacao;
     }
 
-    // --- Getters e Setters ---
+    @PrePersist
+    protected void onCreate() {
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -47,20 +83,36 @@ public class Estoque {
         this.id = id;
     }
 
-    public String getCodigoMaterial() {
-        return codigoMaterial;
+    public Produto getProduto() {
+        return produto;
     }
 
-    public void setCodigoMaterial(String codigoMaterial) {
-        this.codigoMaterial = codigoMaterial;
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 
-    public BigDecimal getQuantidade() {
-        return quantidade;
+    public BigDecimal getQuantidadeAtual() {
+        return quantidadeAtual;
     }
 
-    public void setQuantidade(BigDecimal quantidade) {
-        this.quantidade = quantidade;
+    public void setQuantidadeAtual(BigDecimal quantidadeAtual) {
+        this.quantidadeAtual = quantidadeAtual;
+    }
+
+    public LocalDate getDataEntrada() {
+        return dataEntrada;
+    }
+
+    public void setDataEntrada(LocalDate dataEntrada) {
+        this.dataEntrada = dataEntrada;
+    }
+
+    public String getLocalizacao() {
+        return localizacao;
+    }
+
+    public void setLocalizacao(String localizacao) {
+        this.localizacao = localizacao;
     }
 
     public Long getVersion() {
@@ -71,7 +123,22 @@ public class Estoque {
         this.version = version;
     }
 
-    // --- Métodos equals e hashCode ---
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,14 +152,17 @@ public class Estoque {
         return Objects.hash(id);
     }
 
-    // --- Método toString ---
     @Override
     public String toString() {
         return "Estoque{" +
                 "id=" + id +
-                ", codigoMaterial='" + codigoMaterial + '\'' +
-                ", quantidade=" + quantidade +
+                ", produtoId=" + (produto != null ? produto.getId() : "null") +
+                ", quantidadeAtual=" + quantidadeAtual +
+                ", dataEntrada=" + dataEntrada +
+                ", localizacao='" + localizacao + '\'' +
                 ", version=" + version +
+                ", dataCriacao=" + dataCriacao + // Adicionado ao toString
+                ", dataAtualizacao=" + dataAtualizacao + // Adicionado ao toString
                 '}';
     }
 }

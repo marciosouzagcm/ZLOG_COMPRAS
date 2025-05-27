@@ -6,32 +6,18 @@ public class ItemSolicitacaoCompraResponseDTO {
 
     private Long id;
     private Long produtoId;
-    private String nomeProduto; // Nome do produto para facilitar a exibição
-    private String codigoProduto; // Código do produto, se relevante
-    private String unidadeMedidaProduto; // Unidade de medida do produto
+    private String nomeProduto;
+    private String codigoProduto;
+    private String unidadeMedidaProduto;
     private BigDecimal quantidade;
     private String descricaoAdicional;
-    private String status;
+    private String status; // Será mapeado do Enum StatusItemSolicitacao para String
 
     // Construtor padrão
     public ItemSolicitacaoCompraResponseDTO() {
     }
 
-    // Construtor com todos os campos
-    public ItemSolicitacaoCompraResponseDTO(Long id, Long produtoId, String nomeProduto, String codigoProduto,
-                                            String unidadeMedidaProduto, BigDecimal quantidade,
-                                            String descricaoAdicional, String status) {
-        this.id = id;
-        this.produtoId = produtoId;
-        this.nomeProduto = nomeProduto;
-        this.codigoProduto = codigoProduto;
-        this.unidadeMedidaProduto = unidadeMedidaProduto;
-        this.quantidade = quantidade;
-        this.descricaoAdicional = descricaoAdicional;
-        this.status = status;
-    }
-
-    // --- Getters e Setters ---
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -94,16 +80,5 @@ public class ItemSolicitacaoCompraResponseDTO {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemSolicitacaoCompraResponseDTO{" +
-               "id=" + id +
-               ", produtoId=" + produtoId +
-               ", nomeProduto='" + nomeProduto + '\'' +
-               ", quantidade=" + quantidade +
-               ", status='" + status + '\'' +
-               '}';
     }
 }

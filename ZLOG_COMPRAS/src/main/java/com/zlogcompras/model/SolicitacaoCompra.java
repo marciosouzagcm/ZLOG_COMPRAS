@@ -1,10 +1,10 @@
 package com.zlogcompras.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime; // Import para LocalDateTime
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -12,10 +12,14 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType; // Import para EnumType
+import jakarta.persistence.Enumerated; // Import para Enumerated
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist; // Import para PrePersist
+import jakarta.persistence.PreUpdate;  // Import para PreUpdate
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
@@ -34,35 +38,52 @@ public class SolicitacaoCompra {
     @Column(nullable = false)
     private String solicitante;
 
+    @Enumerated(EnumType.STRING) // Mapeia o Enum para String no banco de dados
     @Column(nullable = false)
-    private String status;
+    private StatusSolicitacaoCompra status; // Alterado para o Enum StatusSolicitacaoCompra
 
-    // NOVO CAMPO: Descrição da solicitação de compra
-    @Column(name = "descricao", nullable = true) // Pode ser nullable=false se for obrigatório
+    @Column(name = "descricao", nullable = true)
     private String descricao;
 
     @Version
     private Long version;
 
-    @JsonManagedReference
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    private LocalDateTime dataCriacao; // Adicionado: Data de criação
+
+    @Column(name = "data_atualizacao", nullable = false)
+    private LocalDateTime dataAtualizacao; // Adicionado: Data de última atualização
+
+    @JsonManagedReference("solicitacao-orcamento") // Nomeie a referência para evitar conflitos
+    @OneToMany(mappedBy = "solicitacaoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Orcamento> orcamentos = new HashSet<>(); // Adicionado: Relacionamento com Orçamentos
+
+    @JsonManagedReference("solicitacao-item") // Nomeie a referência para evitar conflitos
     @OneToMany(mappedBy = "solicitacaoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ItemSolicitacaoCompra> itens = new HashSet<>();
 
     public SolicitacaoCompra() {
         this.dataSolicitacao = LocalDate.now();
-        this.status = "Pendente";
+        this.status = StatusSolicitacaoCompra.PENDENTE; // Inicializa com um status padrão do Enum
     }
 
     // Construtor com campos básicos para facilitar a criação (opcional, mas útil)
-    public SolicitacaoCompra(String solicitante) {
+    public SolicitacaoCompra(String solicitante, String descricao) {
         this(); // Chama o construtor padrão para inicializar data e status
         this.solicitante = solicitante;
+        this.descricao = descricao;
     }
 
-    // Construtor atualizado para incluir a descrição (opcional)
-    public SolicitacaoCompra(String solicitante, String descricao) {
-        this(solicitante); // Chama o construtor anterior
-        this.descricao = descricao;
+    // Métodos de callback JPA para preencher automaticamente as datas
+    @PrePersist
+    protected void onCreate() {
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dataAtualizacao = LocalDateTime.now();
     }
 
     // --- Getters ---
@@ -78,17 +99,28 @@ public class SolicitacaoCompra {
         return solicitante;
     }
 
-    public String getStatus() {
+    public StatusSolicitacaoCompra getStatus() { // Retorna o Enum
         return status;
     }
 
-    // Getter para o novo campo descricao
     public String getDescricao() {
         return descricao;
     }
 
     public Long getVersion() {
         return version;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public Set<Orcamento> getOrcamentos() {
+        return orcamentos;
     }
 
     public Set<ItemSolicitacaoCompra> getItens() {
@@ -108,17 +140,33 @@ public class SolicitacaoCompra {
         this.solicitante = solicitante;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusSolicitacaoCompra status) { // Recebe o Enum
         this.status = status;
     }
 
-    // Setter para o novo campo descricao
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public void setOrcamentos(Set<Orcamento> orcamentos) {
+        if (orcamentos == null) {
+            this.orcamentos.clear();
+            return;
+        }
+        this.orcamentos.clear();
+        orcamentos.forEach(this::addOrcamento);
     }
 
     /**
@@ -167,10 +215,9 @@ public class SolicitacaoCompra {
     }
 
     // --- Métodos auxiliares para gerenciar a coleção de itens e a bidirecionalidade ---
-    // Mantidos para clareza, embora o 'setItens' já faça a maior parte do trabalho
     public void addItem(ItemSolicitacaoCompra item) {
-        if (item != null) { // Apenas verifica se o item não é nulo
-            if (!this.itens.contains(item)) { // Garante unicidade no Set
+        if (item != null) {
+            if (!this.itens.contains(item)) {
                 this.itens.add(item);
                 item.setSolicitacaoCompra(this);
             }
@@ -178,9 +225,26 @@ public class SolicitacaoCompra {
     }
 
     public void removeItem(ItemSolicitacaoCompra item) {
-        if (item != null && this.itens.contains(item)) { // Garante que o item existe na coleção
+        if (item != null && this.itens.contains(item)) {
             this.itens.remove(item);
             item.setSolicitacaoCompra(null); // Crucial para orphanRemoval
+        }
+    }
+
+    // Métodos auxiliares para gerenciar a coleção de orçamentos
+    public void addOrcamento(Orcamento orcamento) {
+        if (orcamento != null) {
+            if (!this.orcamentos.contains(orcamento)) {
+                this.orcamentos.add(orcamento);
+                orcamento.setSolicitacaoCompra(this);
+            }
+        }
+    }
+
+    public void removeOrcamento(Orcamento orcamento) {
+        if (orcamento != null && this.orcamentos.contains(orcamento)) {
+            this.orcamentos.remove(orcamento);
+            orcamento.setSolicitacaoCompra(null);
         }
     }
 
@@ -205,10 +269,13 @@ public class SolicitacaoCompra {
                 "id=" + id +
                 ", dataSolicitacao=" + dataSolicitacao +
                 ", solicitante='" + solicitante + '\'' +
-                ", status='" + status + '\'' +
-                ", descricao='" + descricao + '\'' + // Adicionado ao toString
+                ", status=" + status + // Exibir o Enum
+                ", descricao='" + descricao + '\'' +
                 ", version=" + version +
-                ", itens=" + (itens != null ? itens.size() : 0) +
+                ", dataCriacao=" + dataCriacao +
+                ", dataAtualizacao=" + dataAtualizacao +
+                ", orcamentosSize=" + (orcamentos != null ? orcamentos.size() : 0) +
+                ", itensSize=" + (itens != null ? itens.size() : 0) +
                 '}';
     }
 }

@@ -2,7 +2,7 @@ package com.zlogcompras.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime; // Adicionado para dataCriacao e dataAtualizacao
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType; // Adicionado para @Enumerated
-import jakarta.persistence.Enumerated; // Adicionado para @Enumerated
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,8 +21,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist; // Adicionado para dataCriacao
-import jakarta.persistence.PreUpdate; // Adicionado para dataAtualizacao
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
@@ -34,6 +34,7 @@ public class Orcamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // CORRIGIDO: Mapeia para a entidade SolicitacaoCompra
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "solicitacao_compra_id", nullable = false)
     private SolicitacaoCompra solicitacaoCompra;
@@ -45,7 +46,6 @@ public class Orcamento {
     @Column(name = "data_cotacao", nullable = false)
     private LocalDate dataCotacao;
 
-    // Removida a anotação @JsonFormat para BigDecimal (se não for estritamente necessária)
     @Column(name = "valor_total", nullable = false, precision = 12, scale = 2)
     private BigDecimal valorTotal;
 
@@ -61,9 +61,9 @@ public class Orcamento {
     @Column(name = "observacoes")
     private String observacoes;
 
-    @Enumerated(EnumType.STRING) // Mapeia o enum como String no banco de dados
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusOrcamento status; // Alterado o tipo de String para StatusOrcamento
+    private StatusOrcamento status;
 
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
@@ -80,10 +80,11 @@ public class Orcamento {
 
     // Construtor padrão
     public Orcamento() {
-        this.status = StatusOrcamento.AGUARDANDO_APROVACAO; // Usando o enum
+        this.status = StatusOrcamento.AGUARDANDO_APROVACAO;
     }
 
     // Construtor com campos
+    // CORRIGIDO: O primeiro parâmetro deve ser a entidade SolicitacaoCompra
     public Orcamento(SolicitacaoCompra solicitacaoCompra, Fornecedor fornecedor, LocalDate dataCotacao,
                      BigDecimal valorTotal, String numeroOrcamento, String prazoEntrega,
                      String condicoesPagamento, String observacoes, List<ItemOrcamento> itensOrcamento) {
@@ -95,7 +96,7 @@ public class Orcamento {
         this.prazoEntrega = prazoEntrega;
         this.condicoesPagamento = condicoesPagamento;
         this.observacoes = observacoes;
-        this.status = StatusOrcamento.AGUARDANDO_APROVACAO; // Usando o enum
+        this.status = StatusOrcamento.AGUARDANDO_APROVACAO;
         if (itensOrcamento != null) {
             this.setItensOrcamento(itensOrcamento);
         }
@@ -122,10 +123,12 @@ public class Orcamento {
         this.id = id;
     }
 
+    // CORRIGIDO: Retorna a entidade SolicitacaoCompra
     public SolicitacaoCompra getSolicitacaoCompra() {
         return solicitacaoCompra;
     }
 
+    // CORRIGIDO: Recebe a entidade SolicitacaoCompra
     public void setSolicitacaoCompra(SolicitacaoCompra solicitacaoCompra) {
         this.solicitacaoCompra = solicitacaoCompra;
     }
@@ -186,11 +189,11 @@ public class Orcamento {
         this.observacoes = observacoes;
     }
 
-    public StatusOrcamento getStatus() { // Retorna StatusOrcamento
+    public StatusOrcamento getStatus() {
         return status;
     }
 
-    public void setStatus(StatusOrcamento status) { // Recebe StatusOrcamento
+    public void setStatus(StatusOrcamento status) {
         this.status = status;
     }
 

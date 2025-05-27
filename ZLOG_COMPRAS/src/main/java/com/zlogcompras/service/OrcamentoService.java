@@ -21,7 +21,8 @@ import com.zlogcompras.model.ItemOrcamento;
 import com.zlogcompras.model.Orcamento;
 import com.zlogcompras.model.Produto;
 import com.zlogcompras.model.SolicitacaoCompra;
-import com.zlogcompras.model.StatusOrcamento;
+import com.zlogcompras.model.StatusOrcamento; // Presumindo que StatusOrcamento é um Enum
+import com.zlogcompras.model.StatusSolicitacaoCompra; // Presumindo que StatusSolicitacaoCompra é um Enum
 import com.zlogcompras.model.dto.ItemOrcamentoRequestDTO;
 import com.zlogcompras.model.dto.OrcamentoListaDTO;
 import com.zlogcompras.model.dto.OrcamentoRequestDTO;
@@ -42,10 +43,10 @@ public class OrcamentoService {
 
     @Autowired
     public OrcamentoService(OrcamentoRepository orcamentoRepository,
-            SolicitacaoCompraRepository solicitacaoCompraRepository,
-            FornecedorRepository fornecedorRepository,
-            ProdutoRepository produtoRepository,
-            OrcamentoMapper orcamentoMapper) {
+                            SolicitacaoCompraRepository solicitacaoCompraRepository,
+                            FornecedorRepository fornecedorRepository,
+                            ProdutoRepository produtoRepository,
+                            OrcamentoMapper orcamentoMapper) {
         this.orcamentoRepository = orcamentoRepository;
         this.solicitacaoCompraRepository = solicitacaoCompraRepository;
         this.fornecedorRepository = fornecedorRepository;
@@ -57,10 +58,10 @@ public class OrcamentoService {
      * Cria um novo orçamento no sistema.
      *
      * @param orcamentoRequestDTO O DTO de requisição contendo os dados do
-     *                            orçamento.
+     * orçamento.
      * @return OrcamentoResponseDTO do orçamento recém-criado.
      * @throws ResponseStatusException Se a Solicitação de Compra, Fornecedor ou
-     *                                 Produto não forem encontrados.
+     * Produto não forem encontrados.
      */
     @Transactional
     public OrcamentoResponseDTO criarOrcamento(OrcamentoRequestDTO orcamentoRequestDTO) {
@@ -102,9 +103,6 @@ public class OrcamentoService {
             itensDoOrcamento.add(item);
 
             if (item.getPrecoUnitarioCotado() != null && item.getQuantidade() != null) {
-                // CORREÇÃO: Usar BigDecimal.valueOf() com o valor inteiro da quantidade
-                // ou convertendo Integer para int/long.
-                // A suposição aqui é que getQuantidade() retorna Integer.
                 total = total.add(
                         item.getPrecoUnitarioCotado().multiply(BigDecimal.valueOf(item.getQuantidade().longValue())));
             } else {
@@ -146,7 +144,7 @@ public class OrcamentoService {
      * @param solicitacaoId O ID da Solicitação de Compra.
      * @return Uma lista de OrcamentoListaDTO.
      * @throws ResponseStatusException Se a Solicitação de Compra não for
-     *                                 encontrada.
+     * encontrada.
      */
     public List<OrcamentoListaDTO> buscarOrcamentosPorSolicitacaoCompraId(Long solicitacaoId) {
         if (!solicitacaoCompraRepository.existsById(solicitacaoId)) {
@@ -160,11 +158,11 @@ public class OrcamentoService {
     /**
      * Atualiza um orçamento existente.
      *
-     * @param id                  O ID do orçamento a ser atualizado.
+     * @param id                O ID do orçamento a ser atualizado.
      * @param orcamentoRequestDTO O DTO de requisição com os dados atualizados.
      * @return OrcamentoResponseDTO do orçamento atualizado.
      * @throws ResponseStatusException Se o orçamento, Solicitação de Compra,
-     *                                 Fornecedor ou Produto não forem encontrados.
+     * Fornecedor ou Produto não forem encontrados.
      */
     @Transactional
     public OrcamentoResponseDTO atualizarOrcamento(Long id, OrcamentoRequestDTO orcamentoRequestDTO) {
@@ -243,7 +241,6 @@ public class OrcamentoService {
                                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                             "Preço unitário cotado e quantidade são obrigatórios para os itens do orçamento.");
                                 }
-                                // CORREÇÃO: Usar BigDecimal.valueOf() com o valor inteiro da quantidade
                                 return item.getPrecoUnitarioCotado()
                                         .multiply(BigDecimal.valueOf(item.getQuantidade().longValue()));
                             })
@@ -269,29 +266,56 @@ public class OrcamentoService {
     }
 
     /**
-     * Aprova um orçamento e dispara a lógica de geração de Pedido de Compra.
+     * Aprova um orçamento específico e rejeita os demais da mesma solicitação de compra.
+     * Também atualiza o status da Solicitação de Compra e inicia a geração do Pedido de Compra.
      *
      * @param id O ID do orçamento a ser aprovado.
-     * @throws ResponseStatusException Se o orçamento não for encontrado ou não
-     *                                 estiver em um status válido para aprovação.
+     * @return OrcamentoResponseDTO do orçamento aprovado.
+     * @throws ResponseStatusException Se o orçamento não for encontrado,
+     * se a Solicitação de Compra associada não for encontrada,
+     * ou se o orçamento já estiver em um status final (APROVADO/REJEITADO).
      */
     @Transactional
-    public void aprovarOrcamentoGerarPedido(Long id) {
-        Orcamento orcamento = orcamentoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Orçamento não encontrado com o ID: " + id));
+    public OrcamentoResponseDTO aprovarOrcamento(Long id) {
+        // 1. Buscar o orçamento a ser aprovado
+        Orcamento orcamentoAprovado = orcamentoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado com ID: " + id));
 
-        if (orcamento.getStatus() != StatusOrcamento.ABERTO &&
-                orcamento.getStatus() != StatusOrcamento.COTADO &&
-                orcamento.getStatus() != StatusOrcamento.AGUARDANDO_APROVACAO) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Orçamento não pode ser aprovado. Status atual: " + orcamento.getStatus().getDescricao());
+        // 2. Verificar o status atual do orçamento
+        if (orcamentoAprovado.getStatus() == StatusOrcamento.APROVADO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento com ID " + id + " já está APROVADO.");
+        }
+        if (orcamentoAprovado.getStatus() == StatusOrcamento.REJEITADO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento com ID " + id + " já foi REJEITADO e não pode ser aprovado.");
         }
 
-        orcamento.setStatus(StatusOrcamento.APROVADO);
-        orcamentoRepository.save(orcamento);
+        // 3. Buscar a solicitação de compra associada
+        Long solicitacaoCompraId = orcamentoAprovado.getSolicitacaoCompra().getId();
+        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(solicitacaoCompraId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de Compra associada ao orçamento não encontrada com ID: " + solicitacaoCompraId));
 
-        System.out.println(
-                "Orçamento " + id + " aprovado. Lógica para gerar Pedido de Compra deve ser implementada aqui.");
+        // 4. Mudar o status do orçamento selecionado para APROVADO
+        orcamentoAprovado.setStatus(StatusOrcamento.APROVADO);
+        orcamentoRepository.save(orcamentoAprovado); // Salva o orçamento aprovado
+
+        // 5. Rejeitar todos os outros orçamentos da mesma solicitação de compra
+        List<Orcamento> outrosOrcamentos = orcamentoRepository.findBySolicitacaoCompraIdAndIdNot(solicitacaoCompraId, id);
+        for (Orcamento outroOrcamento : outrosOrcamentos) {
+            // Só rejeita se não estiver já aprovado ou rejeitado (prevenção, embora a lógica principal evite)
+            if (outroOrcamento.getStatus() != StatusOrcamento.APROVADO && outroOrcamento.getStatus() != StatusOrcamento.REJEITADO) {
+                outroOrcamento.setStatus(StatusOrcamento.REJEITADO);
+                orcamentoRepository.save(outroOrcamento);
+            }
+        }
+
+        // 6. Atualizar o status da Solicitação de Compra
+        solicitacaoCompra.setStatus(StatusSolicitacaoCompra.ORCAMENTO_APROVADO); // Ou um status mais adequado
+        solicitacaoCompraRepository.save(solicitacaoCompra);
+
+        // 7. Lógica para gerar Pedido de Compra (deve ser implementada aqui ou em um serviço dedicado)
+        System.out.println("Orçamento " + id + " aprovado. SolicitacaoCompra " + solicitacaoCompraId + " atualizada. Lógica para gerar Pedido de Compra deve ser implementada aqui, com base no orçamento aprovado.");
+        // Exemplo: pedidoCompraService.gerarPedidoDeCompra(orcamentoAprovado);
+
+        return orcamentoMapper.toResponseDto(orcamentoAprovado);
     }
 }

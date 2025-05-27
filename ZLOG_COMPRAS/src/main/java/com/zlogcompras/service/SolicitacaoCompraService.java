@@ -1,110 +1,139 @@
 package com.zlogcompras.service;
 
-import java.util.HashSet;
-import java.util.List; // Importar ItemSolicitacaoCompra
-import java.util.Optional; // Importar Produto, pois os itens agora se referem a ele
-import java.util.Set;
-
-import org.springframework.stereotype.Service; // Adicionar este repositório
-import org.springframework.transaction.annotation.Transactional;
-
-import com.zlogcompras.model.ItemSolicitacaoCompra; // Para um tratamento de erro mais específico
+import com.zlogcompras.model.ItemSolicitacaoCompra;
 import com.zlogcompras.model.Produto;
 import com.zlogcompras.model.SolicitacaoCompra;
+import com.zlogcompras.model.StatusItemSolicitacao;
+import com.zlogcompras.model.StatusSolicitacaoCompra;
+import com.zlogcompras.model.dto.ItemSolicitacaoCompraRequestDTO;
+import com.zlogcompras.model.dto.SolicitacaoCompraRequestDTO;
+import com.zlogcompras.model.dto.SolicitacaoCompraResponseDTO;
+import com.zlogcompras.mapper.SolicitacaoCompraMapper;
+import com.zlogcompras.repository.ItemSolicitacaoCompraRepository;
 import com.zlogcompras.repository.ProdutoRepository;
 import com.zlogcompras.repository.SolicitacaoCompraRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityNotFoundException; // Importar Set
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects; // <--- Import adicionado
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SolicitacaoCompraService {
 
     private final SolicitacaoCompraRepository solicitacaoCompraRepository;
-    private final ProdutoRepository produtoRepository; // Injetar o repositório de Produto
+    private final ItemSolicitacaoCompraRepository itemSolicitacaoCompraRepository;
+    private final ProdutoRepository produtoRepository;
+    private final SolicitacaoCompraMapper solicitacaoCompraMapper;
 
-    // Injeção de dependência via construtor
-    public SolicitacaoCompraService(SolicitacaoCompraRepository solicitacaoCompraRepository, ProdutoRepository produtoRepository) {
+    @Autowired
+    public SolicitacaoCompraService(SolicitacaoCompraRepository solicitacaoCompraRepository,
+                                    ItemSolicitacaoCompraRepository itemSolicitacaoCompraRepository,
+                                    ProdutoRepository produtoRepository,
+                                    SolicitacaoCompraMapper solicitacaoCompraMapper) {
         this.solicitacaoCompraRepository = solicitacaoCompraRepository;
-        this.produtoRepository = produtoRepository; // Inicializar o repositório de Produto
+        this.itemSolicitacaoCompraRepository = itemSolicitacaoCompraRepository;
+        this.produtoRepository = produtoRepository;
+        this.solicitacaoCompraMapper = solicitacaoCompraMapper;
     }
 
     @Transactional
-    public SolicitacaoCompra criarSolicitacao(SolicitacaoCompra solicitacaoCompra) {
-        // Antes de salvar a solicitação, precisamos garantir que seus itens
-        // tenham a referência correta à solicitação pai e aos produtos.
-        if (solicitacaoCompra.getItens() != null && !solicitacaoCompra.getItens().isEmpty()) {
-            for (ItemSolicitacaoCompra item : solicitacaoCompra.getItens()) {
-                // Garante que o item esteja vinculado à solicitação principal
-                item.setSolicitacaoCompra(solicitacaoCompra);
+    public SolicitacaoCompraResponseDTO criarSolicitacao(SolicitacaoCompraRequestDTO solicitacaoRequestDTO) {
+        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraMapper.toEntity(solicitacaoRequestDTO);
 
-                // ** IMPORTANTE: Validar e buscar o Produto **
-                // Se o produto_id do item for nulo ou não existir, lançar exceção.
-                if (item.getProduto() == null || item.getProduto().getId() == null) {
-                    throw new IllegalArgumentException("Produto associado a um item da solicitação não pode ser nulo ou ter ID nulo.");
-                }
-                Produto produtoExistente = produtoRepository.findById(item.getProduto().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Produto com ID " + item.getProduto().getId() + " não encontrado para o item da solicitação."));
-                item.setProduto(produtoExistente); // Atribui o produto gerenciado pelo JPA
-            }
-        }
-        return solicitacaoCompraRepository.save(solicitacaoCompra);
+        solicitacaoCompra.setDataSolicitacao(LocalDate.now());
+        solicitacaoCompra.setStatus(StatusSolicitacaoCompra.PENDENTE);
+
+        Set<ItemSolicitacaoCompra> itens = solicitacaoRequestDTO.getItens().stream()
+                .map(itemDTO -> {
+                    Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
+                            .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
+                    ItemSolicitacaoCompra item = solicitacaoCompraMapper.toItemEntity(itemDTO);
+                    item.setProduto(produto);
+                    item.setSolicitacaoCompra(solicitacaoCompra);
+                    item.setStatus(StatusItemSolicitacao.AGUARDANDO_ORCAMENTO);
+                    return item;
+                })
+                .collect(Collectors.toSet());
+
+        solicitacaoCompra.setItens(itens);
+
+        SolicitacaoCompra savedSolicitacao = solicitacaoCompraRepository.save(solicitacaoCompra);
+        return solicitacaoCompraMapper.toResponseDto(savedSolicitacao);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SolicitacaoCompraResponseDTO> listarTodasSolicitacoes() {
+        return solicitacaoCompraRepository.findAll().stream()
+                .map(solicitacaoCompraMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public SolicitacaoCompraResponseDTO buscarSolicitacaoPorId(Long id) {
+        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Solicitação de Compra não encontrada com ID: " + id));
+        return solicitacaoCompraMapper.toResponseDto(solicitacaoCompra);
     }
 
     @Transactional
-    public SolicitacaoCompra atualizarSolicitacao(Long id, SolicitacaoCompra solicitacaoAtualizada) {
+    public SolicitacaoCompraResponseDTO atualizarSolicitacao(Long id, SolicitacaoCompraRequestDTO solicitacaoRequestDTO) {
         SolicitacaoCompra solicitacaoExistente = solicitacaoCompraRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Solicitação de compra não encontrada com ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Solicitação de Compra não encontrada com ID: " + id));
 
-        // Atualiza os campos básicos da solicitação
-        solicitacaoExistente.setDataSolicitacao(solicitacaoAtualizada.getDataSolicitacao());
-        solicitacaoExistente.setSolicitante(solicitacaoAtualizada.getSolicitante());
-        solicitacaoExistente.setStatus(solicitacaoAtualizada.getStatus());
+        solicitacaoExistente.setSolicitante(solicitacaoRequestDTO.getSolicitante());
+        solicitacaoExistente.setDescricao(solicitacaoRequestDTO.getDescricao());
+        solicitacaoExistente.setStatus(solicitacaoCompraMapper.mapStringToStatusSolicitacaoCompra(solicitacaoRequestDTO.getStatus()));
 
-        // Lógica crucial para lidar com os itens aninhados:
-        // A entidade SolicitacaoCompra.setItens() já contém a lógica para adicionar,
-        // remover e atualizar itens, incluindo a bidirecionalidade e a validação/busca de Produto.
-        // Precisamos garantir que os produtos referenciados nos itens sejam entidades gerenciadas.
-        if (solicitacaoAtualizada.getItens() != null) {
-            Set<ItemSolicitacaoCompra> itensComProdutosGerenciados = new HashSet<>();
-            for (ItemSolicitacaoCompra item : solicitacaoAtualizada.getItens()) {
-                if (item.getProduto() == null || item.getProduto().getId() == null) {
-                    throw new IllegalArgumentException("Produto associado a um item da solicitação não pode ser nulo ou ter ID nulo.");
-                }
-                Produto produtoExistente = produtoRepository.findById(item.getProduto().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Produto com ID " + item.getProduto().getId() + " não encontrado para o item da solicitação."));
-                item.setProduto(produtoExistente); // Atribui o produto gerenciado
-                itensComProdutosGerenciados.add(item); // Adiciona o item com produto gerenciado
-            }
-            solicitacaoExistente.setItens(itensComProdutosGerenciados); // Chama o setter que gerencia a coleção
-        } else {
-            solicitacaoExistente.setItens(new HashSet<>()); // Se a nova lista for nula, remove todos os itens existentes
-        }
+        Set<ItemSolicitacaoCompra> itensAtuais = solicitacaoExistente.getItens();
+        Set<Long> idsItensExistentes = itensAtuais.stream()
+                .map(ItemSolicitacaoCompra::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
-        return solicitacaoCompraRepository.save(solicitacaoExistente);
-    }
+        Set<ItemSolicitacaoCompra> novosItensOuAtualizados = solicitacaoRequestDTO.getItens().stream()
+                .map(itemDTO -> {
+                    Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
+                            .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
 
-    public Optional<SolicitacaoCompra> buscarSolicitacaoPorId(Long solicitacaoId) {
-        return solicitacaoCompraRepository.findById(solicitacaoId);
-    }
+                    ItemSolicitacaoCompra item;
+                    if (itemDTO.getId() != null && idsItensExistentes.contains(itemDTO.getId())) { // <--- getId() no DTO
+                        item = itensAtuais.stream()
+                                .filter(i -> i.getId().equals(itemDTO.getId())) // <--- getId() no DTO
+                                .findFirst()
+                                .orElseThrow(() -> new RuntimeException("Item de solicitação não encontrado com ID: " + itemDTO.getId())); // <--- getId() no DTO
+                        item.setQuantidade(itemDTO.getQuantidade());
+                        item.setDescricaoAdicional(itemDTO.getDescricaoAdicional());
+                        item.setStatus(solicitacaoCompraMapper.mapStringToStatusItemSolicitacao(itemDTO.getStatus()));
+                    } else {
+                        item = solicitacaoCompraMapper.toItemEntity(itemDTO);
+                        item.setProduto(produto);
+                        item.setStatus(StatusItemSolicitacao.AGUARDANDO_ORCAMENTO);
+                    }
+                    item.setSolicitacaoCompra(solicitacaoExistente);
+                    return item;
+                })
+                .collect(Collectors.toSet());
 
-    public List<SolicitacaoCompra> listarTodas() {
-        return solicitacaoCompraRepository.findAll();
+        itensAtuais.removeIf(itemExistente -> !novosItensOuAtualizados.contains(itemExistente));
+        itensAtuais.addAll(novosItensOuAtualizados);
+
+        solicitacaoExistente.setItens(itensAtuais);
+
+        SolicitacaoCompra updatedSolicitacao = solicitacaoCompraRepository.save(solicitacaoExistente);
+        return solicitacaoCompraMapper.toResponseDto(updatedSolicitacao);
     }
 
     @Transactional
-    public boolean deletarSolicitacao(Long id) {
-        if (solicitacaoCompraRepository.existsById(id)) {
-            solicitacaoCompraRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
-
-    @Transactional
-    public void atualizarStatusSolicitacao(Long id, String novoStatus) {
-        SolicitacaoCompra solicitacao = solicitacaoCompraRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Solicitação de compra não encontrada com ID: " + id));
-        solicitacao.setStatus(novoStatus);
-        solicitacaoCompraRepository.save(solicitacao);
+    public void deletarSolicitacao(Long id) {
+        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Solicitação de Compra não encontrada com ID: " + id));
+        solicitacaoCompraRepository.delete(solicitacaoCompra);
     }
 }

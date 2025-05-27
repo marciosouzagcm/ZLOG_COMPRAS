@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.zlogcompras.model.ItemSolicitacaoCompra;
-import com.zlogcompras.model.SolicitacaoCompra; // Importação da entidade
+import com.zlogcompras.model.StatusSolicitacaoCompra; // Importação da entidade
 
 public interface ItemSolicitacaoCompraRepository extends JpaRepository<ItemSolicitacaoCompra, Long> {
 

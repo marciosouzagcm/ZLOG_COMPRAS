@@ -2,7 +2,7 @@ package com.zlogcompras.controller;
 
 import com.zlogcompras.model.dto.OrcamentoRequestDTO;
 import com.zlogcompras.model.dto.OrcamentoResponseDTO;
-import com.zlogcompras.model.dto.OrcamentoListaDTO; // Certifique-se que está importado
+import com.zlogcompras.model.dto.OrcamentoListaDTO;
 import com.zlogcompras.service.OrcamentoService;
 import com.zlogcompras.mapper.OrcamentoMapper;
 
@@ -33,8 +33,8 @@ public class OrcamentoController {
      * @return ResponseEntity contendo uma lista de OrcamentoListaDTO e status OK.
      */
     @GetMapping
-    public ResponseEntity<List<OrcamentoListaDTO>> listarTodosOrcamentos() { // Mudado o tipo de retorno para List<OrcamentoListaDTO>
-        List<OrcamentoListaDTO> orcamentos = orcamentoService.listarTodosOrcamentos(); // Chama o serviço que já retorna o DTO correto
+    public ResponseEntity<List<OrcamentoListaDTO>> listarTodosOrcamentos() {
+        List<OrcamentoListaDTO> orcamentos = orcamentoService.listarTodosOrcamentos();
         return ResponseEntity.ok(orcamentos);
     }
 
@@ -63,7 +63,7 @@ public class OrcamentoController {
      */
     @PostMapping
     public ResponseEntity<OrcamentoResponseDTO> criarOrcamento(@Valid @RequestBody OrcamentoRequestDTO orcamentoRequestDTO) {
-        OrcamentoResponseDTO novoOrcamento = orcamentoService.criarOrcamento(orcamentoRequestDTO); // Método renomeado
+        OrcamentoResponseDTO novoOrcamento = orcamentoService.criarOrcamento(orcamentoRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoOrcamento);
     }
 
@@ -94,5 +94,21 @@ public class OrcamentoController {
     public ResponseEntity<Void> deletarOrcamento(@PathVariable Long id) {
         orcamentoService.deletarOrcamento(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Aprova um orçamento específico e rejeita os demais da mesma solicitação de compra.
+     * Retorna o OrcamentoResponseDTO do orçamento aprovado com status 200 OK.
+     * Lança 404 Not Found se o orçamento não for encontrado.
+     * Lança 400 Bad Request se a solicitação de compra associada não for encontrada ou
+     * se houver algum erro de lógica de negócio (ex: orçamento já aprovado/rejeitado).
+     *
+     * @param id O ID do orçamento a ser aprovado.
+     * @return ResponseEntity contendo OrcamentoResponseDTO e status OK.
+     */
+    @PatchMapping("/{id}/aprovar") // Usando PATCH para atualização parcial (status)
+    public ResponseEntity<OrcamentoResponseDTO> aprovarOrcamento(@PathVariable Long id) {
+        OrcamentoResponseDTO orcamentoAprovado = orcamentoService.aprovarOrcamento(id);
+        return ResponseEntity.ok(orcamentoAprovado);
     }
 }

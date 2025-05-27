@@ -1,38 +1,38 @@
 package com.zlogcompras.model.dto;
 
 import java.time.LocalDate;
-import java.util.Set; // Usar Set para itens
+import java.util.List;
 
 public class SolicitacaoCompraResponseDTO {
 
     private Long id;
+    private Long solicitacaoCompraId; // Mapeado do 'id' da entidade
     private LocalDate dataSolicitacao;
     private String solicitante;
-    private String status;
-    private Long version; // Pode ser útil expor a versão para controle de concorrência no cliente
-    private Set<ItemSolicitacaoCompraResponseDTO> itens; // Usamos o DTO de Response para os itens
+    private String status; // Será mapeado do Enum StatusSolicitacaoCompra para String
+    private String descricaoSolicitacaoCompra; // Mapeado da 'descricao' da entidade
+    private Long version;
+    private List<ItemSolicitacaoCompraResponseDTO> itens; // Lista de itens de resposta
 
     // Construtor padrão
     public SolicitacaoCompraResponseDTO() {
     }
 
-    // Construtor com todos os campos
-    public SolicitacaoCompraResponseDTO(Long id, LocalDate dataSolicitacao, String solicitante, String status, Long version, Set<ItemSolicitacaoCompraResponseDTO> itens) {
-        this.id = id;
-        this.dataSolicitacao = dataSolicitacao;
-        this.solicitante = solicitante;
-        this.status = status;
-        this.version = version;
-        this.itens = itens;
-    }
-
-    // --- Getters e Setters ---
+    // Getters e Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getSolicitacaoCompraId() {
+        return solicitacaoCompraId;
+    }
+
+    public void setSolicitacaoCompraId(Long solicitacaoCompraId) {
+        this.solicitacaoCompraId = solicitacaoCompraId;
     }
 
     public LocalDate getDataSolicitacao() {
@@ -59,6 +59,14 @@ public class SolicitacaoCompraResponseDTO {
         this.status = status;
     }
 
+    public String getDescricaoSolicitacaoCompra() {
+        return descricaoSolicitacaoCompra;
+    }
+
+    public void setDescricaoSolicitacaoCompra(String descricaoSolicitacaoCompra) {
+        this.descricaoSolicitacaoCompra = descricaoSolicitacaoCompra;
+    }
+
     public Long getVersion() {
         return version;
     }
@@ -67,23 +75,11 @@ public class SolicitacaoCompraResponseDTO {
         this.version = version;
     }
 
-    public Set<ItemSolicitacaoCompraResponseDTO> getItens() {
+    public List<ItemSolicitacaoCompraResponseDTO> getItens() {
         return itens;
     }
 
-    public void setItens(Set<ItemSolicitacaoCompraResponseDTO> itens) {
+    public void setItens(List<ItemSolicitacaoCompraResponseDTO> itens) {
         this.itens = itens;
-    }
-
-    @Override
-    public String toString() {
-        return "SolicitacaoCompraResponseDTO{" +
-               "id=" + id +
-               ", dataSolicitacao=" + dataSolicitacao +
-               ", solicitante='" + solicitante + '\'' +
-               ", status='" + status + '\'' +
-               ", version=" + version +
-               ", itens=" + (itens != null ? itens.size() : 0) +
-               '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.zlogcompras.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime; // Import adicionado para LocalDateTime
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,6 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist; // Import para @PrePersist
+import jakarta.persistence.PreUpdate;  // Import para @PreUpdate
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
@@ -36,6 +39,12 @@ public class Produto {
     @Column(nullable = false, precision = 10, scale = 2) // Precisão para valores monetários
     private BigDecimal precoUnitario; // Alterado para BigDecimal
 
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    private LocalDateTime dataCriacao; // Novo campo para data de criação
+
+    @Column(name = "data_atualizacao", nullable = false)
+    private LocalDateTime dataAtualizacao; // Novo campo para data de atualização
+
     @Version
     private Long version;
 
@@ -50,6 +59,18 @@ public class Produto {
         this.descricao = descricao;
         this.unidadeMedida = unidadeMedida;
         this.precoUnitario = precoUnitario;
+    }
+
+    // Métodos de callback JPA para preencher automaticamente as datas
+    @PrePersist
+    protected void onCreate() {
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dataAtualizacao = LocalDateTime.now();
     }
 
     // --- Getters e Setters ---
@@ -101,6 +122,24 @@ public class Produto {
         this.precoUnitario = precoUnitario;
     }
 
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    // Setter para dataCriacao (geralmente não é chamado diretamente, mas pode ser útil para testes ou inicialização)
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    // Setter para dataAtualizacao (geralmente não é chamado diretamente, mas pode ser útil para testes ou inicialização)
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
     public Long getVersion() {
         return version;
     }
@@ -135,6 +174,8 @@ public class Produto {
                 ", descricao='" + descricao + '\'' +
                 ", unidadeMedida='" + unidadeMedida + '\'' +
                 ", precoUnitario=" + precoUnitario +
+                ", dataCriacao=" + dataCriacao +
+                ", dataAtualizacao=" + dataAtualizacao +
                 ", version=" + version +
                 '}';
     }
