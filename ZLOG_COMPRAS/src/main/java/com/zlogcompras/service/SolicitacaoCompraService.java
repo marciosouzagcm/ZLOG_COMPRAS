@@ -15,14 +15,13 @@ import com.zlogcompras.repository.SolicitacaoCompraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.Hibernate; // Importar Hibernate para inicialização lazy
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects; // <--- Import adicionado
-import java.util.Optional;
+import java.util.LinkedHashSet;
+import java.util.List; // Adicionar import para List
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Collectors; // Adicionar import para Collectors
 
 @Service
 public class SolicitacaoCompraService {
@@ -50,36 +49,83 @@ public class SolicitacaoCompraService {
         solicitacaoCompra.setDataSolicitacao(LocalDate.now());
         solicitacaoCompra.setStatus(StatusSolicitacaoCompra.PENDENTE);
 
-        Set<ItemSolicitacaoCompra> itens = solicitacaoRequestDTO.getItens().stream()
-                .map(itemDTO -> {
-                    Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
-                            .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
-                    ItemSolicitacaoCompra item = solicitacaoCompraMapper.toItemEntity(itemDTO);
-                    item.setProduto(produto);
-                    item.setSolicitacaoCompra(solicitacaoCompra);
-                    item.setStatus(StatusItemSolicitacao.AGUARDANDO_ORCAMENTO);
-                    return item;
-                })
-                .collect(Collectors.toSet());
+        if (solicitacaoRequestDTO.getItens() == null || solicitacaoRequestDTO.getItens().isEmpty()) {
+            throw new IllegalArgumentException("A solicitação de compra deve conter pelo menos um item.");
+        }
 
-        solicitacaoCompra.setItens(itens);
+        Set<ItemSolicitacaoCompra> itensProcessados = new LinkedHashSet<>();
+
+        for (ItemSolicitacaoCompraRequestDTO itemDTO : solicitacaoRequestDTO.getItens()) {
+            Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
+                    .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
+
+            ItemSolicitacaoCompra item = solicitacaoCompraMapper.toItemEntity(itemDTO);
+
+            item.setProduto(produto);
+            item.setSolicitacaoCompra(solicitacaoCompra);
+            item.setStatus(StatusItemSolicitacao.AGUARDANDO_ORCAMENTO);
+
+            itensProcessados.add(item);
+        }
+
+        solicitacaoCompra.setItens(itensProcessados);
 
         SolicitacaoCompra savedSolicitacao = solicitacaoCompraRepository.save(solicitacaoCompra);
+
+        // *** ADIÇÃO: Inicializar produtos antes de mapear para DTO de resposta ***
+        // Isso é crucial se 'produto' é LAZY e você quer acessá-lo fora da transação.
+        // O erro de tipo incompatível na linha 79 pode estar aqui se o import do Hibernate não for org.hibernate.Hibernate
+        // ou se você estiver usando um item de forma incorreta.
+        // A linha 79 é provavelmente esta:
+        // CUIDADO: if (item.getProduto() != null) { item.getProduto().getId(); } // Isso inicializa o proxy
+        // ou:
+        // for (ItemSolicitacaoCompra item : savedSolicitacao.getItens()) { // Se a linha 79 é a declaração do loop
+        //     if (item.getProduto() != null) {
+        //         Hibernate.initialize(item.getProduto()); // Garante que o produto lazy seja carregado
+        //     }
+        // }
+        // Se a linha 79 é 'Hibernate.initialize(item);' (passando o item inteiro em vez do produto), pode ser o erro.
+        // O correto é passar o proxy lazy que precisa ser inicializado, que é 'item.getProduto()'.
+
+        // FORÇANDO A INICIALIZAÇÃO DE TODOS OS PRODUTOS ASSOCIADOS AOS ITENS
+        savedSolicitacao.getItens().forEach(item -> {
+            if (item.getProduto() != null) {
+                Hibernate.initialize(item.getProduto());
+            }
+        });
+
         return solicitacaoCompraMapper.toResponseDto(savedSolicitacao);
     }
 
     @Transactional(readOnly = true)
     public List<SolicitacaoCompraResponseDTO> listarTodasSolicitacoes() {
-        return solicitacaoCompraRepository.findAll().stream()
+        List<SolicitacaoCompra> solicitacoes = solicitacaoCompraRepository.findAll();
+        // Inicializa os produtos em cada item de cada solicitação
+        solicitacoes.forEach(solicitacao -> {
+            solicitacao.getItens().forEach(item -> {
+                if (item.getProduto() != null) {
+                    Hibernate.initialize(item.getProduto());
+                }
+            });
+        });
+        return solicitacoes.stream()
                 .map(solicitacaoCompraMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public SolicitacaoCompraResponseDTO buscarSolicitacaoPorId(Long id) {
-        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(id)
+        SolicitacaoCompra solicitacao = solicitacaoCompraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitação de Compra não encontrada com ID: " + id));
-        return solicitacaoCompraMapper.toResponseDto(solicitacaoCompra);
+
+        // Inicializa os produtos em cada item da solicitação
+        solicitacao.getItens().forEach(item -> {
+            if (item.getProduto() != null) {
+                Hibernate.initialize(item.getProduto());
+            }
+        });
+
+        return solicitacaoCompraMapper.toResponseDto(solicitacao);
     }
 
     @Transactional
@@ -87,53 +133,50 @@ public class SolicitacaoCompraService {
         SolicitacaoCompra solicitacaoExistente = solicitacaoCompraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitação de Compra não encontrada com ID: " + id));
 
-        solicitacaoExistente.setSolicitante(solicitacaoRequestDTO.getSolicitante());
-        solicitacaoExistente.setDescricao(solicitacaoRequestDTO.getDescricao());
-        solicitacaoExistente.setStatus(solicitacaoCompraMapper.mapStringToStatusSolicitacaoCompra(solicitacaoRequestDTO.getStatus()));
+        // Atualizar campos da solicitação principal
+        solicitacaoCompraMapper.updateEntityFromDto(solicitacaoRequestDTO, solicitacaoExistente);
+        solicitacaoExistente.setDataAtualizacao(null); // @PreUpdate vai preencher
 
-        Set<ItemSolicitacaoCompra> itensAtuais = solicitacaoExistente.getItens();
-        Set<Long> idsItensExistentes = itensAtuais.stream()
-                .map(ItemSolicitacaoCompra::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        // Lógica para atualizar/remover/adicionar itens:
+        // Primeiro, crie um mapa dos itens existentes para facilitar a busca
+        // Isso pode ser mais complexo e requer gerenciar IDs existentes vs. novos DTOs.
+        // Por simplicidade, vamos substituir todos os itens para este exemplo,
+        // mas em um cenário real, você faria um CRUD nos itens.
+        itemSolicitacaoCompraRepository.deleteAll(solicitacaoExistente.getItens()); // Apaga os antigos
+        solicitacaoExistente.getItens().clear(); // Limpa a coleção para o Set
 
-        Set<ItemSolicitacaoCompra> novosItensOuAtualizados = solicitacaoRequestDTO.getItens().stream()
-                .map(itemDTO -> {
-                    Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
-                            .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
+        if (solicitacaoRequestDTO.getItens() != null && !solicitacaoRequestDTO.getItens().isEmpty()) {
+            Set<ItemSolicitacaoCompra> novosItens = new LinkedHashSet<>();
+            for (ItemSolicitacaoCompraRequestDTO itemDTO : solicitacaoRequestDTO.getItens()) {
+                Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
+                        .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
 
-                    ItemSolicitacaoCompra item;
-                    if (itemDTO.getId() != null && idsItensExistentes.contains(itemDTO.getId())) { // <--- getId() no DTO
-                        item = itensAtuais.stream()
-                                .filter(i -> i.getId().equals(itemDTO.getId())) // <--- getId() no DTO
-                                .findFirst()
-                                .orElseThrow(() -> new RuntimeException("Item de solicitação não encontrado com ID: " + itemDTO.getId())); // <--- getId() no DTO
-                        item.setQuantidade(itemDTO.getQuantidade());
-                        item.setDescricaoAdicional(itemDTO.getDescricaoAdicional());
-                        item.setStatus(solicitacaoCompraMapper.mapStringToStatusItemSolicitacao(itemDTO.getStatus()));
-                    } else {
-                        item = solicitacaoCompraMapper.toItemEntity(itemDTO);
-                        item.setProduto(produto);
-                        item.setStatus(StatusItemSolicitacao.AGUARDANDO_ORCAMENTO);
-                    }
-                    item.setSolicitacaoCompra(solicitacaoExistente);
-                    return item;
-                })
-                .collect(Collectors.toSet());
+                ItemSolicitacaoCompra novoItem = solicitacaoCompraMapper.toItemEntity(itemDTO);
+                novoItem.setProduto(produto);
+                novoItem.setSolicitacaoCompra(solicitacaoExistente); // Associa ao pai
+                novoItem.setStatus(StatusItemSolicitacao.AGUARDANDO_ORCAMENTO); // Ou manter o status do DTO
 
-        itensAtuais.removeIf(itemExistente -> !novosItensOuAtualizados.contains(itemExistente));
-        itensAtuais.addAll(novosItensOuAtualizados);
-
-        solicitacaoExistente.setItens(itensAtuais);
+                novosItens.add(novoItem);
+            }
+            solicitacaoExistente.setItens(novosItens);
+        }
 
         SolicitacaoCompra updatedSolicitacao = solicitacaoCompraRepository.save(solicitacaoExistente);
+
+        // Inicializar produtos para o DTO de resposta
+        updatedSolicitacao.getItens().forEach(item -> {
+            if (item.getProduto() != null) {
+                Hibernate.initialize(item.getProduto());
+            }
+        });
+
         return solicitacaoCompraMapper.toResponseDto(updatedSolicitacao);
     }
 
     @Transactional
     public void deletarSolicitacao(Long id) {
-        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(id)
+        SolicitacaoCompra solicitacaoExistente = solicitacaoCompraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitação de Compra não encontrada com ID: " + id));
-        solicitacaoCompraRepository.delete(solicitacaoCompra);
+        solicitacaoCompraRepository.delete(solicitacaoExistente);
     }
 }

@@ -31,8 +31,8 @@ public class ItemOrcamento {
     @Column(nullable = false, precision = 10, scale = 3)
     private BigDecimal quantidade;
 
-    @Column(name = "preco_unitario_cotado", nullable = false, precision = 12, scale = 2) // Campo renomeado
-    private BigDecimal precoUnitarioCotado; // Campo renomeado para 'precoUnitarioCotado'
+    @Column(name = "preco_unitario_cotado", nullable = false, precision = 12, scale = 2)
+    private BigDecimal precoUnitarioCotado;
 
     @Column(length = 255)
     private String observacoes;
@@ -48,11 +48,11 @@ public class ItemOrcamento {
     public ItemOrcamento() {
     }
 
-    public ItemOrcamento(Produto produto, BigDecimal quantidade, BigDecimal precoUnitarioCotado, String observacoes, // Construtor ajustado
+    public ItemOrcamento(Produto produto, BigDecimal quantidade, BigDecimal precoUnitarioCotado, String observacoes,
                          Orcamento orcamento) {
         this.produto = produto;
         this.quantidade = quantidade;
-        this.precoUnitarioCotado = precoUnitarioCotado; // Inicializa precoUnitarioCotado
+        this.precoUnitarioCotado = precoUnitarioCotado;
         this.observacoes = observacoes;
         this.orcamento = orcamento;
     }
@@ -82,11 +82,11 @@ public class ItemOrcamento {
         this.quantidade = quantidade;
     }
 
-    public BigDecimal getPrecoUnitarioCotado() { // Getter renomeado
+    public BigDecimal getPrecoUnitarioCotado() {
         return precoUnitarioCotado;
     }
 
-    public void setPrecoUnitarioCotado(BigDecimal precoUnitarioCotado) { // Setter renomeado
+    public void setPrecoUnitarioCotado(BigDecimal precoUnitarioCotado) {
         this.precoUnitarioCotado = precoUnitarioCotado;
     }
 
@@ -132,13 +132,13 @@ public class ItemOrcamento {
     @Override
     public String toString() {
         return "ItemOrcamento{" +
-                "id=" + id +
-                ", produtoId=" + (produto != null ? produto.getId() : "null") +
-                ", quantidade=" + quantidade +
-                ", precoUnitarioCotado=" + precoUnitarioCotado + // Ajustado para novo nome
-                ", observacoes='" + observacoes + '\'' +
-                ", orcamentoId=" + (orcamento != null ? orcamento.getId() : "null") +
-                ", version=" + version +
-                '}';
+               "id=" + id +
+               ", produtoId=" + (produto != null ? produto.getId() : "null") +
+               ", quantidade=" + quantidade +
+               ", precoUnitarioCotado=" + precoUnitarioCotado +
+               ", observacoes='" + observacoes + '\'' +
+               ", orcamentoId=" + (orcamento != null ? orcamento.getId() : "null") +
+               ", version=" + version +
+               '}';
     }
 }

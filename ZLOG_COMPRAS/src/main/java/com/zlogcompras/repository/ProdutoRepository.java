@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    Optional<Produto> findByCodigo(String codigo); // <--- ADICIONE ESTE MÉTODO
+    // Método corrigido para usar 'codigoProduto'
+    Optional<Produto> findByCodigoProduto(String codigoProduto);
 }

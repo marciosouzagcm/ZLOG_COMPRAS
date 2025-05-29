@@ -14,10 +14,10 @@ public class ItemSolicitacaoCompra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonBackReference("solicitacao-item") // Nome da referência deve corresponder ao SolicitacaoCompra
+    @JsonBackReference("solicitacao-item")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "solicitacao_compra_id", nullable = false)
-    private SolicitacaoCompra solicitacaoCompra; // <--- TIPO CORRIGIDO PARA SolicitacaoCompra
+    private SolicitacaoCompra solicitacaoCompra;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id", nullable = false)
@@ -29,9 +29,9 @@ public class ItemSolicitacaoCompra {
     @Column(name = "descricao_adicional", length = 255)
     private String descricaoAdicional;
 
-    @Enumerated(EnumType.STRING) // Mapeia o Enum para String no banco de dados
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusItemSolicitacao status; // Tipo Enum
+    private StatusItemSolicitacao status;
 
     @Version
     private Long version;
@@ -43,29 +43,23 @@ public class ItemSolicitacaoCompra {
     private LocalDateTime dataAtualizacao;
 
     public ItemSolicitacaoCompra() {
-        this.status = StatusItemSolicitacao.PENDENTE; // Status padrão
+        this.status = StatusItemSolicitacao.PENDENTE;
     }
 
-    public ItemSolicitacaoCompra(SolicitacaoCompra solicitacaoCompra, Produto produto, BigDecimal quantidade, String descricaoAdicional) {
-        this.solicitacaoCompra = solicitacaoCompra;
-        this.produto = produto;
-        this.quantidade = quantidade;
-        this.descricaoAdicional = descricaoAdicional;
-        this.status = StatusItemSolicitacao.PENDENTE; // Status padrão
-    }
-
+    // --- Métodos de ciclo de vida do JPA para gerenciar datas ---
     @PrePersist
     protected void onCreate() {
-        this.dataCriacao = LocalDateTime.now();
-        this.dataAtualizacao = LocalDateTime.now();
+        dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.dataAtualizacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
     }
 
-    // Getters e Setters
+    // --- GETTERS E SETTERS CORRIGIDOS ---
+
     public Long getId() {
         return id;
     }
@@ -126,28 +120,37 @@ public class ItemSolicitacaoCompra {
         return dataCriacao;
     }
 
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
+    // Não é comum ter um setter público para dataCriacao se ela é gerada por PrePersist
+    // public void setDataCriacao(LocalDateTime dataCriacao) {
+    //     this.dataCriacao = dataCriacao;
+    // }
 
     public LocalDateTime getDataAtualizacao() {
         return dataAtualizacao;
     }
 
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
+    // Não é comum ter um setter público para dataAtualizacao se ela é gerada por PreUpdate
+    // public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+    //     this.dataAtualizacao = dataAtualizacao;
+    // }
 
+    // --- equals() e hashCode() conforme a última correção ---
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemSolicitacaoCompra that = (ItemSolicitacaoCompra) o;
-        return Objects.equals(id, that.id);
+        if (id != null && that.id != null) {
+            return Objects.equals(id, that.id);
+        }
+        return this == that;
     }
 
     @Override
     public int hashCode() {
+        if (id == null) {
+            return super.hashCode();
+        }
         return Objects.hash(id);
     }
 

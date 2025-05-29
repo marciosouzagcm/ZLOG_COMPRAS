@@ -2,7 +2,7 @@ package com.zlogcompras.mapper;
 
 import java.util.List;
 
-import org.mapstruct.Mapper;
+import org.mapstruct.Mapper; // Importe BigDecimal
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
@@ -12,10 +12,10 @@ import com.zlogcompras.model.ItemOrcamento;
 import com.zlogcompras.model.Orcamento;
 import com.zlogcompras.model.Produto;
 import com.zlogcompras.model.StatusOrcamento;
-import com.zlogcompras.model.dto.ItemOrcamentoRequestDTO; // Renomeado
-import com.zlogcompras.model.dto.OrcamentoRequestDTO; // Renomeado
+import com.zlogcompras.model.dto.ItemOrcamentoRequestDTO;
 import com.zlogcompras.model.dto.ItemOrcamentoResponseDTO;
 import com.zlogcompras.model.dto.OrcamentoListaDTO;
+import com.zlogcompras.model.dto.OrcamentoRequestDTO;
 import com.zlogcompras.model.dto.OrcamentoResponseDTO;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
@@ -25,31 +25,31 @@ public interface OrcamentoMapper {
     @Mapping(source = "solicitacaoCompraId", target = "solicitacaoCompra.id")
     @Mapping(source = "fornecedorId", target = "fornecedor.id")
     @Mapping(source = "status", target = "status", qualifiedByName = "mapStringToStatusOrcamento")
-    @Mapping(target = "id", ignore = true) // ID é gerado pelo banco, não pelo DTO
-    @Mapping(target = "version", ignore = true) // Version é gerenciado pelo JPA, não pelo DTO
-    @Mapping(target = "dataCriacao", ignore = true) // Data de criação é setada na entidade
-    @Mapping(target = "dataAtualizacao", ignore = true) // Data de atualização é setada na entidade
-    @Mapping(target = "valorTotal", ignore = true) // Valor total é calculado no serviço/entidade, não vem do DTO
-    @Mapping(source = "observacoes", target = "observacoes") // Ajustado para "observacoes"
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "dataCriacao", ignore = true)
+    @Mapping(target = "dataAtualizacao", ignore = true)
+    @Mapping(target = "valorTotal", ignore = true)
+    @Mapping(source = "observacoes", target = "observacoes")
     @Mapping(source = "condicoesPagamento", target = "condicoesPagamento")
     @Mapping(source = "prazoEntrega", target = "prazoEntrega")
-    @Mapping(target = "itensOrcamento", ignore = true) // Itens são tratados separadamente no serviço para criação
-    Orcamento toEntity(OrcamentoRequestDTO orcamentoRequestDTO); // Renomeado
+    @Mapping(target = "itensOrcamento", ignore = true)
+    Orcamento toEntity(OrcamentoRequestDTO orcamentoRequestDTO);
 
     // Mapeamento para atualizar uma entidade existente
     @Mapping(source = "solicitacaoCompraId", target = "solicitacaoCompra.id")
     @Mapping(source = "fornecedorId", target = "fornecedor.id")
     @Mapping(source = "status", target = "status", qualifiedByName = "mapStringToStatusOrcamento")
-    @Mapping(target = "itensOrcamento", ignore = true) // Itens são atualizados separadamente no serviço
-    @Mapping(target = "id", ignore = true) // Nunca atualize o ID da entidade através do DTO de input
-    @Mapping(target = "version", ignore = true) // Versão gerenciada pelo JPA
+    @Mapping(target = "itensOrcamento", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "version", ignore = true)
     @Mapping(target = "dataCriacao", ignore = true)
     @Mapping(target = "dataAtualizacao", ignore = true)
     @Mapping(target = "valorTotal", ignore = true)
-    @Mapping(source = "observacoes", target = "observacoes") // Ajustado para "observacoes"
+    @Mapping(source = "observacoes", target = "observacoes")
     @Mapping(source = "condicoesPagamento", target = "condicoesPagamento")
     @Mapping(source = "prazoEntrega", target = "prazoEntrega")
-    void updateEntityFromDto(OrcamentoRequestDTO orcamentoRequestDTO, @MappingTarget Orcamento orcamento); // Renomeado
+    void updateEntityFromDto(OrcamentoRequestDTO orcamentoRequestDTO, @MappingTarget Orcamento orcamento);
 
     // --- Mapeamento de Entidade para OrcamentoResponseDTO ---
     @Mapping(source = "solicitacaoCompra.id", target = "solicitacaoCompraId")
@@ -68,22 +68,25 @@ public interface OrcamentoMapper {
     List<OrcamentoListaDTO> toListaDtoList(List<Orcamento> orcamentos);
 
     // --- Mapeamento de ItemOrcamentoRequestDTO para ItemOrcamento (Entidade) ---
-    @Mapping(source = "precoUnitarioCotado", target = "precoUnitarioCotado") // Garante o mapeamento
-    @Mapping(target = "orcamento", ignore = true) // Orcamento é setado manualmente no serviço
+    @Mapping(source = "precoUnitarioCotado", target = "precoUnitarioCotado")
+    @Mapping(target = "orcamento", ignore = true)
     @Mapping(target = "version", ignore = true)
-    @Mapping(target = "id", ignore = true) // ID para novos itens é gerado
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "produtoId", target = "produto", qualifiedByName = "mapProdutoIdToProduto")
-    ItemOrcamento toItemOrcamentoEntity(ItemOrcamentoRequestDTO itemOrcamentoRequestDTO); // Renomeado
+    ItemOrcamento toItemOrcamentoEntity(ItemOrcamentoRequestDTO itemOrcamentoRequestDTO);
 
     // --- Mapeamento de ItemOrcamento (Entidade) para ItemOrcamentoResponseDTO ---
     @Mapping(source = "produto.id", target = "produtoId")
     @Mapping(source = "produto.nome", target = "nomeProduto")
-    @Mapping(source = "produto.codigo", target = "codigoProduto")
+    @Mapping(source = "produto.codigoProduto", target = "codigoProduto")
     @Mapping(source = "produto.unidadeMedida", target = "unidadeMedidaProduto")
     @Mapping(source = "precoUnitarioCotado", target = "precoUnitarioCotado")
     @Mapping(source = "observacoes", target = "observacoes")
     @Mapping(source = "version", target = "version")
-    @Mapping(target = "subtotal", expression = "java(itemOrcamento.getQuantidade().multiply(itemOrcamento.getPrecoUnitarioCotado()))") // Calcula subtotal no DTO
+    // CORRIGIDO: Removido BigDecimal.valueOf() redundante. Agora multiplica BigDecimal por BigDecimal.
+    @Mapping(target = "subtotal", expression = "java(itemOrcamento.getQuantidade() != null && itemOrcamento.getPrecoUnitarioCotado() != null ? " +
+                                                 "itemOrcamento.getQuantidade().multiply(itemOrcamento.getPrecoUnitarioCotado()) " +
+                                                 ": null)")
     ItemOrcamentoResponseDTO toItemOrcamentoResponseDto(ItemOrcamento itemOrcamento);
 
     List<ItemOrcamentoResponseDTO> toItemOrcamentoResponseDtoList(List<ItemOrcamento> itensOrcamento);
@@ -97,7 +100,6 @@ public interface OrcamentoMapper {
         try {
             return StatusOrcamento.valueOf(statusString.toUpperCase());
         } catch (IllegalArgumentException e) {
-            // Considere logar o erro aqui
             throw new IllegalArgumentException("Status de orçamento inválido: " + statusString);
         }
     }
@@ -118,8 +120,6 @@ public interface OrcamentoMapper {
         }
         Produto produto = new Produto();
         produto.setId(produtoId);
-        // O serviço (OrcamentoService) é responsável por buscar o Produto completo
-        // antes de salvar o ItemOrcamento. Aqui, apenas criamos uma referência com o ID.
         return produto;
     }
 }

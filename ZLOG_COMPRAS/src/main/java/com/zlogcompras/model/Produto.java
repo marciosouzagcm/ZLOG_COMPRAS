@@ -1,22 +1,18 @@
 package com.zlogcompras.model;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime; // Import adicionado para LocalDateTime
-import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist; // Import para @PrePersist
-import jakarta.persistence.PreUpdate;  // Import para @PreUpdate
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.math.BigDecimal; // Importe BigDecimal
 
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "produtos")
 public class Produto {
@@ -25,55 +21,55 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String codigo; // Código do produto (ex: SKU)
+    @Column(unique = true, nullable = false, length = 50)
+    private String codigoProduto; // Campo correto
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String nome;
 
+    @Column(length = 255)
     private String descricao;
 
-    @Column(nullable = false)
-    private String unidadeMedida;
+    @Column(nullable = false, length = 20)
+    private String unidadeMedida; // Adicionado
 
-    @Column(nullable = false, precision = 10, scale = 2) // Precisão para valores monetários
+    @Column(nullable = false, precision = 10, scale = 2) // Usar BigDecimal para precisão monetária
     private BigDecimal precoUnitario; // Alterado para BigDecimal
 
-    @Column(name = "data_criacao", nullable = false, updatable = false)
-    private LocalDateTime dataCriacao; // Novo campo para data de criação
+    @Column(nullable = false, updatable = false)
+    private LocalDate dataCriacao; // Adicionado
 
-    @Column(name = "data_atualizacao", nullable = false)
-    private LocalDateTime dataAtualizacao; // Novo campo para data de atualização
+    @Column(nullable = false)
+    private LocalDate dataAtualizacao; // Adicionado
 
     @Version
-    private Long version;
+    private Long version; // Adicionado
 
-    // Construtor padrão
     public Produto() {
     }
 
-    // Construtor com campos
-    public Produto(String codigo, String nome, String descricao, String unidadeMedida, BigDecimal precoUnitario) {
-        this.codigo = codigo;
+    public Produto(String codigoProduto, String nome, String descricao,
+                   String unidadeMedida, BigDecimal precoUnitario) { // Ajuste no construtor
+        this.codigoProduto = codigoProduto;
         this.nome = nome;
         this.descricao = descricao;
         this.unidadeMedida = unidadeMedida;
         this.precoUnitario = precoUnitario;
     }
 
-    // Métodos de callback JPA para preencher automaticamente as datas
     @PrePersist
     protected void onCreate() {
-        this.dataCriacao = LocalDateTime.now();
-        this.dataAtualizacao = LocalDateTime.now();
+        this.dataCriacao = LocalDate.now();
+        this.dataAtualizacao = LocalDate.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.dataAtualizacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDate.now();
     }
 
     // --- Getters e Setters ---
+
     public Long getId() {
         return id;
     }
@@ -82,12 +78,12 @@ public class Produto {
         this.id = id;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getCodigoProduto() {
+        return codigoProduto;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setCodigoProduto(String codigoProduto) {
+        this.codigoProduto = codigoProduto;
     }
 
     public String getNome() {
@@ -114,29 +110,27 @@ public class Produto {
         this.unidadeMedida = unidadeMedida;
     }
 
-    public BigDecimal getPrecoUnitario() {
+    public BigDecimal getPrecoUnitario() { // Retorno BigDecimal
         return precoUnitario;
     }
 
-    public void setPrecoUnitario(BigDecimal precoUnitario) {
+    public void setPrecoUnitario(BigDecimal precoUnitario) { // Parâmetro BigDecimal
         this.precoUnitario = precoUnitario;
     }
 
-    public LocalDateTime getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    // Setter para dataCriacao (geralmente não é chamado diretamente, mas pode ser útil para testes ou inicialização)
-    public void setDataCriacao(LocalDateTime dataCriacao) {
+    protected void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public LocalDateTime getDataAtualizacao() {
+    public LocalDate getDataAtualizacao() {
         return dataAtualizacao;
     }
 
-    // Setter para dataAtualizacao (geralmente não é chamado diretamente, mas pode ser útil para testes ou inicialização)
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+    protected void setDataAtualizacao(LocalDate dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
     }
 
@@ -148,13 +142,10 @@ public class Produto {
         this.version = version;
     }
 
-    // --- Métodos equals e hashCode ---
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Produto produto = (Produto) o;
         return Objects.equals(id, produto.id);
     }
@@ -164,19 +155,18 @@ public class Produto {
         return Objects.hash(id);
     }
 
-    // --- Método toString ---
     @Override
     public String toString() {
         return "Produto{" +
-                "id=" + id +
-                ", codigo='" + codigo + '\'' +
-                ", nome='" + nome + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", unidadeMedida='" + unidadeMedida + '\'' +
-                ", precoUnitario=" + precoUnitario +
-                ", dataCriacao=" + dataCriacao +
-                ", dataAtualizacao=" + dataAtualizacao +
-                ", version=" + version +
-                '}';
+               "id=" + id +
+               ", codigoProduto='" + codigoProduto + '\'' +
+               ", nome='" + nome + '\'' +
+               ", descricao='" + descricao + '\'' +
+               ", unidadeMedida='" + unidadeMedida + '\'' +
+               ", precoUnitario=" + precoUnitario +
+               ", dataCriacao=" + dataCriacao +
+               ", dataAtualizacao=" + dataAtualizacao +
+               ", version=" + version +
+               '}';
     }
 }

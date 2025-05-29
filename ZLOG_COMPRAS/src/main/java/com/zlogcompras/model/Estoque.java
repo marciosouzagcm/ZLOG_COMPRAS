@@ -1,80 +1,77 @@
 package com.zlogcompras.model;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalDateTime; // Alterado para LocalDateTime para timestamps
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.annotation.CreatedDate; // Importe para @Column
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener; // Importe para @EntityListeners
 
-import jakarta.persistence.Column; // Import adicionado para JsonIgnoreProperties
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import jakarta.persistence.ManyToOne; // Importe para auditoria
+import jakarta.persistence.Table; // Importe para auditoria
+import jakarta.persistence.Version; // Importe para auditoria
 
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // Mantido para compatibilidade com frameworks
 @Entity
-@Table(name = "estoques")
+@Table(name = "estoque")
+@EntityListeners(AuditingEntityListener.class) // Habilita a auditoria para esta entidade
 public class Estoque {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
-    @Column(name = "quantidade_atual", nullable = false, precision = 10, scale = 3)
-    private BigDecimal quantidadeAtual;
+    @Column(nullable = false) // Geralmente a quantidade não pode ser nula
+    private Integer quantidade;
 
-    @Column(name = "data_entrada")
-    private LocalDate dataEntrada;
-
-    @Column(name = "localizacao", length = 100)
     private String localizacao;
+
+    @Column(name = "data_ultima_entrada") // Nome da coluna no banco, se diferente do nome do campo
+    private LocalDateTime dataUltimaEntrada; // Mantido como LocalDateTime para precisão
+
+    @Column(name = "data_ultima_saida") // Nome da coluna no banco, se diferente do nome do campo
+    private LocalDateTime dataUltimaSaida; // Alterado para LocalDateTime para precisão
+
+    private String observacoes;
 
     @Version
     private Long version;
 
+    // Campos de Auditoria
+    @CreatedDate // Preenche automaticamente a data de criação
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
+    @LastModifiedDate // Preenche automaticamente a data de última atualização
     @Column(name = "data_atualizacao", nullable = false)
     private LocalDateTime dataAtualizacao;
 
+    // Construtor padrão
     public Estoque() {
-        this.quantidadeAtual = BigDecimal.ZERO;
-        this.dataEntrada = LocalDate.now();
     }
 
-    public Estoque(Produto produto, BigDecimal quantidadeAtual, LocalDate dataEntrada, String localizacao) {
+    // Construtor com campos (não inclua dataCriacao e dataAtualizacao aqui, pois são gerados automaticamente)
+    public Estoque(Produto produto, Integer quantidade, String localizacao,
+                   LocalDateTime dataUltimaEntrada, LocalDateTime dataUltimaSaida, String observacoes) {
         this.produto = produto;
-        this.quantidadeAtual = quantidadeAtual;
-        this.dataEntrada = dataEntrada;
+        this.quantidade = quantidade;
         this.localizacao = localizacao;
+        this.dataUltimaEntrada = dataUltimaEntrada;
+        this.dataUltimaSaida = dataUltimaSaida;
+        this.observacoes = observacoes;
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.dataCriacao = LocalDateTime.now();
-        this.dataAtualizacao = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.dataAtualizacao = LocalDateTime.now();
-    }
-
-    // Getters e Setters
+    // --- Getters e Setters ---
     public Long getId() {
         return id;
     }
@@ -91,20 +88,12 @@ public class Estoque {
         this.produto = produto;
     }
 
-    public BigDecimal getQuantidadeAtual() {
-        return quantidadeAtual;
+    public Integer getQuantidade() {
+        return quantidade;
     }
 
-    public void setQuantidadeAtual(BigDecimal quantidadeAtual) {
-        this.quantidadeAtual = quantidadeAtual;
-    }
-
-    public LocalDate getDataEntrada() {
-        return dataEntrada;
-    }
-
-    public void setDataEntrada(LocalDate dataEntrada) {
-        this.dataEntrada = dataEntrada;
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
     }
 
     public String getLocalizacao() {
@@ -115,6 +104,30 @@ public class Estoque {
         this.localizacao = localizacao;
     }
 
+    public LocalDateTime getDataUltimaEntrada() {
+        return dataUltimaEntrada;
+    }
+
+    public void setDataUltimaEntrada(LocalDateTime dataUltimaEntrada) {
+        this.dataUltimaEntrada = dataUltimaEntrada;
+    }
+
+    public LocalDateTime getDataUltimaSaida() {
+        return dataUltimaSaida;
+    }
+
+    public void setDataUltimaSaida(LocalDateTime dataUltimaSaida) {
+        this.dataUltimaSaida = dataUltimaSaida;
+    }
+
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
+    }
+
     public Long getVersion() {
         return version;
     }
@@ -123,26 +136,26 @@ public class Estoque {
         this.version = version;
     }
 
+    // Getters para os novos campos de auditoria
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
+    // Não há setter para dataCriacao, pois é definido automaticamente na criação
 
     public LocalDateTime getDataAtualizacao() {
         return dataAtualizacao;
     }
 
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
+    // Não há setter para dataAtualizacao, pois é definido automaticamente na atualização
 
+    // Opcional: Adicione equals e hashCode se ainda não tiver
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Estoque estoque = (Estoque) o;
         return Objects.equals(id, estoque.id);
     }
@@ -150,19 +163,5 @@ public class Estoque {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Estoque{" +
-                "id=" + id +
-                ", produtoId=" + (produto != null ? produto.getId() : "null") +
-                ", quantidadeAtual=" + quantidadeAtual +
-                ", dataEntrada=" + dataEntrada +
-                ", localizacao='" + localizacao + '\'' +
-                ", version=" + version +
-                ", dataCriacao=" + dataCriacao + // Adicionado ao toString
-                ", dataAtualizacao=" + dataAtualizacao + // Adicionado ao toString
-                '}';
     }
 }

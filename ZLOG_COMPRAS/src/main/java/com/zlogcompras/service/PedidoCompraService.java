@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zlogcompras.model.ItemPedidoCompra;
-import com.zlogcompras.model.PedidoCompra;
+import com.zlogcompras.model.Orcamento;
+import com.zlogcompras.model.PedidoCompra; // Import correto
 import com.zlogcompras.repository.ItemPedidoCompraRepository;
-import com.zlogcompras.repository.PedidoCompraRepository;
+import com.zlogcompras.repository.PedidoCompraRepository; // Import correto
 
 @Service
 public class PedidoCompraService {
@@ -21,7 +22,8 @@ public class PedidoCompraService {
 
     @Autowired
     private ItemPedidoCompraRepository itemPedidoCompraRepository;
-    private PedidoCompra pedidoAtualizado;
+    // REMOVA OU INICIALIZE esta linha se não for usada, ou se for, ajuste o uso.
+    // private PedidoCompra pedidoAtualizado; // <--- Esta linha está causando erro
 
     // No futuro, podemos precisar de FornecedorService para validar o fornecedor
 
@@ -42,6 +44,7 @@ public class PedidoCompraService {
         if (pedidoCompra.getItens() != null && !pedidoCompra.getItens().isEmpty()) {
             for (ItemPedidoCompra item : pedidoCompra.getItens()) {
                 item.setPedidoCompra(novoPedido);
+                // Salvar o item de pedido
                 itemPedidoCompraRepository.save(item);
             }
         }
@@ -54,8 +57,30 @@ public class PedidoCompraService {
         PedidoCompra pedidoExistente = pedidoCompraRepository.findById(pedidoCompraAtualizado.getId())
                 .orElseThrow(() -> new RuntimeException("Pedido de compra não encontrado com ID: " + pedidoCompraAtualizado.getId()));
 
-        pedidoAtualizado.setDataPedido(pedidoExistente.getDataPedido()); // Mantém a data original de criação
-        return pedidoCompraRepository.save(pedidoCompraAtualizado);
+        // Atualize os campos do pedidoExistente com os valores de pedidoCompraAtualizado
+        pedidoExistente.setFornecedor(pedidoCompraAtualizado.getFornecedor());
+        pedidoExistente.setStatus(pedidoCompraAtualizado.getStatus());
+        pedidoExistente.setValorTotal(pedidoCompraAtualizado.getValorTotal());
+        // Mantenha a data original de criação se você não quiser que ela seja atualizada:
+        // pedidoExistente.setDataPedido(pedidoExistente.getDataPedido());
+        // OU, se a dataPedido puder ser atualizada, use:
+        // pedidoExistente.setDataPedido(pedidoCompraAtualizado.getDataPedido());
+
+        // Para os itens, você precisará de uma lógica mais elaborada para sincronizar:
+        // 1. Remover itens que não estão mais na lista atualizada
+        // 2. Atualizar itens existentes
+        // 3. Adicionar novos itens
+        // Por exemplo:
+        pedidoExistente.getItens().clear(); // Limpa os itens existentes
+        if (pedidoCompraAtualizado.getItens() != null) {
+            for (ItemPedidoCompra item : pedidoCompraAtualizado.getItens()) {
+                pedidoExistente.addItem(item); // Usa o método addItem que garante a bidirecionalidade
+            }
+        }
+
+
+        // Salve o pedido existente (que agora está atualizado)
+        return pedidoCompraRepository.save(pedidoExistente);
     }
 
     public void atualizarStatusPedidoCompra(Long id, String novoStatus) {
@@ -68,7 +93,14 @@ public class PedidoCompraService {
 
     // Métodos para buscar pedidos por fornecedor, status, etc., podem ser adicionados aqui
 
+    // Este método está lançando uma exceção de "não suportado".
+    // Se ele não é necessário ou não será implementado, pode ser removido.
+    // Se for necessário, precisa ser implementado.
     void atualizarPedido(PedidoCompra pedido) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    void criarPedidoCompra(Orcamento orcamentoAprovado) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

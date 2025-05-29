@@ -1,95 +1,155 @@
 package com.zlogcompras.service;
 
-import com.zlogcompras.model.Estoque;
-import com.zlogcompras.model.Produto;
-import com.zlogcompras.model.dto.EstoqueRequestDTO;
-import com.zlogcompras.model.dto.EstoqueResponseDTO;
-import com.zlogcompras.mapper.EstoqueMapper; // Assumindo que você tem um EstoqueMapper
-import com.zlogcompras.repository.EstoqueRepository;
-import com.zlogcompras.repository.ProdutoRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.zlogcompras.exceptions.ResourceNotFoundException;
+import com.zlogcompras.model.Estoque;
+import com.zlogcompras.model.Produto;
+import com.zlogcompras.model.dto.EstoqueRequestDTO;
+import com.zlogcompras.model.dto.EstoqueResponseDTO;
+import com.zlogcompras.repository.EstoqueRepository;
+import com.zlogcompras.repository.ProdutoRepository; // Importe ResourceNotFoundException (no plural)
 
 @Service
 public class EstoqueService {
 
     private final EstoqueRepository estoqueRepository;
     private final ProdutoRepository produtoRepository;
-    private final EstoqueMapper estoqueMapper; // Injeção do EstoqueMapper
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public EstoqueService(EstoqueRepository estoqueRepository, ProdutoRepository produtoRepository, EstoqueMapper estoqueMapper) {
+    public EstoqueService(EstoqueRepository estoqueRepository, ProdutoRepository produtoRepository,
+                          ModelMapper modelMapper) {
         this.estoqueRepository = estoqueRepository;
         this.produtoRepository = produtoRepository;
-        this.estoqueMapper = estoqueMapper;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
     public EstoqueResponseDTO criarEstoque(EstoqueRequestDTO estoqueRequestDTO) {
         Produto produto = produtoRepository.findById(estoqueRequestDTO.getProdutoId())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + estoqueRequestDTO.getProdutoId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Produto não encontrado com ID: " + estoqueRequestDTO.getProdutoId()));
 
-        Estoque estoque = estoqueMapper.toEntity(estoqueRequestDTO);
-        estoque.setProduto(produto); // Associa o produto ao estoque
+        Estoque estoque = modelMapper.map(estoqueRequestDTO, Estoque.class);
+        estoque.setProduto(produto);
 
-        Estoque savedEstoque = estoqueRepository.save(estoque);
-        return estoqueMapper.toResponseDto(savedEstoque);
+        // --- CORREÇÃO AQUI: Removido .toLocalDate() ---
+        if (estoqueRequestDTO.getQuantidade() != null) {
+            estoque.setQuantidade(estoqueRequestDTO.getQuantidade().intValue()); // Converte BigDecimal para Integer
+        }
+        if (estoqueRequestDTO.getDataUltimaEntrada() != null) {
+            estoque.setDataUltimaEntrada(estoqueRequestDTO.getDataUltimaEntrada()); // Atribui LocalDateTime diretamente
+        }
+        if (estoqueRequestDTO.getDataUltimaSaida() != null) {
+            estoque.setDataUltimaSaida(estoqueRequestDTO.getDataUltimaSaida()); // Atribui LocalDateTime diretamente
+        }
+        // --- FIM DA CORREÇÃO ---
+
+
+        Estoque salvo = estoqueRepository.save(estoque);
+        return modelMapper.map(salvo, EstoqueResponseDTO.class);
     }
 
-    @Transactional(readOnly = true)
-    public List<EstoqueResponseDTO> listarTodosEstoques() {
-        return estoqueRepository.findAll().stream()
-                .map(estoqueMapper::toResponseDto)
+    @Transactional
+    public List<EstoqueResponseDTO> criarMultiplosEstoques(List<EstoqueRequestDTO> estoqueRequestDTOs) {
+        List<Estoque> estoquesParaSalvar = estoqueRequestDTOs.stream()
+                .map(dto -> {
+                    Produto produto = produtoRepository.findById(dto.getProdutoId())
+                            .orElseThrow(
+                                    () -> new ResourceNotFoundException("Produto não encontrado com ID: " + dto.getProdutoId()));
+                    Estoque estoque = modelMapper.map(dto, Estoque.class);
+                    estoque.setProduto(produto);
+
+                    // --- CORREÇÃO AQUI: Removido .toLocalDate() ---
+                    if (dto.getQuantidade() != null) {
+                        estoque.setQuantidade(dto.getQuantidade().intValue()); // Converte BigDecimal para Integer
+                    }
+                    if (dto.getDataUltimaEntrada() != null) {
+                        estoque.setDataUltimaEntrada(dto.getDataUltimaEntrada()); // Atribui LocalDateTime diretamente
+                    }
+                    if (dto.getDataUltimaSaida() != null) {
+                        estoque.setDataUltimaSaida(dto.getDataUltimaSaida()); // Atribui LocalDateTime diretamente
+                    }
+                    // --- FIM DA CORREÇÃO ---
+
+                    return estoque;
+                })
+                .collect(Collectors.toList());
+
+        List<Estoque> estoquesSalvos = estoqueRepository.saveAll(estoquesParaSalvar);
+
+        return estoquesSalvos.stream()
+                .map(estoque -> modelMapper.map(estoque, EstoqueResponseDTO.class))
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public EstoqueResponseDTO buscarEstoquePorId(Long id) {
-        Estoque estoque = estoqueRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Estoque não encontrado com ID: " + id));
-        return estoqueMapper.toResponseDto(estoque);
+    public List<EstoqueResponseDTO> listarTodosEstoques() {
+        return estoqueRepository.findAll().stream()
+                .map(estoque -> modelMapper.map(estoque, EstoqueResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public EstoqueResponseDTO buscarEstoquePorCodigoProduto(String codigoProduto) {
-        // Encontra o produto pelo código
-        Produto produto = produtoRepository.findByCodigo(codigoProduto)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com código: " + codigoProduto));
+    public EstoqueResponseDTO buscarEstoquePorId(Long id) {
+        Estoque estoque = estoqueRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Estoque não encontrado com ID: " + id));
+        return modelMapper.map(estoque, EstoqueResponseDTO.class);
+    }
 
-        // Encontra o estoque associado a este produto
-        // Você pode ter um findByProduto no seu EstoqueRepository
-        Estoque estoque = estoqueRepository.findByProduto(produto) // <--- MÉTODO findByProduto NO REPOSITORY
-                .orElseThrow(() -> new RuntimeException("Estoque não encontrado para o produto com código: " + codigoProduto));
-        return estoqueMapper.toResponseDto(estoque);
+    public EstoqueResponseDTO buscarEstoquePorCodigoProduto(String codigoProduto) {
+        Estoque estoque = estoqueRepository.findByProduto_CodigoProduto(codigoProduto)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Estoque não encontrado para o código do produto: " + codigoProduto));
+        return modelMapper.map(estoque, EstoqueResponseDTO.class);
     }
 
     @Transactional
     public EstoqueResponseDTO atualizarEstoque(Long id, EstoqueRequestDTO estoqueRequestDTO) {
         Estoque estoqueExistente = estoqueRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Estoque não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Estoque não encontrado com ID: " + id));
 
-        Produto produto = produtoRepository.findById(estoqueRequestDTO.getProdutoId())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + estoqueRequestDTO.getProdutoId()));
+        if (estoqueRequestDTO.getProdutoId() != null &&
+                (estoqueExistente.getProduto() == null ||
+                 !estoqueExistente.getProduto().getId().equals(estoqueRequestDTO.getProdutoId()))) {
+            Produto novoProduto = produtoRepository.findById(estoqueRequestDTO.getProdutoId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Novo Produto não encontrado com ID: " + estoqueRequestDTO.getProdutoId()));
+            estoqueExistente.setProduto(novoProduto);
+        }
 
-        // Atualiza os campos do estoque existente
-        estoqueExistente.setProduto(produto); // Pode ser atualizado se o produto mudar
-        estoqueExistente.setQuantidadeAtual(estoqueRequestDTO.getQuantidadeAtual());
-        estoqueExistente.setDataEntrada(estoqueRequestDTO.getDataEntrada());
-        estoqueExistente.setLocalizacao(estoqueRequestDTO.getLocalizacao());
+        // --- CORREÇÃO AQUI: Removido .toLocalDate() ---
+        Optional.ofNullable(estoqueRequestDTO.getQuantidade())
+                .ifPresent(qty -> estoqueExistente.setQuantidade(qty.intValue()));
 
-        Estoque updatedEstoque = estoqueRepository.save(estoqueExistente);
-        return estoqueMapper.toResponseDto(updatedEstoque);
+        Optional.ofNullable(estoqueRequestDTO.getLocalizacao())
+                .ifPresent(estoqueExistente::setLocalizacao);
+
+        Optional.ofNullable(estoqueRequestDTO.getDataUltimaEntrada())
+                .ifPresent(estoqueExistente::setDataUltimaEntrada); // Atribui LocalDateTime diretamente
+
+        Optional.ofNullable(estoqueRequestDTO.getDataUltimaSaida())
+                .ifPresent(estoqueExistente::setDataUltimaSaida); // Atribui LocalDateTime diretamente
+
+        Optional.ofNullable(estoqueRequestDTO.getObservacoes())
+                .ifPresent(estoqueExistente::setObservacoes);
+        // --- FIM DA CORREÇÃO ---
+
+        Estoque estoqueAtualizado = estoqueRepository.save(estoqueExistente);
+        return modelMapper.map(estoqueAtualizado, EstoqueResponseDTO.class);
     }
 
     @Transactional
     public void deletarEstoque(Long id) {
-        Estoque estoque = estoqueRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Estoque não encontrado com ID: " + id));
-        estoqueRepository.delete(estoque);
+        if (!estoqueRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Estoque não encontrado com ID: " + id);
+        }
+        estoqueRepository.deleteById(id);
     }
 }

@@ -1,6 +1,6 @@
 package com.zlogcompras.controller;
 
-import com.zlogcompras.model.Estoque;
+import com.zlogcompras.model.Estoque; // Importe se sua camada de serviço retorna a entidade
 import com.zlogcompras.model.dto.EstoqueRequestDTO;
 import com.zlogcompras.model.dto.EstoqueResponseDTO;
 import com.zlogcompras.service.EstoqueService;
@@ -26,12 +26,21 @@ public class EstoqueController {
         // this.estoqueMapper = estoqueMapper;
     }
 
+    // --- Endpoint para criar um único item de estoque (EXISTENTE) ---
     @PostMapping
     public ResponseEntity<EstoqueResponseDTO> criarEstoque(@RequestBody EstoqueRequestDTO estoqueRequestDTO) {
         EstoqueResponseDTO novoEstoque = estoqueService.criarEstoque(estoqueRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstoque);
     }
 
+    // --- NOVO ENDPOINT: para criar MÚLTIPLOS itens de estoque ---
+    @PostMapping("/batch") // Você pode escolher o caminho, "/batch" é comum para operações em lote
+    public ResponseEntity<List<EstoqueResponseDTO>> criarMultiplosEstoques(@RequestBody List<EstoqueRequestDTO> estoqueRequestDTOs) {
+        List<EstoqueResponseDTO> novosEstoques = estoqueService.criarMultiplosEstoques(estoqueRequestDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novosEstoques);
+    }
+
+    // --- Demais Endpoints (Sem Alteração) ---
     @GetMapping
     public ResponseEntity<List<EstoqueResponseDTO>> listarTodosEstoques() {
         List<EstoqueResponseDTO> estoques = estoqueService.listarTodosEstoques();
@@ -44,7 +53,7 @@ public class EstoqueController {
         return ResponseEntity.ok(estoque);
     }
 
-    @GetMapping("/produto/{codigoProduto}") // Alterado para buscar por código do produto
+    @GetMapping("/produto/{codigoProduto}")
     public ResponseEntity<EstoqueResponseDTO> buscarEstoquePorCodigoProduto(@PathVariable String codigoProduto) {
         EstoqueResponseDTO estoque = estoqueService.buscarEstoquePorCodigoProduto(codigoProduto);
         return ResponseEntity.ok(estoque);

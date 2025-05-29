@@ -1,20 +1,29 @@
 package com.zlogcompras.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat; // Importe esta classe
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class ItemOrcamentoResponseDTO { // Renomeado para ItemOrcamentoResponseDTO
+public class ItemOrcamentoResponseDTO {
 
     private Long id;
     private Long produtoId;
-    private String nomeProduto; // Para exibição
-    private String codigoProduto; // Para exibição
-    private String unidadeMedidaProduto; // Para exibição
+    private String nomeProduto;
+    private String codigoProduto;
+    private String unidadeMedidaProduto;
+
+    // Campos BigDecimal que devem ter duas casas decimais no JSON
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00")
     private BigDecimal quantidade;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00")
     private BigDecimal precoUnitarioCotado;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00")
     private BigDecimal subtotal;
+
     private String observacoes;
-    private Long version; // Adicionado para controle de concorrência
+    private Long version;
 
     // Construtor padrão
     public ItemOrcamentoResponseDTO() {
@@ -36,7 +45,7 @@ public class ItemOrcamentoResponseDTO { // Renomeado para ItemOrcamentoResponseD
         this.version = version;
     }
 
-    // --- Getters e Setters ---
+    // --- Getters e Setters (inalterados, pois a formatação é feita na serialização) ---
     public Long getId() {
         return id;
     }
@@ -133,11 +142,11 @@ public class ItemOrcamentoResponseDTO { // Renomeado para ItemOrcamentoResponseD
     @Override
     public String toString() {
         return "ItemOrcamentoResponseDTO{" +
-               "id=" + id +
-               ", produtoId=" + produtoId +
-               ", nomeProduto='" + nomeProduto + '\'' +
-               ", quantidade=" + quantidade +
-               ", precoUnitarioCotado=" + precoUnitarioCotado +
-               '}';
+                "id=" + id +
+                ", produtoId=" + produtoId +
+                ", nomeProduto='" + nomeProduto + '\'' +
+                ", quantidade=" + quantidade +
+                ", precoUnitarioCotado=" + precoUnitarioCotado +
+                '}';
     }
 }
