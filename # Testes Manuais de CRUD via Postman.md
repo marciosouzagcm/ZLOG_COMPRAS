@@ -1,19 +1,24 @@
-#Testes Manuais de CRUD via Postman
+---
+# Testes Manuais de CRUD via Postman
+
 Este documento contém exemplos de requisições para testar os principais endpoints CRUD do sistema ZLOG_COMPRAS. Use o Postman ou cURL para executar cada teste.
 
-##Produto
-A entidade Produto gerencia os itens disponíveis para compra no sistema.
+---
+## Produto
 
-Criar Produto
+A entidade **Produto** gerencia os itens disponíveis para compra no sistema.
+
+### Criar Produto
+
 Cria um ou mais novos produtos no sistema.
 
-POST /api/produtos
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON - Exemplo com múltiplos produtos):
-JSON
+* **POST** `/api/produtos`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON - Exemplo com múltiplos produtos):**
 
+```json
 [
   {
     "nome": "Cadeira Ergonômica Presidente",
@@ -223,24 +228,29 @@ JSON
     "categoria": "Elétrica"
   }
 ]
-Consultar Produtos
+```
+
+### Consultar Produtos
+
 Recupera informações sobre produtos.
 
-GET /api/produtos
-Descrição: Retorna uma lista de todos os produtos cadastrados.
-GET /api/produtos/{id}
-Descrição: Retorna um produto específico pelo seu ID.
-Exemplo: /api/produtos/1
-Atualizar Produto
+* **GET** `/api/produtos`
+    * **Descrição:** Retorna uma lista de todos os produtos cadastrados.
+* **GET** `/api/produtos/{id}`
+    * **Descrição:** Retorna um produto específico pelo seu ID.
+    * **Exemplo:** `/api/produtos/1`
+
+### Atualizar Produto
+
 Atualiza as informações de um produto existente.
 
-PUT /api/produtos/{id}
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON - Exemplo de atualização do produto com ID 16):
-JSON
+* **PUT** `/api/produtos/{id}`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON - Exemplo de atualização do produto com ID 16):**
 
+```json
 {
   "id": 16,
   "codigo": "LAB-BEQUER",
@@ -252,25 +262,32 @@ JSON
   "dataAtualizacao": "2025-05-28T21:37:18.000000",
   "version": 0
 }
-Deletar Produto
+```
+
+### Deletar Produto
+
 Remove um produto do sistema.
 
-DELETE /api/produtos/{id}
-Descrição: Deleta um produto específico pelo seu ID.
-Exemplo: /api/produtos/1
-Solicitação de Compra
-A entidade Solicitação de Compra representa um pedido de itens que precisam ser adquiridos.
+* **DELETE** `/api/produtos/{id}`
+    * **Descrição:** Deleta um produto específico pelo seu ID.
+    * **Exemplo:** `/api/produtos/1`
 
-##Criar Solicitação de Compra
+---
+## Solicitação de Compra
+
+A entidade **Solicitação de Compra** representa um pedido de itens que precisam ser adquiridos.
+
+### Criar Solicitação de Compra
+
 Cria uma nova solicitação de compra com seus itens.
 
-POST /api/solicitacoes-compra
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON):
-JSON
+* **POST** `/api/solicitacoes-compra`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON):**
 
+```json
 {
   "descricao": "Aquisição de materiais diversos para a prefeitura - JUNHO/2025",
   "solicitante": "Secretaria Municipal de Administração - Departamento de Compras",
@@ -428,24 +445,29 @@ JSON
     }
   ]
 }
-Consultar Solicitações de Compra
+```
+
+### Consultar Solicitações de Compra
+
 Recupera informações sobre solicitações de compra.
 
-GET /api/solicitacoes-compra
-Descrição: Retorna uma lista de todas as solicitações de compra cadastradas.
-GET /api/solicitacoes-compra/{id}
-Descrição: Retorna uma solicitação de compra específica pelo seu ID.
-Exemplo: /api/solicitacoes-compra/1
-Atualizar Solicitação de Compra
+* **GET** `/api/solicitacoes-compra`
+    * **Descrição:** Retorna uma lista de todas as solicitações de compra cadastradas.
+* **GET** `/api/solicitacoes-compra/{id}`
+    * **Descrição:** Retorna uma solicitação de compra específica pelo seu ID.
+    * **Exemplo:** `/api/solicitacoes-compra/1`
+
+### Atualizar Solicitação de Compra
+
 Atualiza as informações de uma solicitação de compra existente, incluindo seus itens.
 
-PUT /api/solicitacoes-compra/{id}
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON - Exemplo de atualização da solicitação com ID 1):
-JSON
+* **PUT** `/api/solicitacoes-compra/{id}`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON - Exemplo de atualização da solicitação com ID 1):**
 
+```json
 {
   "id": 1,
   "solicitacaoCompraId": 1,
@@ -547,25 +569,32 @@ JSON
     }
   ]
 }
-Deletar Solicitação de Compra
+```
+
+### Deletar Solicitação de Compra
+
 Remove uma solicitação de compra do sistema.
 
-DELETE /api/solicitacoes-compra/{id}
-Descrição: Deleta uma solicitação de compra específica pelo seu ID.
-Exemplo: /api/solicitacoes-compra/1
-Fornecedor
-A entidade Fornecedor representa as empresas que fornecem produtos ou serviços.
+* **DELETE** `/api/solicitacoes-compra/{id}`
+    * **Descrição:** Deleta uma solicitação de compra específica pelo seu ID.
+    * **Exemplo:** `/api/solicitacoes-compra/1`
 
-##Criar Fornecedor
+---
+## Fornecedor
+
+A entidade **Fornecedor** representa as empresas que fornecem produtos ou serviços.
+
+### Criar Fornecedor
+
 Cria um novo fornecedor no sistema.
 
-POST /api/fornecedores
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON):
-JSON
+* **POST** `/api/fornecedores`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON):**
 
+```json
 {
   "nome": "FoodService Gourmet",
   "razaoSocial": "Gourmet Suprimentos para Gastronomia Ltda.",
@@ -577,24 +606,29 @@ JSON
   "observacoes": "Ingredientes, insumos e equipamentos para restaurantes e bares.",
   "ativo": true
 }
-Consultar Fornecedores
+```
+
+### Consultar Fornecedores
+
 Recupera informações sobre fornecedores.
 
-GET /api/fornecedores
-Descrição: Retorna uma lista de todos os fornecedores cadastrados.
-GET /api/fornecedores/{id}
-Descrição: Retorna um fornecedor específico pelo seu ID.
-Exemplo: /api/fornecedores/1
-Atualizar Fornecedor
+* **GET** `/api/fornecedores`
+    * **Descrição:** Retorna uma lista de todos os fornecedores cadastrados.
+* **GET** `/api/fornecedores/{id}`
+    * **Descrição:** Retorna um fornecedor específico pelo seu ID.
+    * **Exemplo:** `/api/fornecedores/1`
+
+### Atualizar Fornecedor
+
 Atualiza as informações de um fornecedor existente.
 
-PUT /api/fornecedores/{id}
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON - Exemplo de atualização do fornecedor com ID 17):
-JSON
+* **PUT** `/api/fornecedores/{id}`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON - Exemplo de atualização do fornecedor com ID 17):**
 
+```json
 {
   "id": 17,
   "nome": "Nome do Fornecedor ID 17",
@@ -607,26 +641,32 @@ JSON
   "observacoes": "Observações...",
   "ativo": true
 }
-Deletar Fornecedor
+```
+
+### Deletar Fornecedor
+
 Remove um fornecedor do sistema.
 
-DELETE /api/fornecedores/{id}
-Descrição: Deleta um fornecedor específico pelo seu ID.
-Exemplo: /api/fornecedores/1
+* **DELETE** `/api/fornecedores/{id}`
+    * **Descrição:** Deleta um fornecedor específico pelo seu ID.
+    * **Exemplo:** `/api/fornecedores/1`
 
-##Estoque
-A entidade Estoque gerencia as informações de quantidade e localização dos produtos em armazenamento.
+---
+## Estoque
 
-Adicionar/Atualizar Itens em Lote no Estoque
+A entidade **Estoque** gerencia as informações de quantidade e localização dos produtos em armazenamento.
+
+### Adicionar/Atualizar Itens em Lote no Estoque
+
 Permite adicionar ou atualizar múltiplos itens de estoque em uma única requisição.
 
-POST /api/estoques/batch
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON - Exemplo de adição/atualização de itens em lote):
-JSON
+* **POST** `/api/estoques/batch`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON - Exemplo de adição/atualização de itens em lote):**
 
+```json
 [
   {
     "produtoId": 6,
@@ -719,24 +759,29 @@ JSON
     "observacoes": "Cores fluorescentes variadas."
   }
 ]
-Consultar Estoque
+```
+
+### Consultar Estoque
+
 Recupera informações sobre o estoque de produtos.
 
-GET /api/estoques
-Descrição: Retorna uma lista de todos os itens em estoque.
-GET /api/estoques/{produtoId}
-Descrição: Retorna o item de estoque para um produtoId específico.
-Exemplo: /api/estoques/6
-Atualizar Item de Estoque
+* **GET** `/api/estoques`
+    * **Descrição:** Retorna uma lista de todos os itens em estoque.
+* **GET** `/api/estoques/{produtoId}`
+    * **Descrição:** Retorna o item de estoque para um `produtoId` específico.
+    * **Exemplo:** `/api/estoques/6`
+
+### Atualizar Item de Estoque
+
 Atualiza as informações de um item de estoque existente.
 
-PUT /api/estoques/{produtoId}
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON - Exemplo de atualização de um item de estoque para o produtoId 6):
-JSON
+* **PUT** `/api/estoques/{produtoId}`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON - Exemplo de atualização de um item de estoque para o produtoId 6):**
 
+```json
 {
   "produtoId": 6,
   "nomeProduto": "Canetas Esferográficas (Pacote c/10) - Atualizado",
@@ -746,25 +791,32 @@ JSON
   "localizacao": "ARMAZEM_F1_NOVO",
   "observacoes": "Pacote misto de cores. Quantidade e localização atualizadas."
 }
-Deletar Item de Estoque
+```
+
+### Deletar Item de Estoque
+
 Remove um item de estoque do sistema.
 
-DELETE /api/estoque/{produtoId}
-Descrição: Deleta um item de estoque associado a um produtoId específico.
-Exemplo: /api/estoque/6
-Orçamento
-A entidade Orçamento registra as cotações de preços de fornecedores para uma solicitação de compra.
+* **DELETE** `/api/estoque/{produtoId}`
+    * **Descrição:** Deleta um item de estoque associado a um `produtoId` específico.
+    * **Exemplo:** `/api/estoque/6`
 
-Criar Orçamento
+---
+## Orçamento
+
+A entidade **Orçamento** registra as cotações de preços de fornecedores para uma solicitação de compra.
+
+### Criar Orçamento
+
 Cria um novo orçamento para uma solicitação de compra.
 
-POST /api/orcamentos
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON):
-JSON
+* **POST** `/api/orcamentos`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON):**
 
+```json
 {
   "solicitacaoCompraId": 1,
   "fornecedorId": 11,
@@ -786,24 +838,29 @@ JSON
     }
   ]
 }
-Consultar Orçamentos
+```
+
+### Consultar Orçamentos
+
 Recupera informações sobre orçamentos.
 
-GET /api/orcamentos
-Descrição: Retorna uma lista de todos os orçamentos cadastrados.
-GET /api/orcamentos/{id}
-Descrição: Retorna um orçamento específico pelo seu ID.
-Exemplo: /api/orcamentos/1
-Atualizar Orçamento
+* **GET** `/api/orcamentos`
+    * **Descrição:** Retorna uma lista de todos os orçamentos cadastrados.
+* **GET** `/api/orcamentos/{id}`
+    * **Descrição:** Retorna um orçamento específico pelo seu ID.
+    * **Exemplo:** `/api/orcamentos/1`
+
+### Atualizar Orçamento
+
 Atualiza as informações de um orçamento existente.
 
-PUT /api/orcamentos/{id}
-Headers:
-Content-Type: application/json
-Accept: application/json
-Body (JSON - Exemplo de atualização de um orçamento com ID 1):
-JSON
+* **PUT** `/api/orcamentos/{id}`
+* **Headers:**
+    * `Content-Type: application/json`
+    * `Accept: application/json`
+* **Body (JSON - Exemplo de atualização de um orçamento com ID 1):**
 
+```json
 {
   "id": 1,
   "solicitacaoCompraId": 1,
@@ -834,9 +891,12 @@ JSON
     }
   ]
 }
-Deletar Orçamento
+```
+
+### Deletar Orçamento
+
 Remove um orçamento do sistema.
 
-DELETE /api/orcamentos/{id}
-Descrição: Deleta um orçamento específico pelo seu ID.
-Exemplo: /api/orcamentos/1
+* **DELETE** `/api/orcamentos/{id}`
+    * **Descrição:** Deleta um orçamento específico pelo seu ID.
+    * **Exemplo:** `/api/orcamentos/1`
