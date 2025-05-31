@@ -48,13 +48,13 @@ public class OrcamentoService {
                             FornecedorRepository fornecedorRepository,
                             ProdutoRepository produtoRepository,
                             OrcamentoMapper orcamentoMapper,
-                            PedidoCompraService pedidoDeCompraService) { // Adicione PedidoDeCompraService
+                            PedidoCompraService pedidoDeCompraService) {
         this.orcamentoRepository = orcamentoRepository;
         this.solicitacaoCompraRepository = solicitacaoCompraRepository;
         this.fornecedorRepository = fornecedorRepository;
         this.produtoRepository = produtoRepository;
         this.orcamentoMapper = orcamentoMapper;
-        this.pedidoDeCompraService = pedidoDeCompraService; // Inicialize
+        this.pedidoDeCompraService = pedidoDeCompraService;
     }
 
     /**
@@ -89,7 +89,7 @@ public class OrcamentoService {
         }
         if (orcamento.getStatus() == null) {
             // Status inicial do orçamento ao ser criado
-            orcamento.setStatus(StatusOrcamento.AGUARDANDO_APROVACAO);
+            orcamento.setStatus(StatusOrcamento.AGUARDANDO_APROVACAO); // Ou PENDENTE, conforme seu enum
         }
 
         BigDecimal total = BigDecimal.ZERO;
@@ -104,12 +104,16 @@ public class OrcamentoService {
             item.setProduto(produto);
             item.setOrcamento(orcamento); // Garante a ligação bidirecional
 
+            // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
+            item.setNomeProduto(produto.getNome()); // Supondo que Produto.getNome() exista
+            item.setCodigoProduto(produto.getCodigoProduto()); // Correto
+            item.setUnidadeMedidaProduto(produto.getUnidadeMedida()); // Supondo que Produto.getUnidadeMedida() exista
+            // --- FIM ADEQUAÇÃO ---
+
             itensDoOrcamento.add(item);
 
             if (item.getPrecoUnitarioCotado() != null && item.getQuantidade() != null) {
-                // Cálculo do subtotal para somar no total do orçamento
                 BigDecimal itemSubtotal = item.getPrecoUnitarioCotado().multiply(item.getQuantidade());
-                // *** REMOVIDO: item.setSubtotal(itemSubtotal); ***
                 total = total.add(itemSubtotal);
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -164,7 +168,7 @@ public class OrcamentoService {
     /**
      * Atualiza um orçamento existente.
      *
-     * @param id          O ID do orçamento a ser atualizado.
+     * @param id                O ID do orçamento a ser atualizado.
      * @param orcamentoRequestDTO O DTO de requisição com os dados atualizados.
      * @return OrcamentoResponseDTO do orçamento atualizado.
      * @throws ResponseStatusException Se o orçamento, Solicitação de Compra,
@@ -178,10 +182,10 @@ public class OrcamentoService {
 
         // Impedir atualização se o orçamento já estiver em um status final
         if (orcamentoExistente.getStatus() == StatusOrcamento.APROVADO ||
-            orcamentoExistente.getStatus() == StatusOrcamento.REJEITADO ||
-            orcamentoExistente.getStatus() == StatusOrcamento.CANCELADO) {
+                orcamentoExistente.getStatus() == StatusOrcamento.REJEITADO ||
+                orcamentoExistente.getStatus() == StatusOrcamento.CANCELADO) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Não é possível atualizar um orçamento que já está no status: " + orcamentoExistente.getStatus().getDescricao());
+                    "Não é possível atualizar um orçamento que já está no status: " + orcamentoExistente.getStatus().getDescricao());
         }
 
         // Atualiza campos básicos do orçamento
@@ -218,8 +222,6 @@ public class OrcamentoService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        // Cria uma nova lista para os itens atualizados, para evitar ConcurrentModificationException
-        // e garantir que a lista de itens da entidade seja atualizada corretamente
         List<ItemOrcamento> itensAtualizadosNoOrcamento = new ArrayList<>();
 
         for (ItemOrcamentoRequestDTO itemDTO : itensDto) {
@@ -234,13 +236,16 @@ public class OrcamentoService {
 
             BigDecimal itemSubtotal = itemDTO.getPrecoUnitarioCotado().multiply(itemDTO.getQuantidade());
 
-
             if (itemDTO.getId() == null) {
                 // Novo item
                 ItemOrcamento novoItem = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
                 novoItem.setProduto(produto);
                 novoItem.setOrcamento(orcamentoExistente);
-                // *** REMOVIDO: novoItem.setSubtotal(itemSubtotal); ***
+                // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
+                novoItem.setNomeProduto(produto.getNome());
+                novoItem.setCodigoProduto(produto.getCodigo());
+                novoItem.setUnidadeMedidaProduto(produto.getUnidadeMedida());
+                // --- FIM ADEQUAÇÃO ---
                 itensAtualizadosNoOrcamento.add(novoItem);
             } else {
                 // Item existente - procurar na lista original do orçamento
@@ -254,21 +259,27 @@ public class OrcamentoService {
                     itemExistente.setQuantidade(itemDTO.getQuantidade());
                     itemExistente.setPrecoUnitarioCotado(itemDTO.getPrecoUnitarioCotado());
                     itemExistente.setObservacoes(itemDTO.getObservacoes());
-                    // *** REMOVIDO: itemExistente.setSubtotal(itemSubtotal); ***
+                    // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
+                    itemExistente.setNomeProduto(produto.getNome());
+                    itemExistente.setCodigoProduto(produto.getCodigo());
+                    itemExistente.setUnidadeMedidaProduto(produto.getUnidadeMedida());
+                    // --- FIM ADEQUAÇÃO ---
                     itensAtualizadosNoOrcamento.add(itemExistente);
                 } else {
-                    // Item com ID informado mas que não foi encontrado na lista original (pode ser um novo item com ID, o que não é o ideal para "novo item")
-                    // Ou um ID que foi removido e agora está sendo adicionado novamente.
-                    // Para simplificar, trataremos como um novo item aqui se não existir na lista existente.
+                    // Item com ID informado mas que não foi encontrado na lista original
                     ItemOrcamento novoItem = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
                     novoItem.setProduto(produto);
                     novoItem.setOrcamento(orcamentoExistente);
-                    // *** REMOVIDO: novoItem.setSubtotal(itemSubtotal); ***
+                    // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
+                    novoItem.setNomeProduto(produto.getNome());
+                    novoItem.setCodigoProduto(produto.getCodigo());
+                    novoItem.setUnidadeMedidaProduto(produto.getUnidadeMedida());
+                    // --- FIM ADEQUAÇÃO ---
                     itensAtualizadosNoOrcamento.add(novoItem);
                 }
             }
         }
-        
+
         // Remove itens que estavam no orçamento original mas não estão mais no DTO de requisição
         orcamentoExistente.getItensOrcamento().clear(); // Limpa a lista existente
         orcamentoExistente.getItensOrcamento().addAll(itensAtualizadosNoOrcamento); // Adiciona os itens atualizados/novos
@@ -300,10 +311,10 @@ public class OrcamentoService {
         // Regra de negócio: Não permitir deletar orçamentos aprovados/rejeitados/cancelados
         Orcamento orcamento = orcamentoRepository.findById(id).get(); // Já verificou que existe
         if (orcamento.getStatus() == StatusOrcamento.APROVADO ||
-            orcamento.getStatus() == StatusOrcamento.REJEITADO ||
-            orcamento.getStatus() == StatusOrcamento.CANCELADO) {
+                orcamento.getStatus() == StatusOrcamento.REJEITADO ||
+                orcamento.getStatus() == StatusOrcamento.CANCELADO) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Não é possível deletar um orçamento que já está no status: " + orcamento.getStatus().getDescricao());
+                    "Não é possível deletar um orçamento que já está no status: " + orcamento.getStatus().getDescricao());
         }
         orcamentoRepository.deleteById(id);
     }
@@ -335,31 +346,27 @@ public class OrcamentoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento com ID " + id + " foi CANCELADO e não pode ser aprovado.");
         }
 
-
         // 3. Buscar a solicitação de compra associada
-        // A solicitação de compra deve existir e estar em um status que permita aprovação de orçamento
         SolicitacaoCompra solicitacaoCompra = Optional.ofNullable(orcamentoAprovado.getSolicitacaoCompra())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento não possui Solicitação de Compra associada."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento não possui Solicitação de Compra associada."));
 
         if (!solicitacaoCompraRepository.existsById(solicitacaoCompra.getId())) {
              throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de Compra associada ao orçamento não encontrada com ID: " + solicitacaoCompra.getId());
         }
 
         if (solicitacaoCompra.getStatus() == StatusSolicitacaoCompra.CONCLUIDA ||
-            solicitacaoCompra.getStatus() == StatusSolicitacaoCompra.CANCELADA) {
+                solicitacaoCompra.getStatus() == StatusSolicitacaoCompra.CANCELADA) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "A Solicitação de Compra associada está no status '" + solicitacaoCompra.getStatus().getDescricao() + "' e não permite aprovação de orçamento.");
         }
 
         // 4. Mudar o status do orçamento selecionado para APROVADO
         orcamentoAprovado.setStatus(StatusOrcamento.APROVADO);
-        // O `dataAtualizacao` será atualizado automaticamente pelo `@PreUpdate` na entidade
-        orcamentoRepository.save(orcamentoAprovado); // Salva o orçamento aprovado
+        orcamentoRepository.save(orcamentoAprovado);
 
         // 5. Rejeitar todos os outros orçamentos da mesma solicitação de compra
         List<Orcamento> outrosOrcamentos = orcamentoRepository.findBySolicitacaoCompraIdAndIdNot(solicitacaoCompra.getId(), id);
         for (Orcamento outroOrcamento : outrosOrcamentos) {
-            // Só rejeita se não estiver já em status final
             if (outroOrcamento.getStatus() != StatusOrcamento.APROVADO &&
                 outroOrcamento.getStatus() != StatusOrcamento.REJEITADO &&
                 outroOrcamento.getStatus() != StatusOrcamento.CANCELADO) {
@@ -373,9 +380,7 @@ public class OrcamentoService {
         solicitacaoCompraRepository.save(solicitacaoCompra);
 
         // 7. Gerar o Pedido de Compra a partir do Orçamento Aprovado
-        // A partir deste ponto, se o PedidoDeCompraService lançar uma exceção,
-        // toda a transação (incluindo as atualizações de status) será revertida.
-        pedidoDeCompraService.criarPedidoCompra(orcamentoAprovado);
+        pedidoDeCompraService.criarPedidoCompraDoOrcamento(orcamentoAprovado);
 
         return orcamentoMapper.toResponseDto(orcamentoAprovado);
     }

@@ -1,5 +1,6 @@
 package com.zlogcompras.service;
 
+import java.time.LocalDateTime; // Importe LocalDateTime
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ import com.zlogcompras.model.Produto;
 import com.zlogcompras.model.dto.EstoqueRequestDTO;
 import com.zlogcompras.model.dto.EstoqueResponseDTO;
 import com.zlogcompras.repository.EstoqueRepository;
-import com.zlogcompras.repository.ProdutoRepository; // Importe ResourceNotFoundException (no plural)
+import com.zlogcompras.repository.ProdutoRepository;
 
 @Service
 public class EstoqueService {
@@ -41,18 +42,13 @@ public class EstoqueService {
         Estoque estoque = modelMapper.map(estoqueRequestDTO, Estoque.class);
         estoque.setProduto(produto);
 
-        // --- CORREÇÃO AQUI: Removido .toLocalDate() ---
-        if (estoqueRequestDTO.getQuantidade() != null) {
-            estoque.setQuantidade(estoqueRequestDTO.getQuantidade().intValue()); // Converte BigDecimal para Integer
-        }
-        if (estoqueRequestDTO.getDataUltimaEntrada() != null) {
-            estoque.setDataUltimaEntrada(estoqueRequestDTO.getDataUltimaEntrada()); // Atribui LocalDateTime diretamente
-        }
-        if (estoqueRequestDTO.getDataUltimaSaida() != null) {
-            estoque.setDataUltimaSaida(estoqueRequestDTO.getDataUltimaSaida()); // Atribui LocalDateTime diretamente
-        }
-        // --- FIM DA CORREÇÃO ---
+        // Se a quantidade é um Integer no DTO, remova .intValue()
+        // estoque.setQuantidade(estoqueRequestDTO.getQuantidade());
 
+        // Se dataUltimaEntrada não for fornecida no DTO, pode ser definida aqui na criação
+        if (estoque.getDataUltimaEntrada() == null) {
+            estoque.setDataUltimaEntrada(LocalDateTime.now());
+        }
 
         Estoque salvo = estoqueRepository.save(estoque);
         return modelMapper.map(salvo, EstoqueResponseDTO.class);
@@ -68,17 +64,12 @@ public class EstoqueService {
                     Estoque estoque = modelMapper.map(dto, Estoque.class);
                     estoque.setProduto(produto);
 
-                    // --- CORREÇÃO AQUI: Removido .toLocalDate() ---
-                    if (dto.getQuantidade() != null) {
-                        estoque.setQuantidade(dto.getQuantidade().intValue()); // Converte BigDecimal para Integer
+                    // Se a quantidade é um Integer no DTO, remova .intValue()
+                    // estoque.setQuantidade(dto.getQuantidade());
+
+                    if (estoque.getDataUltimaEntrada() == null) {
+                        estoque.setDataUltimaEntrada(LocalDateTime.now());
                     }
-                    if (dto.getDataUltimaEntrada() != null) {
-                        estoque.setDataUltimaEntrada(dto.getDataUltimaEntrada()); // Atribui LocalDateTime diretamente
-                    }
-                    if (dto.getDataUltimaSaida() != null) {
-                        estoque.setDataUltimaSaida(dto.getDataUltimaSaida()); // Atribui LocalDateTime diretamente
-                    }
-                    // --- FIM DA CORREÇÃO ---
 
                     return estoque;
                 })
@@ -90,6 +81,46 @@ public class EstoqueService {
                 .map(estoque -> modelMapper.map(estoque, EstoqueResponseDTO.class))
                 .collect(Collectors.toList());
     }
+
+    // --- NOVOS MÉTODOS PARA ADICIONAR E RETIRAR QUANTIDADE ---
+
+    @Transactional
+    public EstoqueResponseDTO adicionarQuantidadeEstoque(Long estoqueId, Integer quantidadeASomar) {
+        Estoque estoqueExistente = estoqueRepository.findById(estoqueId)
+            .orElseThrow(() -> new ResourceNotFoundException("Registro de estoque não encontrado com ID: " + estoqueId));
+
+        if (quantidadeASomar == null || quantidadeASomar <= 0) {
+            throw new IllegalArgumentException("A quantidade a ser adicionada deve ser um valor positivo.");
+        }
+
+        estoqueExistente.setQuantidade(estoqueExistente.getQuantidade() + quantidadeASomar);
+        estoqueExistente.setDataUltimaEntrada(LocalDateTime.now()); // Atualiza a data da última entrada
+
+        Estoque estoqueAtualizado = estoqueRepository.save(estoqueExistente);
+        return modelMapper.map(estoqueAtualizado, EstoqueResponseDTO.class);
+    }
+
+    @Transactional
+    public EstoqueResponseDTO retirarQuantidadeEstoque(Long estoqueId, Integer quantidadeARetirar) {
+        Estoque estoqueExistente = estoqueRepository.findById(estoqueId)
+            .orElseThrow(() -> new ResourceNotFoundException("Registro de estoque não encontrado com ID: " + estoqueId));
+
+        if (quantidadeARetirar == null || quantidadeARetirar <= 0) {
+            throw new IllegalArgumentException("A quantidade a ser retirada deve ser um valor positivo.");
+        }
+
+        if (estoqueExistente.getQuantidade() < quantidadeARetirar) {
+            throw new IllegalArgumentException("Não há estoque suficiente para esta retirada. Quantidade disponível: " + estoqueExistente.getQuantidade());
+        }
+
+        estoqueExistente.setQuantidade(estoqueExistente.getQuantidade() - quantidadeARetirar);
+        estoqueExistente.setDataUltimaSaida(LocalDateTime.now()); // Atualiza a data da última saída
+
+        Estoque estoqueAtualizado = estoqueRepository.save(estoqueExistente);
+        return modelMapper.map(estoqueAtualizado, EstoqueResponseDTO.class);
+    }
+
+    // --- FIM DOS NOVOS MÉTODOS ---
 
     public List<EstoqueResponseDTO> listarTodosEstoques() {
         return estoqueRepository.findAll().stream()
@@ -124,22 +155,21 @@ public class EstoqueService {
             estoqueExistente.setProduto(novoProduto);
         }
 
-        // --- CORREÇÃO AQUI: Removido .toLocalDate() ---
         Optional.ofNullable(estoqueRequestDTO.getQuantidade())
-                .ifPresent(qty -> estoqueExistente.setQuantidade(qty.intValue()));
+                // Se a quantidade é um Integer no DTO, remova .intValue() aqui também
+                .ifPresent(qty -> estoqueExistente.setQuantidade(qty)); // Alterado de .intValue() para direto
 
         Optional.ofNullable(estoqueRequestDTO.getLocalizacao())
                 .ifPresent(estoqueExistente::setLocalizacao);
 
         Optional.ofNullable(estoqueRequestDTO.getDataUltimaEntrada())
-                .ifPresent(estoqueExistente::setDataUltimaEntrada); // Atribui LocalDateTime diretamente
+                .ifPresent(estoqueExistente::setDataUltimaEntrada);
 
         Optional.ofNullable(estoqueRequestDTO.getDataUltimaSaida())
-                .ifPresent(estoqueExistente::setDataUltimaSaida); // Atribui LocalDateTime diretamente
+                .ifPresent(estoqueExistente::setDataUltimaSaida);
 
         Optional.ofNullable(estoqueRequestDTO.getObservacoes())
                 .ifPresent(estoqueExistente::setObservacoes);
-        // --- FIM DA CORREÇÃO ---
 
         Estoque estoqueAtualizado = estoqueRepository.save(estoqueExistente);
         return modelMapper.map(estoqueAtualizado, EstoqueResponseDTO.class);

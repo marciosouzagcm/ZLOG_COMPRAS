@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.zlogcompras.model.dto;
 
 import java.math.BigDecimal;
@@ -11,8 +6,10 @@ public class ItemOrcamentoDTO {
     private Long id;
     private Long produtoId;
     private String nomeProduto;
+    private String codigoProduto; // Adicionado para consistência
+    private String unidadeMedidaProduto; // Adicionado para consistência
     private BigDecimal precoUnitario;
-    private Integer quantidade;
+    private BigDecimal quantidade; // Alterado para BigDecimal
 
     public ItemOrcamentoDTO() {}
 
@@ -27,9 +24,15 @@ public class ItemOrcamentoDTO {
     public String getNomeProduto() { return nomeProduto; }
     public void setNomeProduto(String nomeProduto) { this.nomeProduto = nomeProduto; }
 
+    public String getCodigoProduto() { return codigoProduto; }
+    public void setCodigoProduto(String codigoProduto) { this.codigoProduto = codigoProduto; }
+
+    public String getUnidadeMedidaProduto() { return unidadeMedidaProduto; }
+    public void setUnidadeMedidaProduto(String unidadeMedidaProduto) { this.unidadeMedidaProduto = unidadeMedidaProduto; }
+
     public BigDecimal getPrecoUnitario() { return precoUnitario; }
     public void setPrecoUnitario(BigDecimal precoUnitario) { this.precoUnitario = precoUnitario; }
 
-    public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public BigDecimal getQuantidade() { return quantidade; }
+    public void setQuantidade(BigDecimal quantidade) { this.quantidade = quantidade; }
 }

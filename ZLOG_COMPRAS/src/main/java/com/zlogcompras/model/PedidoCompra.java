@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference; // Adicionado para evitar recursão JSON no OneToOne
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,10 +15,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id; // Para evitar recursão JSON
-import jakarta.persistence.JoinColumn; // Importar BigDecimal
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany; // Usar ArrayList para List
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne; // Adicionado para o relacionamento com Orcamento
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
@@ -33,116 +35,94 @@ public class PedidoCompra {
     @JoinColumn(name = "fornecedor_id", nullable = false)
     private Fornecedor fornecedor;
 
+    // Adicionado relacionamento bidirecional com Orcamento
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orcamento_id", unique = true) // unique = true garante que um orçamento só gere um pedido
+    @JsonBackReference
+    private Orcamento orcamento;
+
     @Column(name = "data_pedido", nullable = false)
     private LocalDate dataPedido;
 
     @Column(nullable = false)
-    private String status; // Ex: "Pendente", "Enviado", "Recebido", "Cancelado"
+    private String status;
 
-    @Column(name = "valor_total", nullable = false, precision = 12, scale = 2) // Precisão para valores monetários
-    private BigDecimal valorTotal; // Alterado para BigDecimal
+    @Column(name = "valor_total", nullable = false, precision = 12, scale = 2)
+    private BigDecimal valorTotal;
 
-    @JsonManagedReference // Lado "pai" do relacionamento bidirecional
-    @OneToMany(mappedBy = "pedidoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemPedidoCompra> itens = new ArrayList<>(); // Usar List para itens
+    @Column(name = "observacoes", length = 1000) // Adicione este campo se precisar de observações
+    private String observacoes;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "pedidoCompra", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ItemPedidoCompra> itens = new ArrayList<>();
 
     @Version
     private Long version;
 
-    // Construtor padrão
     public PedidoCompra() {
         this.dataPedido = LocalDate.now();
         this.status = "Pendente";
     }
 
-    // Construtor com campos
-    public PedidoCompra(Fornecedor fornecedor, LocalDate dataPedido, String status, BigDecimal valorTotal) {
+    public PedidoCompra(Fornecedor fornecedor, LocalDate dataPedido, String status, BigDecimal valorTotal, Orcamento orcamento, String observacoes) {
         this.fornecedor = fornecedor;
         this.dataPedido = dataPedido;
         this.status = status;
         this.valorTotal = valorTotal;
+        this.orcamento = orcamento;
+        this.observacoes = observacoes;
     }
 
     // --- Getters e Setters ---
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Fornecedor getFornecedor() { return fornecedor; }
+    public void setFornecedor(Fornecedor fornecedor) { this.fornecedor = fornecedor; }
 
-    public Fornecedor getFornecedor() {
-        return fornecedor;
-    }
+    public Orcamento getOrcamento() { return orcamento; }
+    public void setOrcamento(Orcamento orcamento) { this.orcamento = orcamento; }
 
-    public void setFornecedor(Fornecedor fornecedor) {
-        this.fornecedor = fornecedor;
-    }
+    public LocalDate getDataPedido() { return dataPedido; }
+    public void setDataPedido(LocalDate dataPedido) { this.dataPedido = dataPedido; }
 
-    public LocalDate getDataPedido() {
-        return dataPedido;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public void setDataPedido(LocalDate dataPedido) {
-        this.dataPedido = dataPedido;
-    }
+    public BigDecimal getValorTotal() { return valorTotal; }
+    public void setValorTotal(BigDecimal valorTotal) { this.valorTotal = valorTotal; }
 
-    public String getStatus() {
-        return status;
-    }
+    public String getObservacoes() { return observacoes; }
+    public void setObservacoes(String observacoes) { this.observacoes = observacoes; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public BigDecimal getValorTotal() {
-        return valorTotal;
-    }
-
-    public void setValorTotal(BigDecimal valorTotal) {
-        this.valorTotal = valorTotal;
-    }
-
-    public List<ItemPedidoCompra> getItens() {
-        return itens;
-    }
-
-    // Setter para a coleção de itens, gerenciando a bidirecionalidade
+    public List<ItemPedidoCompra> getItens() { return itens; }
     public void setItens(List<ItemPedidoCompra> itens) {
-        this.itens.clear(); // Limpa os itens existentes
+        this.itens.clear();
         if (itens != null) {
             for (ItemPedidoCompra item : itens) {
-                addItem(item); // Adiciona cada novo item, garantindo a bidirecionalidade
+                addItem(item);
             }
         }
     }
 
-    // Método auxiliar para adicionar item (garante bidirecionalidade)
     public void addItem(ItemPedidoCompra item) {
         if (item != null && !this.itens.contains(item)) {
             this.itens.add(item);
-            item.setPedidoCompra(this); // Garante a bidirecionalidade
+            item.setPedidoCompra(this);
         }
     }
 
-    // Método auxiliar para remover item (garante bidirecionalidade e orphanRemoval)
     public void removeItem(ItemPedidoCompra item) {
         if (item != null && this.itens.contains(item)) {
             this.itens.remove(item);
-            item.setPedidoCompra(null); // Crucial para orphanRemoval
+            item.setPedidoCompra(null);
         }
     }
 
-    public Long getVersion() {
-        return version;
-    }
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
-    // --- Métodos equals e hashCode ---
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -156,29 +136,16 @@ public class PedidoCompra {
         return Objects.hash(id);
     }
 
-    // --- Método toString ---
     @Override
     public String toString() {
         return "PedidoCompra{" +
-               "id=" + id +
-               ", fornecedorId=" + (fornecedor != null ? fornecedor.getId() : "null") +
-               ", dataPedido=" + dataPedido +
-               ", status='" + status + '\'' +
-               ", valorTotal=" + valorTotal +
-               ", itensCount=" + itens.size() +
-               ", version=" + version +
-               '}';
-    }
-
-    public void setNumeroNotaFiscal(String numeroNotaFiscal) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setDataNotaFiscal(LocalDate dataNotaFiscal) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setValorNotaFiscal(BigDecimal valorNota) {
-        throw new UnsupportedOperationException("Not supported yet.");
+                "id=" + id +
+                ", fornecedorId=" + (fornecedor != null ? fornecedor.getId() : "null") +
+                ", dataPedido=" + dataPedido +
+                ", status='" + status + '\'' +
+                ", valorTotal=" + valorTotal +
+                ", itensCount=" + itens.size() +
+                ", version=" + version +
+                '}';
     }
 }

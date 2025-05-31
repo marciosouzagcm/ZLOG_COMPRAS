@@ -1,15 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.zlogcompras.model;
 
+public enum StatusPedidoCompra {
+    // As constantes do enum devem ser declaradas aqui.
+    // PENDENTE é o valor que você está usando no PedidoCompraService.
+    PENDENTE("Pendente"),
+    APROVADO("Aprovado"),
+    REJEITADO("Rejeitado"),
+    ENVIADO("Enviado"),
+    RECEBIDO("Recebido"),
+    CANCELADO("Cancelado");
 
-public class StatusPedidoCompra {
+    private final String descricao;
 
-    public static StatusPedidoCompra valueOf(String value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    StatusPedidoCompra(String descricao) {
+        this.descricao = descricao;
     }
 
+    public String getDescricao() {
+        return descricao;
+    }
 }

@@ -1,32 +1,34 @@
 package com.zlogcompras.model.dto;
 
-import java.time.LocalDateTime; // Importe LocalDateTime
+import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull; // Importar esta anotação
+import jakarta.validation.constraints.Positive; // Importar esta anotação (para IDs)
+import jakarta.validation.constraints.PositiveOrZero; // Importar esta anotação (para quantidades)
 
 public class EstoqueRequestDTO {
 
-    private Long produtoId; // Para ligar com o Produto existente
+    // Adicione @NotNull para produtoId, pois produto_id na tabela é NOT NULL
+    @NotNull(message = "O ID do produto é obrigatório para criar um registro de estoque.")
+    @Positive(message = "O ID do produto deve ser um valor positivo.") // Garante que o ID é válido (> 0)
+    private Long produtoId;
+
+    // Adicione @NotNull e @PositiveOrZero para quantidade, pois é NOT NULL no DB
+    @NotNull(message = "A quantidade é obrigatória.")
+    @PositiveOrZero(message = "A quantidade deve ser um valor positivo ou zero.")
     private Integer quantidade;
-    private String localizacao;
 
-    // ALTERE AQUI: de LocalDate para LocalDateTime
-    private LocalDateTime dataUltimaEntrada; 
-    
-    // ALTERE AQUI: de LocalDate para LocalDateTime
-    private LocalDateTime dataUltimaSaida; 
-    
-    private String observacoes;
+    private String localizacao; // 'localizacao' é NULLABLE no DB, então @NotNull não é estritamente necessário aqui
 
-    // Se você tiver um campo "quantidadeAtual" no DTO e não quiser mapeá-lo
-    // para a entidade Estoque, você pode lidar com o warning do MapStruct
-    // mais tarde. Por enquanto, focaremos na compilação.
-    // private Integer quantidadeAtual; 
-    // private LocalDate dataEntrada; // Se tiver, pode ser removido ou alterado
+    private LocalDateTime dataUltimaEntrada; // 'data_ultima_entrada' é NULLABLE no DB
+    private LocalDateTime dataUltimaSaida;   // 'data_ultima_saida' é NULLABLE no DB
 
-    // Construtor, Getters e Setters
+    private String observacoes; // 'observacoes' é NULLABLE no DB
+
+    // Construtor padrão
     public EstoqueRequestDTO() {
     }
 
-    // Se você tem um construtor com todos os campos, ajuste-o também
+    // Construtor com todos os campos (bom para testes e clareza)
     public EstoqueRequestDTO(Long produtoId, Integer quantidade, String localizacao,
                              LocalDateTime dataUltimaEntrada, LocalDateTime dataUltimaSaida,
                              String observacoes) {
@@ -38,6 +40,7 @@ public class EstoqueRequestDTO {
         this.observacoes = observacoes;
     }
 
+    // Getters e Setters (já estão corretos no seu código para LocalDateTime)
     public Long getProdutoId() {
         return produtoId;
     }
@@ -62,19 +65,19 @@ public class EstoqueRequestDTO {
         this.localizacao = localizacao;
     }
 
-    public LocalDateTime getDataUltimaEntrada() { // Altere o retorno
+    public LocalDateTime getDataUltimaEntrada() {
         return dataUltimaEntrada;
     }
 
-    public void setDataUltimaEntrada(LocalDateTime dataUltimaEntrada) { // Altere o parâmetro
+    public void setDataUltimaEntrada(LocalDateTime dataUltimaEntrada) {
         this.dataUltimaEntrada = dataUltimaEntrada;
     }
 
-    public LocalDateTime getDataUltimaSaida() { // Altere o retorno
+    public LocalDateTime getDataUltimaSaida() {
         return dataUltimaSaida;
     }
 
-    public void setDataUltimaSaida(LocalDateTime dataUltimaSaida) { // Altere o parâmetro
+    public void setDataUltimaSaida(LocalDateTime dataUltimaSaida) {
         this.dataUltimaSaida = dataUltimaSaida;
     }
 

@@ -24,9 +24,22 @@ public class ItemOrcamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // A relação com Produto ainda é importante para buscar detalhes ou para validação
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
+
+    // --- NOVOS CAMPOS PARA ARMAZENAR DADOS DO PRODUTO NO MOMENTO DA COTAÇÃO ---
+    @Column(name = "nome_produto", nullable = false, length = 255) // Adicionado nome_produto
+    private String nomeProduto;
+
+    @Column(name = "codigo_produto", length = 50) // Adicionado codigo_produto
+    private String codigoProduto;
+
+    @Column(name = "unidade_medida_produto", length = 20) // Adicionado unidade_medida_produto
+    private String unidadeMedidaProduto;
+    // --- FIM DOS NOVOS CAMPOS ---
+
 
     @Column(nullable = false, precision = 10, scale = 3)
     private BigDecimal quantidade;
@@ -48,13 +61,18 @@ public class ItemOrcamento {
     public ItemOrcamento() {
     }
 
+    // Você pode querer atualizar este construtor para incluir os novos campos,
+    // ou criar um novo construtor mais completo se usar múltiplos.
     public ItemOrcamento(Produto produto, BigDecimal quantidade, BigDecimal precoUnitarioCotado, String observacoes,
-                         Orcamento orcamento) {
+                         Orcamento orcamento, String nomeProduto, String codigoProduto, String unidadeMedidaProduto) {
         this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitarioCotado = precoUnitarioCotado;
         this.observacoes = observacoes;
         this.orcamento = orcamento;
+        this.nomeProduto = nomeProduto;
+        this.codigoProduto = codigoProduto;
+        this.unidadeMedidaProduto = unidadeMedidaProduto;
     }
 
     // --- Getters e Setters ---
@@ -73,6 +91,33 @@ public class ItemOrcamento {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
+
+    // --- Getters e Setters para os novos campos ---
+    public String getNomeProduto() {
+        return nomeProduto;
+    }
+
+    public void setNomeProduto(String nomeProduto) {
+        this.nomeProduto = nomeProduto;
+    }
+
+    public String getCodigoProduto() {
+        return codigoProduto;
+    }
+
+    public void setCodigoProduto(String codigoProduto) {
+        this.codigoProduto = codigoProduto;
+    }
+
+    public String getUnidadeMedidaProduto() {
+        return unidadeMedidaProduto;
+    }
+
+    public void setUnidadeMedidaProduto(String unidadeMedidaProduto) {
+        this.unidadeMedidaProduto = unidadeMedidaProduto;
+    }
+    // --- FIM dos Getters e Setters para novos campos ---
+
 
     public BigDecimal getQuantidade() {
         return quantidade;
@@ -132,13 +177,16 @@ public class ItemOrcamento {
     @Override
     public String toString() {
         return "ItemOrcamento{" +
-               "id=" + id +
-               ", produtoId=" + (produto != null ? produto.getId() : "null") +
-               ", quantidade=" + quantidade +
-               ", precoUnitarioCotado=" + precoUnitarioCotado +
-               ", observacoes='" + observacoes + '\'' +
-               ", orcamentoId=" + (orcamento != null ? orcamento.getId() : "null") +
-               ", version=" + version +
-               '}';
+                "id=" + id +
+                ", produtoId=" + (produto != null ? produto.getId() : "null") +
+                ", nomeProduto='" + nomeProduto + '\'' + // Adicionado no toString
+                ", codigoProduto='" + codigoProduto + '\'' + // Adicionado no toString
+                ", unidadeMedidaProduto='" + unidadeMedidaProduto + '\'' + // Adicionado no toString
+                ", quantidade=" + quantidade +
+                ", precoUnitarioCotado=" + precoUnitarioCotado +
+                ", observacoes='" + observacoes + '\'' +
+                ", orcamentoId=" + (orcamento != null ? orcamento.getId() : "null") +
+                ", version=" + version +
+                '}';
     }
 }

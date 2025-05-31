@@ -1,46 +1,57 @@
 package com.zlogcompras.controller;
 
-import com.zlogcompras.model.Estoque; // Importe se sua camada de serviço retorna a entidade
 import com.zlogcompras.model.dto.EstoqueRequestDTO;
 import com.zlogcompras.model.dto.EstoqueResponseDTO;
+import com.zlogcompras.model.dto.EstoqueMovimentacaoDTO; // <-- CONFIRME ESTE IMPORT!
 import com.zlogcompras.service.EstoqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map; // Embora o EstoqueMovimentacaoDTO dispense o Map para a quantidade, pode ser que você use para outras coisas
 
 @RestController
-@RequestMapping("/api/estoques")
+@RequestMapping("/api/estoques") // <-- CONFIRME O CAMINHO BASE
 public class EstoqueController {
 
     private final EstoqueService estoqueService;
-    // Assumindo que você terá um EstoqueMapper para converter DTOs para entidades e vice-versa
-    // private final EstoqueMapper estoqueMapper;
 
     @Autowired
-    public EstoqueController(EstoqueService estoqueService /*, EstoqueMapper estoqueMapper */) {
+    public EstoqueController(EstoqueService estoqueService) {
         this.estoqueService = estoqueService;
-        // this.estoqueMapper = estoqueMapper;
     }
 
-    // --- Endpoint para criar um único item de estoque (EXISTENTE) ---
     @PostMapping
-    public ResponseEntity<EstoqueResponseDTO> criarEstoque(@RequestBody EstoqueRequestDTO estoqueRequestDTO) {
+    public ResponseEntity<EstoqueResponseDTO> criarEstoque(@RequestBody @Valid EstoqueRequestDTO estoqueRequestDTO) {
         EstoqueResponseDTO novoEstoque = estoqueService.criarEstoque(estoqueRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstoque);
     }
 
-    // --- NOVO ENDPOINT: para criar MÚLTIPLOS itens de estoque ---
-    @PostMapping("/batch") // Você pode escolher o caminho, "/batch" é comum para operações em lote
-    public ResponseEntity<List<EstoqueResponseDTO>> criarMultiplosEstoques(@RequestBody List<EstoqueRequestDTO> estoqueRequestDTOs) {
+    // --- ESTES SÃO OS CRÍTICOS PARA SEU PROBLEMA ATUAL ---
+    @PutMapping("/{id}/adicionar-quantidade") // <-- CONFIRME ESTE CAMINHO
+    public ResponseEntity<EstoqueResponseDTO> adicionarQuantidadeEstoque(@PathVariable Long id,
+                                                                          @RequestBody @Valid EstoqueMovimentacaoDTO movimentacaoDTO) {
+        EstoqueResponseDTO estoqueAtualizado = estoqueService.adicionarQuantidadeEstoque(id, movimentacaoDTO.getQuantidade());
+        return ResponseEntity.ok(estoqueAtualizado);
+    }
+
+    @PutMapping("/{id}/retirar-quantidade") // <-- CONFIRME ESTE CAMINHO
+    public ResponseEntity<EstoqueResponseDTO> retirarQuantidadeEstoque(@PathVariable Long id,
+                                                                         @RequestBody @Valid EstoqueMovimentacaoDTO movimentacaoDTO) {
+        EstoqueResponseDTO estoqueAtualizado = estoqueService.retirarQuantidadeEstoque(id, movimentacaoDTO.getQuantidade());
+        return ResponseEntity.ok(estoqueAtualizado);
+    }
+    // --- FIM DOS CRÍTICOS ---
+
+
+    @PostMapping("/batch")
+    public ResponseEntity<List<EstoqueResponseDTO>> criarMultiplosEstoques(@RequestBody @Valid List<EstoqueRequestDTO> estoqueRequestDTOs) {
         List<EstoqueResponseDTO> novosEstoques = estoqueService.criarMultiplosEstoques(estoqueRequestDTOs);
         return ResponseEntity.status(HttpStatus.CREATED).body(novosEstoques);
     }
 
-    // --- Demais Endpoints (Sem Alteração) ---
     @GetMapping
     public ResponseEntity<List<EstoqueResponseDTO>> listarTodosEstoques() {
         List<EstoqueResponseDTO> estoques = estoqueService.listarTodosEstoques();
@@ -60,7 +71,7 @@ public class EstoqueController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EstoqueResponseDTO> atualizarEstoque(@PathVariable Long id, @RequestBody EstoqueRequestDTO estoqueRequestDTO) {
+    public ResponseEntity<EstoqueResponseDTO> atualizarEstoque(@PathVariable Long id, @RequestBody @Valid EstoqueRequestDTO estoqueRequestDTO) {
         EstoqueResponseDTO estoqueAtualizado = estoqueService.atualizarEstoque(id, estoqueRequestDTO);
         return ResponseEntity.ok(estoqueAtualizado);
     }
