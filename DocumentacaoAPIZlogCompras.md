@@ -1,30 +1,41 @@
-Documentacão da API ZLOG COMPRAS
+# Documentação da API ZLOG COMPRAS
 
-Esta documentação detalha os endpoints RESTful da aplicação ZLOG Compras, que foi iniciada e está disponível em http://localhost:8080.
+Esta documentação detalha os endpoints RESTful da aplicação ZLOG Compras, disponível em [http://localhost:8080](http://localhost:8080).
 
-1. Módulos e Controladores
+---
+
+## 1. Módulos e Controladores
+
 A API é organizada pelos seguintes controladores:
 
-EstoqueController
-FornecedorController
-OrcamentoController
-PedidoCompraController
-ProcessoCompraController
-ProdutoController
-SolicitacaoCompraController
-2. EstoqueController
+- **EstoqueController**
+- **FornecedorController**
+- **OrcamentoController**
+- **PedidoCompraController**
+- **ProcessoCompraController**
+- **ProdutoController**
+- **SolicitacaoCompraController**
+
+---
+
+## 2. EstoqueController
+
 Gerencia as operações relacionadas ao estoque de produtos.
 
-2.1. Listar Todos os Estoques
-Retorna uma lista de todos os estoques registrados.
+### 2.1. Listar Todos os Estoques
 
-Endpoint: GET /api/estoques
-Descrição: Recupera todos os registros de estoque.
-Requisição:
+- **Endpoint:** `GET /api/estoques`
+- **Descrição:** Recupera todos os registros de estoque.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/estoques
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 [
   {
     "id": 1,
@@ -49,18 +60,22 @@ JSON
     "localizacao": "Armário B2"
   }
 ]
-2.2. Buscar Estoque por ID
-Retorna um estoque específico pelo seu ID.
+```
 
-Endpoint: GET /api/estoques/{id}
-Descrição: Recupera um registro de estoque usando seu ID.
-Parâmetros de Path:
-id (Long): O ID do estoque.
-Requisição:
+### 2.2. Buscar Estoque por ID
+
+- **Endpoint:** `GET /api/estoques/{id}`
+- **Descrição:** Recupera um registro de estoque usando seu ID.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/estoques/1
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 {
   "id": 1,
   "produto": {
@@ -72,18 +87,22 @@ JSON
   "quantidadeAtual": 150,
   "localizacao": "Prateleira A1"
 }
-2.3. Buscar Estoque por Código do Produto
-Retorna um estoque específico pelo código do produto.
+```
 
-Endpoint: GET /api/estoques/produto/{codigoProduto}
-Descrição: Recupera um registro de estoque associado a um código de produto específico.
-Parâmetros de Path:
-codigoProduto (String): O código do produto.
-Requisição:
+### 2.3. Buscar Estoque por Código do Produto
+
+- **Endpoint:** `GET /api/estoques/produto/{codigoProduto}`
+- **Descrição:** Recupera um registro de estoque associado a um código de produto específico.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/estoques/produto/CANE001
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 {
   "id": 1,
   "produto": {
@@ -95,20 +114,16 @@ JSON
   "quantidadeAtual": 150,
   "localizacao": "Prateleira A1"
 }
-2.4. Criar Estoque
-Cria um novo registro de estoque.
+```
 
-Endpoint: POST /api/estoques
-Descrição: Adiciona um novo item de estoque.
-Corpo da Requisição (JSON - EstoqueRequestDTO):
-JSON
+### 2.4. Criar Estoque
 
-{
-  "produtoId": 103,
-  "quantidadeAtual": 200,
-  "localizacao": "Armazém Principal"
-}
-Requisição:
+- **Endpoint:** `POST /api/estoques`
+- **Descrição:** Adiciona um novo item de estoque.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/estoques
 Content-Type: application/json
 
@@ -117,9 +132,11 @@ Content-Type: application/json
   "quantidadeAtual": 200,
   "localizacao": "Armazém Principal"
 }
-Exemplo de Resposta (JSON - 201 Created):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 201 Created):**
+
+```json
 {
   "id": 3,
   "produto": {
@@ -131,27 +148,16 @@ JSON
   "quantidadeAtual": 200,
   "localizacao": "Armazém Principal"
 }
-2.5. Criar Múltiplos Estoques
-Cria múltiplos registros de estoque em uma única requisição.
+```
 
-Endpoint: POST /api/estoques/batch
-Descrição: Adiciona vários itens de estoque em lote.
-Corpo da Requisição (JSON - List&lt;EstoqueRequestDTO>):
-JSON
+### 2.5. Criar Múltiplos Estoques
 
-[
-  {
-    "produtoId": 104,
-    "quantidadeAtual": 50,
-    "localizacao": "Setor C"
-  },
-  {
-    "produtoId": 105,
-    "quantidadeAtual": 120,
-    "localizacao": "Setor D"
-  }
-]
-Requisição:
+- **Endpoint:** `POST /api/estoques/batch`
+- **Descrição:** Adiciona vários itens de estoque em lote.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/estoques/batch
 Content-Type: application/json
 
@@ -167,9 +173,11 @@ Content-Type: application/json
     "localizacao": "Setor D"
   }
 ]
-Exemplo de Resposta (JSON - 201 Created):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 201 Created):**
+
+```json
 [
   {
     "id": 4,
@@ -194,22 +202,16 @@ JSON
     "localizacao": "Setor D"
   }
 ]
-2.6. Atualizar Estoque
-Atualiza um registro de estoque existente pelo seu ID.
+```
 
-Endpoint: PUT /api/estoques/{id}
-Descrição: Atualiza as informações de um estoque existente.
-Parâmetros de Path:
-id (Long): O ID do estoque a ser atualizado.
-Corpo da Requisição (JSON - EstoqueRequestDTO):
-JSON
+### 2.6. Atualizar Estoque
 
-{
-  "produtoId": 101,
-  "quantidadeAtual": 180,
-  "localizacao": "Prateleira A1 Nova"
-}
-Requisição:
+- **Endpoint:** `PUT /api/estoques/{id}`
+- **Descrição:** Atualiza as informações de um estoque existente.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/estoques/1
 Content-Type: application/json
 
@@ -218,9 +220,11 @@ Content-Type: application/json
   "quantidadeAtual": 180,
   "localizacao": "Prateleira A1 Nova"
 }
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "produto": {
@@ -232,29 +236,27 @@ JSON
   "quantidadeAtual": 180,
   "localizacao": "Prateleira A1 Nova"
 }
-2.7. Adicionar Quantidade ao Estoque
-Adiciona uma quantidade específica a um estoque existente.
+```
 
-Endpoint: PUT /api/estoques/{id}/adicionar-quantidade
-Descrição: Adiciona uma determinada quantidade ao estoque de um item.
-Parâmetros de Path:
-id (Long): O ID do estoque.
-Corpo da Requisição (JSON - EstoqueMovimentacaoDTO):
-JSON
+### 2.7. Adicionar Quantidade ao Estoque
 
-{
-  "quantidade": 20
-}
-Requisição:
+- **Endpoint:** `PUT /api/estoques/{id}/adicionar-quantidade`
+- **Descrição:** Adiciona uma determinada quantidade ao estoque de um item.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/estoques/1/adicionar-quantidade
 Content-Type: application/json
 
 {
   "quantidade": 20
 }
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "produto": {
@@ -266,29 +268,27 @@ JSON
   "quantidadeAtual": 200,
   "localizacao": "Prateleira A1 Nova"
 }
-2.8. Retirar Quantidade do Estoque
-Retira uma quantidade específica de um estoque existente.
+```
 
-Endpoint: PUT /api/estoques/{id}/retirar-quantidade
-Descrição: Retira uma determinada quantidade do estoque de um item.
-Parâmetros de Path:
-id (Long): O ID do estoque.
-Corpo da Requisição (JSON - EstoqueMovimentacaoDTO):
-JSON
+### 2.8. Retirar Quantidade do Estoque
 
-{
-  "quantidade": 50
-}
-Requisição:
+- **Endpoint:** `PUT /api/estoques/{id}/retirar-quantidade`
+- **Descrição:** Retira uma determinada quantidade do estoque de um item.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/estoques/1/retirar-quantidade
 Content-Type: application/json
 
 {
   "quantidade": 50
 }
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "produto": {
@@ -300,29 +300,41 @@ JSON
   "quantidadeAtual": 150,
   "localizacao": "Prateleira A1 Nova"
 }
-2.9. Deletar Estoque
-Deleta um registro de estoque pelo seu ID.
+```
 
-Endpoint: DELETE /api/estoques/{id}
-Descrição: Remove um registro de estoque.
-Parâmetros de Path:
-id (Long): O ID do estoque a ser deletado.
-Requisição:
+### 2.9. Deletar Estoque
+
+- **Endpoint:** `DELETE /api/estoques/{id}`
+- **Descrição:** Remove um registro de estoque.
+
+**Exemplo de Requisição:**
+
+```
 DELETE http://localhost:8080/api/estoques/2
-Exemplo de Resposta: 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
-3. FornecedorController
+```
+
+**Exemplo de Resposta:** 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
+
+---
+
+## 3. FornecedorController
+
 Gerencia as operações relacionadas aos fornecedores.
 
-3.1. Listar Todos os Fornecedores
-Retorna uma lista de todos os fornecedores registrados.
+### 3.1. Listar Todos os Fornecedores
 
-Endpoint: GET /api/fornecedores
-Descrição: Recupera todos os registros de fornecedores.
-Requisição:
+- **Endpoint:** `GET /api/fornecedores`
+- **Descrição:** Recupera todos os registros de fornecedores.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/fornecedores
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 [
   {
     "id": 1,
@@ -341,18 +353,22 @@ JSON
     "endereco": "Av. Principal, 456"
   }
 ]
-3.2. Buscar Fornecedor por ID
-Retorna um fornecedor específico pelo seu ID.
+```
 
-Endpoint: GET /api/fornecedores/{id}
-Descrição: Recupera um registro de fornecedor usando seu ID.
-Parâmetros de Path:
-id (Long): O ID do fornecedor.
-Requisição:
+### 3.2. Buscar Fornecedor por ID
+
+- **Endpoint:** `GET /api/fornecedores/{id}`
+- **Descrição:** Recupera um registro de fornecedor usando seu ID.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/fornecedores/1
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 {
   "id": 1,
   "nome": "Fornecedor A",
@@ -361,22 +377,16 @@ JSON
   "telefone": "11987654321",
   "endereco": "Rua das Flores, 123"
 }
-3.3. Criar Fornecedor
-Cria um novo registro de fornecedor.
+```
 
-Endpoint: POST /api/fornecedores
-Descrição: Adiciona um novo fornecedor.
-Corpo da Requisição (JSON - FornecedorRequestDTO):
-JSON
+### 3.3. Criar Fornecedor
 
-{
-  "nome": "Fornecedor C",
-  "cnpj": "99.888.777/0001-00",
-  "email": "suporte@fornecedorC.com",
-  "telefone": "31912345678",
-  "endereco": "Travessa dos Pardais, 789"
-}
-Requisição:
+- **Endpoint:** `POST /api/fornecedores`
+- **Descrição:** Adiciona um novo fornecedor.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/fornecedores
 Content-Type: application/json
 
@@ -387,9 +397,11 @@ Content-Type: application/json
   "telefone": "31912345678",
   "endereco": "Travessa dos Pardais, 789"
 }
-Exemplo de Resposta (JSON - 201 Created):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 201 Created):**
+
+```json
 {
   "id": 3,
   "nome": "Fornecedor C",
@@ -398,24 +410,16 @@ JSON
   "telefone": "31912345678",
   "endereco": "Travessa dos Pardais, 789"
 }
-3.4. Atualizar Fornecedor
-Atualiza um registro de fornecedor existente pelo seu ID.
+```
 
-Endpoint: PUT /api/fornecedores/{id}
-Descrição: Atualiza as informações de um fornecedor existente.
-Parâmetros de Path:
-id (Long): O ID do fornecedor a ser atualizado.
-Corpo da Requisição (JSON - FornecedorRequestDTO):
-JSON
+### 3.4. Atualizar Fornecedor
 
-{
-  "nome": "Fornecedor A Atualizado",
-  "cnpj": "11.222.333/0001-44",
-  "email": "novo.contato@fornecedorA.com",
-  "telefone": "11987654321",
-  "endereco": "Rua das Flores, 123 - Novo"
-}
-Requisição:
+- **Endpoint:** `PUT /api/fornecedores/{id}`
+- **Descrição:** Atualiza as informações de um fornecedor existente.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/fornecedores/1
 Content-Type: application/json
 
@@ -426,9 +430,11 @@ Content-Type: application/json
   "telefone": "11987654321",
   "endereco": "Rua das Flores, 123 - Novo"
 }
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "nome": "Fornecedor A Atualizado",
@@ -437,29 +443,41 @@ JSON
   "telefone": "11987654321",
   "endereco": "Rua das Flores, 123 - Novo"
 }
-3.5. Deletar Fornecedor
-Deleta um registro de fornecedor pelo seu ID.
+```
 
-Endpoint: DELETE /api/fornecedores/{id}
-Descrição: Remove um registro de fornecedor.
-Parâmetros de Path:
-id (Long): O ID do fornecedor a ser deletado.
-Requisição:
+### 3.5. Deletar Fornecedor
+
+- **Endpoint:** `DELETE /api/fornecedores/{id}`
+- **Descrição:** Remove um registro de fornecedor.
+
+**Exemplo de Requisição:**
+
+```
 DELETE http://localhost:8080/api/fornecedores/2
-Exemplo de Resposta: 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
-4. OrcamentoController
+```
+
+**Exemplo de Resposta:** 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
+
+---
+
+## 4. OrcamentoController
+
 Gerencia as operações relacionadas aos orçamentos.
 
-4.1. Listar Todos os Orçamentos
-Retorna uma lista de todos os orçamentos registrados.
+### 4.1. Listar Todos os Orçamentos
 
-Endpoint: GET /api/orcamentos
-Descrição: Recupera todos os registros de orçamentos.
-Requisição:
+- **Endpoint:** `GET /api/orcamentos`
+- **Descrição:** Recupera todos os registros de orçamentos.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/orcamentos
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 [
   {
     "id": 1,
@@ -493,18 +511,22 @@ JSON
     ]
   }
 ]
-4.2. Buscar Orçamento por ID
-Retorna um orçamento específico pelo seu ID.
+```
 
-Endpoint: GET /api/orcamentos/{id}
-Descrição: Recupera um registro de orçamento usando seu ID.
-Parâmetros de Path:
-id (Long): O ID do orçamento.
-Requisição:
+### 4.2. Buscar Orçamento por ID
+
+- **Endpoint:** `GET /api/orcamentos/{id}`
+- **Descrição:** Recupera um registro de orçamento usando seu ID.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/orcamentos/1
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 {
   "id": 1,
   "solicitacaoCompra": {
@@ -536,32 +558,16 @@ JSON
     }
   ]
 }
-4.3. Criar Orçamento
-Cria um novo registro de orçamento.
+```
 
-Endpoint: POST /api/orcamentos
-Descrição: Adiciona um novo orçamento.
-Corpo da Requisição (JSON - OrcamentoRequestDTO):
-JSON
+### 4.3. Criar Orçamento
 
-{
-  "solicitacaoCompraId": 2,
-  "fornecedorId": 2,
-  "dataCotacao": "2025-06-03",
-  "itensOrcamento": [
-    {
-      "produtoId": 102,
-      "quantidade": 50,
-      "valorUnitario": 10.00
-    },
-    {
-      "produtoId": 103,
-      "quantidade": 20,
-      "valorUnitario": 5.00
-    }
-  ]
-}
-Requisição:
+- **Endpoint:** `POST /api/orcamentos`
+- **Descrição:** Adiciona um novo orçamento.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/orcamentos
 Content-Type: application/json
 
@@ -582,9 +588,11 @@ Content-Type: application/json
     }
   ]
 }
-Exemplo de Resposta (JSON - 201 Created):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 201 Created):**
+
+```json
 {
   "id": 2,
   "solicitacaoCompra": {
@@ -628,30 +636,16 @@ JSON
     }
   ]
 }
-4.4. Atualizar Orçamento
-Atualiza um registro de orçamento existente pelo seu ID.
+```
 
-Endpoint: PUT /api/orcamentos/{id}
-Descrição: Atualiza as informações de um orçamento existente.
-Parâmetros de Path:
-id (Long): O ID do orçamento a ser atualizado.
-Corpo da Requisição (JSON - OrcamentoRequestDTO):
-JSON
+### 4.4. Atualizar Orçamento
 
-{
-  "solicitacaoCompraId": 1,
-  "fornecedorId": 1,
-  "dataCotacao": "2025-05-23",
-  "itensOrcamento": [
-    {
-      "id": 10,
-      "produtoId": 101,
-      "quantidade": 120,
-      "valorUnitario": 2.60
-    }
-  ]
-}
-Requisição:
+- **Endpoint:** `PUT /api/orcamentos/{id}`
+- **Descrição:** Atualiza as informações de um orçamento existente.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/orcamentos/1
 Content-Type: application/json
 
@@ -668,9 +662,11 @@ Content-Type: application/json
     }
   ]
 }
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "solicitacaoCompra": {
@@ -702,18 +698,22 @@ JSON
     }
   ]
 }
-4.5. Aprovar Orçamento
-Aprova um orçamento específico pelo seu ID.
+```
 
-Endpoint: PATCH /api/orcamentos/{id}/aprovar
-Descrição: Altera o status de um orçamento para APROVADO.
-Parâmetros de Path:
-id (Long): O ID do orçamento a ser aprovado.
-Requisição:
+### 4.5. Aprovar Orçamento
+
+- **Endpoint:** `PATCH /api/orcamentos/{id}/aprovar`
+- **Descrição:** Altera o status de um orçamento para APROVADO.
+
+**Exemplo de Requisição:**
+
+```
 PATCH http://localhost:8080/api/orcamentos/1/aprovar
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "solicitacaoCompra": {
@@ -745,29 +745,41 @@ JSON
     }
   ]
 }
-4.6. Deletar Orçamento
-Deleta um registro de orçamento pelo seu ID.
+```
 
-Endpoint: DELETE /api/orcamentos/{id}
-Descrição: Remove um registro de orçamento.
-Parâmetros de Path:
-id (Long): O ID do orçamento a ser deletado.
-Requisição:
+### 4.6. Deletar Orçamento
+
+- **Endpoint:** `DELETE /api/orcamentos/{id}`
+- **Descrição:** Remove um registro de orçamento.
+
+**Exemplo de Requisição:**
+
+```
 DELETE http://localhost:8080/api/orcamentos/2
-Exemplo de Resposta: 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
-5. PedidoCompraController
+```
+
+**Exemplo de Resposta:** 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
+
+---
+
+## 5. PedidoCompraController
+
 Gerencia as operações relacionadas aos pedidos de compra.
 
-5.1. Listar Todos os Pedidos de Compra
-Retorna uma lista de todos os pedidos de compra registrados.
+### 5.1. Listar Todos os Pedidos de Compra
 
-Endpoint: GET /api/pedidos-compra
-Descrição: Recupera todos os registros de pedidos de compra.
-Requisição:
+- **Endpoint:** `GET /api/pedidos-compra`
+- **Descrição:** Recupera todos os registros de pedidos de compra.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/pedidos-compra
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 [
   {
     "id": 1,
@@ -795,18 +807,22 @@ JSON
     ]
   }
 ]
-5.2. Buscar Pedido de Compra por ID
-Retorna um pedido de compra específico pelo seu ID.
+```
 
-Endpoint: GET /api/pedidos-compra/{id}
-Descrição: Recupera um registro de pedido de compra usando seu ID.
-Parâmetros de Path:
-id (Long): O ID do pedido de compra.
-Requisição:
+### 5.2. Buscar Pedido de Compra por ID
+
+- **Endpoint:** `GET /api/pedidos-compra/{id}`
+- **Descrição:** Recupera um registro de pedido de compra usando seu ID.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/pedidos-compra/1
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 {
   "id": 1,
   "orcamento": {
@@ -832,20 +848,16 @@ JSON
     }
   ]
 }
-5.3. Criar Pedido de Compra
-Cria um novo registro de pedido de compra.
+```
 
-Endpoint: POST /api/pedidos-compra
-Descrição: Adiciona um novo pedido de compra.
-Corpo da Requisição (JSON - PedidoCompra):
-JSON
+### 5.3. Criar Pedido de Compra
 
-{
-  "orcamentoId": 1,
-  "dataPedido": "2025-06-03",
-  "dataEntregaPrevista": "2025-06-15"
-}
-Requisição:
+- **Endpoint:** `POST /api/pedidos-compra`
+- **Descrição:** Adiciona um novo pedido de compra.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/pedidos-compra
 Content-Type: application/json
 
@@ -854,9 +866,11 @@ Content-Type: application/json
   "dataPedido": "2025-06-03",
   "dataEntregaPrevista": "2025-06-15"
 }
-Exemplo de Resposta (JSON - 201 Created):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 201 Created):**
+
+```json
 {
   "id": 2,
   "orcamento": {
@@ -882,23 +896,16 @@ JSON
     }
   ]
 }
-5.4. Atualizar Pedido de Compra
-Atualiza um registro de pedido de compra existente pelo seu ID.
+```
 
-Endpoint: PUT /api/pedidos-compra/{id}
-Descrição: Atualiza as informações de um pedido de compra existente.
-Parâmetros de Path:
-id (Long): O ID do pedido de compra a ser atualizado.
-Corpo da Requisição (JSON - PedidoCompra):
-JSON
+### 5.4. Atualizar Pedido de Compra
 
-{
-  "orcamentoId": 1,
-  "dataPedido": "2025-06-01",
-  "status": "EM_TRANSITO",
-  "dataEntregaPrevista": "2025-06-12"
-}
-Requisição:
+- **Endpoint:** `PUT /api/pedidos-compra/{id}`
+- **Descrição:** Atualiza as informações de um pedido de compra existente.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/pedidos-compra/1
 Content-Type: application/json
 
@@ -908,9 +915,11 @@ Content-Type: application/json
   "status": "EM_TRANSITO",
   "dataEntregaPrevista": "2025-06-12"
 }
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "orcamento": {
@@ -936,20 +945,22 @@ JSON
     }
   ]
 }
-5.5. Atualizar Status do Pedido de Compra
-Atualiza o status de um pedido de compra específico pelo seu ID.
+```
 
-Endpoint: PUT /api/pedidos-compra/{id}/status
-Descrição: Altera o status de um pedido de compra.
-Parâmetros de Path:
-id (Long): O ID do pedido de compra.
-Parâmetros de Query:
-status (String): O novo status do pedido (ex: CONCLUIDO, CANCELADO).
-Requisição:
+### 5.5. Atualizar Status do Pedido de Compra
+
+- **Endpoint:** `PUT /api/pedidos-compra/{id}/status`
+- **Descrição:** Altera o status de um pedido de compra.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/pedidos-compra/1/status?status=CONCLUIDO
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "orcamento": {
@@ -975,38 +986,53 @@ JSON
     }
   ]
 }
-6. ProcessoCompraController
+```
+
+---
+
+## 6. ProcessoCompraController
+
 Gerencia o início de um processo de compra.
 
-6.1. Iniciar Processo de Compra
-Inicia um novo processo de compra a partir de uma solicitação de compra.
+### 6.1. Iniciar Processo de Compra
 
-Endpoint: POST /api/processo-compra/iniciar/{solicitacaoId}
-Descrição: Inicia todo o fluxo de processo de compra para uma solicitação específica.
-Parâmetros de Path:
-solicitacaoId (Long): O ID da solicitação de compra para iniciar o processo.
-Requisição:
+- **Endpoint:** `POST /api/processo-compra/iniciar/{solicitacaoId}`
+- **Descrição:** Inicia todo o fluxo de processo de compra para uma solicitação específica.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/processo-compra/iniciar/1
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "mensagem": "Processo de compra iniciado para solicitação com ID: 1. Orçamentos criados e aguardando aprovação."
 }
-(Nota: A resposta real pode variar dependendo da lógica interna do serviço, mas uma mensagem de sucesso seria esperada.)
-7. ProdutoController
+```
+
+---
+
+## 7. ProdutoController
+
 Gerencia as operações relacionadas aos produtos.
 
-7.1. Listar Todos os Produtos
-Retorna uma lista de todos os produtos registrados.
+### 7.1. Listar Todos os Produtos
 
-Endpoint: GET /api/produtos
-Descrição: Recupera todos os registros de produtos.
-Requisição:
+- **Endpoint:** `GET /api/produtos`
+- **Descrição:** Recupera todos os registros de produtos.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/produtos
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 [
   {
     "id": 1,
@@ -1021,38 +1047,38 @@ JSON
     "unidadeMedidaProduto": "UNIDADE"
   }
 ]
-7.2. Buscar Produto por ID
-Retorna um produto específico pelo seu ID.
+```
 
-Endpoint: GET /api/produtos/{id}
-Descrição: Recupera um registro de produto usando seu ID.
-Parâmetros de Path:
-id (Long): O ID do produto.
-Requisição:
+### 7.2. Buscar Produto por ID
+
+- **Endpoint:** `GET /api/produtos/{id}`
+- **Descrição:** Recupera um registro de produto usando seu ID.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/produtos/1
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 {
   "id": 1,
   "nomeProduto": "Caneta Esferográfica Azul",
   "codigoProduto": "CANE001",
   "unidadeMedidaProduto": "UNIDADE"
 }
-7.3. Criar Produto
-Cria um novo registro de produto.
+```
 
-Endpoint: POST /api/produtos
-Descrição: Adiciona um novo produto.
-Corpo da Requisição (JSON - ProdutoRequestDTO):
-JSON
+### 7.3. Criar Produto
 
-{
-  "nomeProduto": "Lápis Preto HB",
-  "codigoProduto": "LAPI001",
-  "unidadeMedidaProduto": "UNIDADE"
-}
-Requisição:
+- **Endpoint:** `POST /api/produtos`
+- **Descrição:** Adiciona um novo produto.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/produtos
 Content-Type: application/json
 
@@ -1061,36 +1087,27 @@ Content-Type: application/json
   "codigoProduto": "LAPI001",
   "unidadeMedidaProduto": "UNIDADE"
 }
-Exemplo de Resposta (JSON - 201 Created):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 201 Created):**
+
+```json
 {
   "id": 3,
   "nomeProduto": "Lápis Preto HB",
   "codigoProduto": "LAPI001",
   "unidadeMedidaProduto": "UNIDADE"
 }
-7.4. Criar Múltiplos Produtos
-Cria múltiplos registros de produto em uma única requisição.
+```
 
-Endpoint: POST /api/produtos/multiplos
-Descrição: Adiciona vários produtos em lote.
-Corpo da Requisição (JSON - List&lt;ProdutoRequestDTO>):
-JSON
+### 7.4. Criar Múltiplos Produtos
 
-[
-  {
-    "nomeProduto": "Grampeador Pequeno",
-    "codigoProduto": "GRAM001",
-    "unidadeMedidaProduto": "UNIDADE"
-  },
-  {
-    "nomeProduto": "Caixa de Clipes",
-    "codigoProduto": "CLIPES001",
-    "unidadeMedidaProduto": "CAIXA"
-  }
-]
-Requisição:
+- **Endpoint:** `POST /api/produtos/multiplos`
+- **Descrição:** Adiciona vários produtos em lote.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/produtos/multiplos
 Content-Type: application/json
 
@@ -1106,9 +1123,11 @@ Content-Type: application/json
     "unidadeMedidaProduto": "CAIXA"
   }
 ]
-Exemplo de Resposta (JSON - 201 Created):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 201 Created):**
+
+```json
 [
   {
     "id": 4,
@@ -1123,22 +1142,16 @@ JSON
     "unidadeMedidaProduto": "CAIXA"
   }
 ]
-7.5. Atualizar Produto
-Atualiza um registro de produto existente pelo seu ID.
+```
 
-Endpoint: PUT /api/produtos/{id}
-Descrição: Atualiza as informações de um produto existente.
-Parâmetros de Path:
-id (Long): O ID do produto a ser atualizado.
-Corpo da Requisição (JSON - ProdutoRequestDTO):
-JSON
+### 7.5. Atualizar Produto
 
-{
-  "nomeProduto": "Caneta Esferográfica Preta",
-  "codigoProduto": "CANE001",
-  "unidadeMedidaProduto": "UNIDADE"
-}
-Requisição:
+- **Endpoint:** `PUT /api/produtos/{id}`
+- **Descrição:** Atualiza as informações de um produto existente.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/produtos/1
 Content-Type: application/json
 
@@ -1147,38 +1160,52 @@ Content-Type: application/json
   "codigoProduto": "CANE001",
   "unidadeMedidaProduto": "UNIDADE"
 }
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "nomeProduto": "Caneta Esferográfica Preta",
   "codigoProduto": "CANE001",
   "unidadeMedidaProduto": "UNIDADE"
 }
-7.6. Deletar Produto
-Deleta um registro de produto pelo seu ID.
+```
 
-Endpoint: DELETE /api/produtos/{id}
-Descrição: Remove um registro de produto.
-Parâmetros de Path:
-id (Long): O ID do produto a ser deletado.
-Requisição:
+### 7.6. Deletar Produto
+
+- **Endpoint:** `DELETE /api/produtos/{id}`
+- **Descrição:** Remove um registro de produto.
+
+**Exemplo de Requisição:**
+
+```
 DELETE http://localhost:8080/api/produtos/2
-Exemplo de Resposta: 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
-8. SolicitacaoCompraController
+```
+
+**Exemplo de Resposta:** 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
+
+---
+
+## 8. SolicitacaoCompraController
+
 Gerencia as operações relacionadas às solicitações de compra.
 
-8.1. Listar Todas as Solicitações de Compra
-Retorna uma lista de todas as solicitações de compra registradas.
+### 8.1. Listar Todas as Solicitações de Compra
 
-Endpoint: GET /api/solicitacoes-compra
-Descrição: Recupera todas as solicitações de compra.
-Requisição:
+- **Endpoint:** `GET /api/solicitacoes-compra`
+- **Descrição:** Recupera todas as solicitações de compra.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/solicitacoes-compra
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 [
   {
     "id": 1,
@@ -1200,18 +1227,22 @@ JSON
     ]
   }
 ]
-8.2. Buscar Solicitação de Compra por ID
-Retorna uma solicitação de compra específica pelo seu ID.
+```
 
-Endpoint: GET /api/solicitacoes-compra/{id}
-Descrição: Recupera uma solicitação de compra usando seu ID.
-Parâmetros de Path:
-id (Long): O ID da solicitação de compra.
-Requisição:
+### 8.2. Buscar Solicitação de Compra por ID
+
+- **Endpoint:** `GET /api/solicitacoes-compra/{id}`
+- **Descrição:** Recupera uma solicitação de compra usando seu ID.
+
+**Exemplo de Requisição:**
+
+```
 GET http://localhost:8080/api/solicitacoes-compra/1
-Exemplo de Resposta (JSON):
-JSON
+```
 
+**Exemplo de Resposta (JSON):**
+
+```json
 {
   "id": 1,
   "departamento": "TI",
@@ -1231,29 +1262,16 @@ JSON
     }
   ]
 }
-8.3. Criar Solicitação de Compra
-Cria um novo registro de solicitação de compra.
+```
 
-Endpoint: POST /api/solicitacoes-compra
-Descrição: Adiciona uma nova solicitação de compra.
-Corpo da Requisição (JSON - SolicitacaoCompraRequestDTO):
-JSON
+### 8.3. Criar Solicitação de Compra
 
-{
-  "departamento": "Marketing",
-  "observacoes": "Para campanha de verão",
-  "itensSolicitacao": [
-    {
-      "produtoId": 102,
-      "quantidade": 50
-    },
-    {
-      "produtoId": 103,
-      "quantidade": 20
-    }
-  ]
-}
-Requisição:
+- **Endpoint:** `POST /api/solicitacoes-compra`
+- **Descrição:** Adiciona uma nova solicitação de compra.
+
+**Exemplo de Requisição:**
+
+```
 POST http://localhost:8080/api/solicitacoes-compra
 Content-Type: application/json
 
@@ -1271,9 +1289,11 @@ Content-Type: application/json
     }
   ]
 }
-Exemplo de Resposta (JSON - 201 Created):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 201 Created):**
+
+```json
 {
   "id": 2,
   "departamento": "Marketing",
@@ -1303,28 +1323,16 @@ JSON
     }
   ]
 }
-8.4. Atualizar Solicitação de Compra
-Atualiza uma solicitação de compra existente pelo seu ID.
+```
 
-Endpoint: PUT /api/solicitacoes-compra/{id}
-Descrição: Atualiza as informações de uma solicitação de compra existente.
-Parâmetros de Path:
-id (Long): O ID da solicitação de compra a ser atualizada.
-Corpo da Requisição (JSON - SolicitacaoCompraRequestDTO):
-JSON
+### 8.4. Atualizar Solicitação de Compra
 
-{
-  "departamento": "TI",
-  "observacoes": "Urgente para novo projeto - PRIORIDADE ALTA",
-  "itensSolicitacao": [
-    {
-      "id": 1,
-      "produtoId": 101,
-      "quantidade": 150
-    }
-  ]
-}
-Requisição:
+- **Endpoint:** `PUT /api/solicitacoes-compra/{id}`
+- **Descrição:** Atualiza as informações de uma solicitação de compra existente.
+
+**Exemplo de Requisição:**
+
+```
 PUT http://localhost:8080/api/solicitacoes-compra/1
 Content-Type: application/json
 
@@ -1339,9 +1347,11 @@ Content-Type: application/json
     }
   ]
 }
-Exemplo de Resposta (JSON - 200 OK):
-JSON
+```
 
+**Exemplo de Resposta (JSON - 200 OK):**
+
+```json
 {
   "id": 1,
   "departamento": "TI",
@@ -1361,13 +1371,17 @@ JSON
     }
   ]
 }
-8.5. Deletar Solicitação de Compra
-Deleta um registro de solicitação de compra pelo seu ID.
+```
 
-Endpoint: DELETE /api/solicitacoes-compra/{id}
-Descrição: Remove uma solicitação de compra.
-Parâmetros de Path:
-id (Long): O ID da solicitação de compra a ser deletada.
-Requisição:
+### 8.5. Deletar Solicitação de Compra
+
+- **Endpoint:** `DELETE /api/solicitacoes-compra/{id}`
+- **Descrição:** Remove uma solicitação de compra.
+
+**Exemplo de Requisição:**
+
+```
 DELETE http://localhost:8080/api/solicitacoes-compra/2
-Exemplo de Resposta: 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
+```
+
+**Exemplo de Resposta:** 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
