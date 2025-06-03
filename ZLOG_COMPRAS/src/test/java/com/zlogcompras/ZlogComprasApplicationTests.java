@@ -1,4 +1,4 @@
-package com.zlogcompras.ZLOG_COMPRAS;
+package com.zlogcompras;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

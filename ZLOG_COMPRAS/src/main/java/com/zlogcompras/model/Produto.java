@@ -1,34 +1,35 @@
 package com.zlogcompras.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
-import java.time.LocalDateTime; // Importar LocalDateTime
-import java.math.BigDecimal; // Importar BigDecimal
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import jakarta.persistence.EntityListeners;
-
 @Entity
 @Table(name = "produtos")
-@EntityListeners(AuditingEntityListener.class) // Se você está usando auditoria
+@EntityListeners(AuditingEntityListener.class)
 public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Mapeia o campo 'codigoProduto' da entidade para a coluna 'codigo_produto' no banco de dados
+    @Column(name = "codigo", nullable = false, unique = true, length = 50)
+    private String codigo; // Campo para o código interno exigido pelo banco
+
     @Column(name = "codigo_produto", nullable = false, unique = true, length = 50)
-    private String codigoProduto; // Nome do campo na entidade
+    private String codigoProduto;
 
     private String nome;
     private String descricao;
@@ -39,10 +40,10 @@ public class Produto {
     @Column(name = "preco_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal precoUnitario;
 
-    @Column(name = "categoria", nullable = false, length = 50) // <--- NOVO CAMPO E MAPEAMENTO
+    @Column(name = "categoria", nullable = false, length = 50)
     private String categoria;
 
-    @Column(name = "estoque", nullable = false) // Se você ainda tem estoque no DB
+    @Column(name = "estoque", nullable = false)
     private Integer estoque;
 
     @Version
@@ -61,8 +62,9 @@ public class Produto {
     }
 
     // Construtor completo (ajuste conforme seus campos)
-    public Produto(String codigoProduto, String nome, String descricao, String unidadeMedida,
-                   BigDecimal precoUnitario, String categoria, Integer estoque) {
+    public Produto(String codigo, String codigoProduto, String nome, String descricao, String unidadeMedida,
+            BigDecimal precoUnitario, String categoria, Integer estoque) {
+        this.codigo = codigo;
         this.codigoProduto = codigoProduto;
         this.nome = nome;
         this.descricao = descricao;
@@ -73,37 +75,94 @@ public class Produto {
     }
 
     // --- Getters e Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getCodigoProduto() { return codigoProduto; }
-    public void setCodigoProduto(String codigoProduto) { this.codigoProduto = codigoProduto; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public String getCodigo() {
+        return codigo;
+    }
 
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
 
-    public String getUnidadeMedida() { return unidadeMedida; }
-    public void setUnidadeMedida(String unidadeMedida) { this.unidadeMedida = unidadeMedida; }
+    public String getCodigoProduto() {
+        return codigoProduto;
+    }
 
-    public BigDecimal getPrecoUnitario() { return precoUnitario; }
-    public void setPrecoUnitario(BigDecimal precoUnitario) { this.precoUnitario = precoUnitario; }
+    public void setCodigoProduto(String codigoProduto) {
+        this.codigoProduto = codigoProduto;
+    }
 
-    public String getCategoria() { return categoria; } // <--- NOVO GETTER
-    public void setCategoria(String categoria) { this.categoria = categoria; } // <--- NOVO SETTER
+    public String getNome() {
+        return nome;
+    }
 
-    public Integer getEstoque() { return estoque; }
-    public void setEstoque(Integer estoque) { this.estoque = estoque; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-    public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
+    public String getDescricao() {
+        return descricao;
+    }
 
-    public LocalDateTime getDataCriacao() { return dataCriacao; }
-    public LocalDateTime getDataAtualizacao() { return dataAtualizacao; }
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 
-    // Métodos de auditoria (se estiver usando @EntityListeners(AuditingEntityListener.class))
+    public String getUnidadeMedida() {
+        return unidadeMedida;
+    }
+
+    public void setUnidadeMedida(String unidadeMedida) {
+        this.unidadeMedida = unidadeMedida;
+    }
+
+    public BigDecimal getPrecoUnitario() {
+        return precoUnitario;
+    }
+
+    public void setPrecoUnitario(BigDecimal precoUnitario) {
+        this.precoUnitario = precoUnitario;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public Integer getEstoque() {
+        return estoque;
+    }
+
+    public void setEstoque(Integer estoque) {
+        this.estoque = estoque;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
     @jakarta.persistence.PrePersist
     protected void onCreate() {
         dataCriacao = LocalDateTime.now();
@@ -113,9 +172,5 @@ public class Produto {
     @jakarta.persistence.PreUpdate
     protected void onUpdate() {
         dataAtualizacao = LocalDateTime.now();
-    }
-
-    public String getCodigo() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -1,23 +1,24 @@
 package com.zlogcompras.mapper;
 
-import com.zlogcompras.model.ItemSolicitacaoCompra;
-import com.zlogcompras.model.SolicitacaoCompra;
-import com.zlogcompras.model.StatusSolicitacaoCompra;
-import com.zlogcompras.model.StatusItemSolicitacao;
-import com.zlogcompras.model.dto.ItemSolicitacaoCompraRequestDTO;
-import com.zlogcompras.model.dto.SolicitacaoCompraRequestDTO;
-import com.zlogcompras.model.dto.SolicitacaoCompraResponseDTO;
-import com.zlogcompras.model.dto.ItemSolicitacaoCompraResponseDTO;
+import java.util.List;
+import java.util.Set;
+
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
-import org.mapstruct.AfterMapping;
 
-import java.util.List;
-import java.util.Set;
+import com.zlogcompras.model.ItemSolicitacaoCompra;
+import com.zlogcompras.model.SolicitacaoCompra;
+import com.zlogcompras.model.StatusItemSolicitacao;
+import com.zlogcompras.model.StatusSolicitacaoCompra;
+import com.zlogcompras.model.dto.ItemSolicitacaoCompraRequestDTO;
+import com.zlogcompras.model.dto.ItemSolicitacaoCompraResponseDTO;
+import com.zlogcompras.model.dto.SolicitacaoCompraRequestDTO;
+import com.zlogcompras.model.dto.SolicitacaoCompraResponseDTO;
 
-@Mapper(componentModel = "spring", uses = {ProdutoMapper.class})
+@Mapper(componentModel = "spring", uses = { ProdutoMapper.class })
 public interface SolicitacaoCompraMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -42,8 +43,10 @@ public interface SolicitacaoCompraMapper {
     @Mapping(target = "status", source = "status", qualifiedByName = "mapStringToStatusItemSolicitacao")
     ItemSolicitacaoCompra toItemEntity(ItemSolicitacaoCompraRequestDTO dto);
 
-    // Mapeamentos diretos para as propriedades do produto no DTO, o MapStruct pode fazer isso se os nomes batem ou com 'source'
-    // O AfterMapping é útil para lógicas mais complexas ou para garantir inicialização de proxies Lazy
+    // Mapeamentos diretos para as propriedades do produto no DTO, o MapStruct pode
+    // fazer isso se os nomes batem ou com 'source'
+    // O AfterMapping é útil para lógicas mais complexas ou para garantir
+    // inicialização de proxies Lazy
     @Mapping(source = "produto.id", target = "produtoId")
     @Mapping(source = "produto.nome", target = "nomeProduto")
     @Mapping(source = "produto.codigoProduto", target = "codigoProduto") // <-- CORREÇÃO AQUI! DEVE SER codigoProduto
@@ -51,26 +54,39 @@ public interface SolicitacaoCompraMapper {
     @Mapping(target = "status", source = "status", qualifiedByName = "mapStatusItemSolicitacaoToString")
     ItemSolicitacaoCompraResponseDTO toItemResponseDto(ItemSolicitacaoCompra entity);
 
-    // O método @AfterMapping para preencher detalhes do produto não é mais estritamente necessário
-    // se os @Mapping acima já resolvem. No entanto, se houver lógica adicional ou para depuração
-    // de proxies Lazy, ele pode ser mantido, mas com a CORREÇÃO do método getCodigoProduto().
-    // Se preferir, pode remover o @AfterMapping abaixo e confiar apenas nos @Mapping diretos.
-    // Eu vou mantê-lo com a correção para mostrar como seria, mas ele se tornaria redundante
+    // O método @AfterMapping para preencher detalhes do produto não é mais
+    // estritamente necessário
+    // se os @Mapping acima já resolvem. No entanto, se houver lógica adicional ou
+    // para depuração
+    // de proxies Lazy, ele pode ser mantido, mas com a CORREÇÃO do método
+    // getCodigoProduto().
+    // Se preferir, pode remover o @AfterMapping abaixo e confiar apenas nos
+    // @Mapping diretos.
+    // Eu vou mantê-lo com a correção para mostrar como seria, mas ele se tornaria
+    // redundante
     // se os @Mapping diretos funcionarem perfeitamente.
 
     // *** REVISADO: Método @AfterMapping para preencher detalhes do produto ***
-    // Este método será executado automaticamente pelo MapStruct APÓS o mapeamento inicial
+    // Este método será executado automaticamente pelo MapStruct APÓS o mapeamento
+    // inicial
     // de ItemSolicitacaoCompra para ItemSolicitacaoCompraResponseDTO.
     @AfterMapping
-    default void mapProdutoDetailsAfter(@MappingTarget ItemSolicitacaoCompraResponseDTO dto, ItemSolicitacaoCompra entity) {
+    default void mapProdutoDetailsAfter(@MappingTarget ItemSolicitacaoCompraResponseDTO dto,
+            ItemSolicitacaoCompra entity) {
         // Garante que o produto existe e não é um proxy não inicializado
         if (entity != null && entity.getProduto() != null) {
-            // Acessa os getters do Produto. Se LAZY, a inicialização ocorre aqui dentro da transação.
-            // Apenas para ter certeza, caso o MapStruct direto não consiga por algum motivo (ex: proxy não inicializado)
-            if (dto.getProdutoId() == null) dto.setProdutoId(entity.getProduto().getId());
-            if (dto.getNomeProduto() == null) dto.setNomeProduto(entity.getProduto().getNome());
-            if (dto.getCodigoProduto() == null) dto.setCodigoProduto(entity.getProduto().getCodigoProduto()); // <-- CORRIGIDO AQUI!
-            if (dto.getUnidadeMedidaProduto() == null) dto.setUnidadeMedidaProduto(entity.getProduto().getUnidadeMedida());
+            // Acessa os getters do Produto. Se LAZY, a inicialização ocorre aqui dentro da
+            // transação.
+            // Apenas para ter certeza, caso o MapStruct direto não consiga por algum motivo
+            // (ex: proxy não inicializado)
+            if (dto.getProdutoId() == null)
+                dto.setProdutoId(entity.getProduto().getId());
+            if (dto.getNomeProduto() == null)
+                dto.setNomeProduto(entity.getProduto().getNome());
+            if (dto.getCodigoProduto() == null)
+                dto.setCodigoProduto(entity.getProduto().getCodigoProduto()); // <-- CORRIGIDO AQUI!
+            if (dto.getUnidadeMedidaProduto() == null)
+                dto.setUnidadeMedidaProduto(entity.getProduto().getUnidadeMedida());
         } else {
             // Define valores padrão se o produto for nulo por algum motivo
             dto.setProdutoId(null);
@@ -79,7 +95,6 @@ public interface SolicitacaoCompraMapper {
             dto.setUnidadeMedidaProduto("N/A");
         }
     }
-
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dataCriacao", ignore = true)
@@ -92,16 +107,19 @@ public interface SolicitacaoCompraMapper {
     void updateEntityFromDto(SolicitacaoCompraRequestDTO dto, @MappingTarget SolicitacaoCompra entity);
 
     @Named("mapItemSolicitacaoCompraSetToResponseDtoList")
-    List<ItemSolicitacaoCompraResponseDTO> mapItemSolicitacaoCompraSetToResponseDtoList(Set<ItemSolicitacaoCompra> itens);
+    List<ItemSolicitacaoCompraResponseDTO> mapItemSolicitacaoCompraSetToResponseDtoList(
+            Set<ItemSolicitacaoCompra> itens);
 
     @Named("mapItemSolicitacaoCompraRequestDtoListToEntitySet")
     @Mapping(target = "produto", ignore = true)
-    Set<ItemSolicitacaoCompra> mapItemSolicitacaoCompraRequestDtoListToEntitySet(List<ItemSolicitacaoCompraRequestDTO> itemDtos);
+    Set<ItemSolicitacaoCompra> mapItemSolicitacaoCompraRequestDtoListToEntitySet(
+            List<ItemSolicitacaoCompraRequestDTO> itemDtos);
 
     // --- Métodos de mapeamento para Enums ---
     @Named("mapStringToStatusSolicitacaoCompra")
     default StatusSolicitacaoCompra mapStringToStatusSolicitacaoCompra(String status) {
-        if (status == null) return null;
+        if (status == null)
+            return null;
         try {
             return StatusSolicitacaoCompra.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -116,7 +134,8 @@ public interface SolicitacaoCompraMapper {
 
     @Named("mapStringToStatusItemSolicitacao")
     default StatusItemSolicitacao mapStringToStatusItemSolicitacao(String status) {
-        if (status == null) return null;
+        if (status == null)
+            return null;
         try {
             return StatusItemSolicitacao.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {

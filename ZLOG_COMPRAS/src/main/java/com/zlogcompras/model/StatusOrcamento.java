@@ -1,12 +1,14 @@
 package com.zlogcompras.model;
 
 public enum StatusOrcamento {
+    PENDENTE("Pendente"),
     ABERTO("Aberto"),
     AGUARDANDO_APROVACAO("Aguardando Aprovação"),
     APROVADO("Aprovado"),
     REJEITADO("Rejeitado"),
     CANCELADO("Cancelado"),
     COTADO("Cotado");
+    
 
     private final String descricao;
 

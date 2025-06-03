@@ -243,7 +243,7 @@ public class OrcamentoService {
                 novoItem.setOrcamento(orcamentoExistente);
                 // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
                 novoItem.setNomeProduto(produto.getNome());
-                novoItem.setCodigoProduto(produto.getCodigo());
+                novoItem.setCodigoProduto(produto.getCodigoProduto()); // Use getCodigoProduto()
                 novoItem.setUnidadeMedidaProduto(produto.getUnidadeMedida());
                 // --- FIM ADEQUAÇÃO ---
                 itensAtualizadosNoOrcamento.add(novoItem);
@@ -261,18 +261,19 @@ public class OrcamentoService {
                     itemExistente.setObservacoes(itemDTO.getObservacoes());
                     // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
                     itemExistente.setNomeProduto(produto.getNome());
-                    itemExistente.setCodigoProduto(produto.getCodigo());
+                    itemExistente.setCodigoProduto(produto.getCodigoProduto()); // Use getCodigoProduto()
                     itemExistente.setUnidadeMedidaProduto(produto.getUnidadeMedida());
                     // --- FIM ADEQUAÇÃO ---
                     itensAtualizadosNoOrcamento.add(itemExistente);
                 } else {
                     // Item com ID informado mas que não foi encontrado na lista original
+                    // Isso pode ocorrer se o item foi removido da lista original e agora está sendo adicionado novamente como um "novo" item
                     ItemOrcamento novoItem = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
                     novoItem.setProduto(produto);
                     novoItem.setOrcamento(orcamentoExistente);
                     // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
                     novoItem.setNomeProduto(produto.getNome());
-                    novoItem.setCodigoProduto(produto.getCodigo());
+                    novoItem.setCodigoProduto(produto.getCodigoProduto()); // Use getCodigoProduto()
                     novoItem.setUnidadeMedidaProduto(produto.getUnidadeMedida());
                     // --- FIM ADEQUAÇÃO ---
                     itensAtualizadosNoOrcamento.add(novoItem);
@@ -346,25 +347,26 @@ public class OrcamentoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento com ID " + id + " foi CANCELADO e não pode ser aprovado.");
         }
 
-        // 3. Buscar a solicitação de compra associada
-        SolicitacaoCompra solicitacaoCompra = Optional.ofNullable(orcamentoAprovado.getSolicitacaoCompra())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento não possui Solicitação de Compra associada."));
+        // 3. Buscar a solicitação de compra associada diretamente do repositório
+        // Isso garante que a SolicitacaoCompra seja carregada de forma robusta e lançará NOT_FOUND se não existir.
+        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(
+                Optional.ofNullable(orcamentoAprovado.getSolicitacaoCompra())
+                        .map(SolicitacaoCompra::getId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento não possui Solicitação de Compra associada.")))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de Compra associada ao orçamento não encontrada."));
 
-        if (!solicitacaoCompraRepository.existsById(solicitacaoCompra.getId())) {
-             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de Compra associada ao orçamento não encontrada com ID: " + solicitacaoCompra.getId());
-        }
-
+        // 4. Validar o status da Solicitação de Compra
         if (solicitacaoCompra.getStatus() == StatusSolicitacaoCompra.CONCLUIDA ||
                 solicitacaoCompra.getStatus() == StatusSolicitacaoCompra.CANCELADA) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "A Solicitação de Compra associada está no status '" + solicitacaoCompra.getStatus().getDescricao() + "' e não permite aprovação de orçamento.");
+                    "A Solicitação de Compra associada está no status '" + solicitacaoCompra.getStatus().getDescricao() + "' e não permite aprovação de orçamento.");
         }
 
-        // 4. Mudar o status do orçamento selecionado para APROVADO
+        // 5. Mudar o status do orçamento selecionado para APROVADO
         orcamentoAprovado.setStatus(StatusOrcamento.APROVADO);
         orcamentoRepository.save(orcamentoAprovado);
 
-        // 5. Rejeitar todos os outros orçamentos da mesma solicitação de compra
+        // 6. Rejeitar todos os outros orçamentos da mesma solicitação de compra
         List<Orcamento> outrosOrcamentos = orcamentoRepository.findBySolicitacaoCompraIdAndIdNot(solicitacaoCompra.getId(), id);
         for (Orcamento outroOrcamento : outrosOrcamentos) {
             if (outroOrcamento.getStatus() != StatusOrcamento.APROVADO &&
@@ -375,11 +377,11 @@ public class OrcamentoService {
             }
         }
 
-        // 6. Atualizar o status da Solicitação de Compra
+        // 7. Atualizar o status da Solicitação de Compra
         solicitacaoCompra.setStatus(StatusSolicitacaoCompra.ORCAMENTO_APROVADO);
         solicitacaoCompraRepository.save(solicitacaoCompra);
 
-        // 7. Gerar o Pedido de Compra a partir do Orçamento Aprovado
+        // 8. Gerar o Pedido de Compra a partir do Orçamento Aprovado
         pedidoDeCompraService.criarPedidoCompraDoOrcamento(orcamentoAprovado);
 
         return orcamentoMapper.toResponseDto(orcamentoAprovado);
