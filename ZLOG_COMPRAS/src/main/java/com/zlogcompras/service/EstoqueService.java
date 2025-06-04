@@ -27,7 +27,7 @@ public class EstoqueService {
 
     @Autowired
     public EstoqueService(EstoqueRepository estoqueRepository, ProdutoRepository produtoRepository,
-                          ModelMapper modelMapper) {
+            ModelMapper modelMapper) {
         this.estoqueRepository = estoqueRepository;
         this.produtoRepository = produtoRepository;
         this.modelMapper = modelMapper;
@@ -45,7 +45,8 @@ public class EstoqueService {
         // Se a quantidade é um Integer no DTO, remova .intValue()
         // estoque.setQuantidade(estoqueRequestDTO.getQuantidade());
 
-        // Se dataUltimaEntrada não for fornecida no DTO, pode ser definida aqui na criação
+        // Se dataUltimaEntrada não for fornecida no DTO, pode ser definida aqui na
+        // criação
         if (estoque.getDataUltimaEntrada() == null) {
             estoque.setDataUltimaEntrada(LocalDateTime.now());
         }
@@ -60,7 +61,8 @@ public class EstoqueService {
                 .map(dto -> {
                     Produto produto = produtoRepository.findById(dto.getProdutoId())
                             .orElseThrow(
-                                    () -> new ResourceNotFoundException("Produto não encontrado com ID: " + dto.getProdutoId()));
+                                    () -> new ResourceNotFoundException(
+                                            "Produto não encontrado com ID: " + dto.getProdutoId()));
                     Estoque estoque = modelMapper.map(dto, Estoque.class);
                     estoque.setProduto(produto);
 
@@ -87,7 +89,8 @@ public class EstoqueService {
     @Transactional
     public EstoqueResponseDTO adicionarQuantidadeEstoque(Long estoqueId, Integer quantidadeASomar) {
         Estoque estoqueExistente = estoqueRepository.findById(estoqueId)
-            .orElseThrow(() -> new ResourceNotFoundException("Registro de estoque não encontrado com ID: " + estoqueId));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Registro de estoque não encontrado com ID: " + estoqueId));
 
         if (quantidadeASomar == null || quantidadeASomar <= 0) {
             throw new IllegalArgumentException("A quantidade a ser adicionada deve ser um valor positivo.");
@@ -103,14 +106,16 @@ public class EstoqueService {
     @Transactional
     public EstoqueResponseDTO retirarQuantidadeEstoque(Long estoqueId, Integer quantidadeARetirar) {
         Estoque estoqueExistente = estoqueRepository.findById(estoqueId)
-            .orElseThrow(() -> new ResourceNotFoundException("Registro de estoque não encontrado com ID: " + estoqueId));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Registro de estoque não encontrado com ID: " + estoqueId));
 
         if (quantidadeARetirar == null || quantidadeARetirar <= 0) {
             throw new IllegalArgumentException("A quantidade a ser retirada deve ser um valor positivo.");
         }
 
         if (estoqueExistente.getQuantidade() < quantidadeARetirar) {
-            throw new IllegalArgumentException("Não há estoque suficiente para esta retirada. Quantidade disponível: " + estoqueExistente.getQuantidade());
+            throw new IllegalArgumentException("Não há estoque suficiente para esta retirada. Quantidade disponível: "
+                    + estoqueExistente.getQuantidade());
         }
 
         estoqueExistente.setQuantidade(estoqueExistente.getQuantidade() - quantidadeARetirar);
@@ -148,7 +153,7 @@ public class EstoqueService {
 
         if (estoqueRequestDTO.getProdutoId() != null &&
                 (estoqueExistente.getProduto() == null ||
-                 !estoqueExistente.getProduto().getId().equals(estoqueRequestDTO.getProdutoId()))) {
+                        !estoqueExistente.getProduto().getId().equals(estoqueRequestDTO.getProdutoId()))) {
             Produto novoProduto = produtoRepository.findById(estoqueRequestDTO.getProdutoId())
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Novo Produto não encontrado com ID: " + estoqueRequestDTO.getProdutoId()));

@@ -336,22 +336,30 @@ GET http://localhost:8080/api/fornecedores
 
 ```json
 [
-  {
-    "id": 1,
-    "nome": "Fornecedor A",
-    "cnpj": "11.222.333/0001-44",
-    "email": "contato@fornecedorA.com",
-    "telefone": "11987654321",
-    "endereco": "Rua das Flores, 123"
-  },
-  {
-    "id": 2,
-    "nome": "Fornecedor B",
-    "cnpj": "55.666.777/0001-88",
-    "email": "vendas@fornecedorB.com",
-    "telefone": "21998877665",
-    "endereco": "Av. Principal, 456"
-  }
+    {
+        "id": 1,
+        "razaoSocial": "Empresa Exemplo Ltda.",
+        "cnpj": "12.345.678/0001-90",
+        "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
+        "telefone": "(11) 98765-4321",
+        "email": "contato@empresaexemplo.com.br",
+        "contato": "Fulano de Tal",
+        "observacoes": null,
+        "ativo": null,
+        "version": 0
+    },
+    {
+        "id": 9,
+        "razaoSocial": "Empresa Exemplar Ltda.",
+        "cnpj": "92.345.888/0001-90",
+        "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
+        "telefone": "(11) 98765-4321",
+        "email": "contato@empresa.com.br",
+        "contato": "Fulano de Tal e Tal",
+        "observacoes": null,
+        "ativo": null,
+        "version": 0
+    }
 ]
 ```
 
@@ -370,13 +378,17 @@ GET http://localhost:8080/api/fornecedores/1
 
 ```json
 {
-  "id": 1,
-  "nome": "Fornecedor A",
-  "cnpj": "11.222.333/0001-44",
-  "email": "contato@fornecedorA.com",
-  "telefone": "11987654321",
-  "endereco": "Rua das Flores, 123"
-}
+        "id": 1,
+        "razaoSocial": "Empresa Exemplo Ltda.",
+        "cnpj": "12.345.678/0001-90",
+        "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
+        "telefone": "(11) 98765-4321",
+        "email": "contato@empresaexemplo.com.br",
+        "contato": "Fulano de Tal",
+        "observacoes": null,
+        "ativo": null,
+        "version": 0
+    }
 ```
 
 ### 3.3. Criar Fornecedor
@@ -391,11 +403,12 @@ POST http://localhost:8080/api/fornecedores
 Content-Type: application/json
 
 {
-  "nome": "Fornecedor C",
-  "cnpj": "99.888.777/0001-00",
-  "email": "suporte@fornecedorC.com",
-  "telefone": "31912345678",
-  "endereco": "Travessa dos Pardais, 789"
+  "cnpj": "92.345.888/0001-90",
+  "razao_social": "Empresa Exemplar Ltda.",
+  "contato": "Fulano de Tal e Tal",
+  "email": "contato@empresa.com.br",
+  "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
+  "telefone": "(11) 98765-4321"
 }
 ```
 
@@ -403,12 +416,16 @@ Content-Type: application/json
 
 ```json
 {
-  "id": 3,
-  "nome": "Fornecedor C",
-  "cnpj": "99.888.777/0001-00",
-  "email": "suporte@fornecedorC.com",
-  "telefone": "31912345678",
-  "endereco": "Travessa dos Pardais, 789"
+    "id": 9,
+    "razaoSocial": "Empresa Exemplar Ltda.",
+    "cnpj": "92.345.888/0001-90",
+    "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
+    "telefone": "(11) 98765-4321",
+    "email": "contato@empresa.com.br",
+    "contato": "Fulano de Tal e Tal",
+    "observacoes": null,
+    "ativo": null,
+    "version": 0
 }
 ```
 
@@ -424,11 +441,13 @@ PUT http://localhost:8080/api/fornecedores/1
 Content-Type: application/json
 
 {
-  "nome": "Fornecedor A Atualizado",
-  "cnpj": "11.222.333/0001-44",
-  "email": "novo.contato@fornecedorA.com",
-  "telefone": "11987654321",
-  "endereco": "Rua das Flores, 123 - Novo"
+  "id": 1, // 5. ID do Fornecedor: O identificador único do fornecedor a ser atualizado. É fundamental que este ID corresponda ao ID informado na URL da requisição (ex: /api/fornecedores/1). Campo obrigatório.
+  "cnpj": "92.545.888/0001-90",//de ser atualizado
+  "razao_social": "Empresa Exemplar Ltda.",
+  "contato": "Fulano de Tal e Tal",
+  "email": "contato@empresarialka.com.br",//deve ser atualizado
+  "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
+  "telefone": "(11) 98765-4321"
 }
 ```
 
@@ -436,12 +455,16 @@ Content-Type: application/json
 
 ```json
 {
-  "id": 1,
-  "nome": "Fornecedor A Atualizado",
-  "cnpj": "11.222.333/0001-44",
-  "email": "novo.contato@fornecedorA.com",
-  "telefone": "11987654321",
-  "endereco": "Rua das Flores, 123 - Novo"
+    "id": 1,
+    "razaoSocial": "Empresa Exemplar Ltda.",
+    "cnpj": "92.545.888/0001-90",
+    "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
+    "telefone": "(11) 98765-4321",
+    "email": "contato@empresarialka.com.br",
+    "contato": "Fulano de Tal e Tal",
+    "observacoes": null,
+    "ativo": null,
+    "version": 0
 }
 ```
 
@@ -453,7 +476,7 @@ Content-Type: application/json
 **Exemplo de Requisição:**
 
 ```
-DELETE http://localhost:8080/api/fornecedores/2
+DELETE http://localhost:8080/api/fornecedores/1
 ```
 
 **Exemplo de Resposta:** 204 No Content (Requisição bem-sucedida, sem conteúdo para retornar).
@@ -465,7 +488,7 @@ DELETE http://localhost:8080/api/fornecedores/2
 Gerencia as operações relacionadas aos orçamentos.
 
 ### 4.1. Listar Todos os Orçamentos
-
+cd,,
 - **Endpoint:** `GET /api/orcamentos`
 - **Descrição:** Recupera todos os registros de orçamentos.
 

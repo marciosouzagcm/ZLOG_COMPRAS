@@ -2,7 +2,7 @@ package com.zlogcompras.mapper;
 
 import java.util.List;
 
-import org.mapstruct.Mapper; // Importe BigDecimal
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
@@ -53,7 +53,7 @@ public interface OrcamentoMapper {
 
     // --- Mapeamento de Entidade para OrcamentoResponseDTO ---
     @Mapping(source = "solicitacaoCompra.id", target = "solicitacaoCompraId")
-    @Mapping(source = "fornecedor.nome", target = "nomeFornecedor")
+    @Mapping(source = "fornecedor.razaoSocial", target = "nomeFornecedor") // <--- AJUSTE AQUI
     @Mapping(source = "fornecedor.cnpj", target = "cnpjFornecedor")
     @Mapping(source = "solicitacaoCompra.descricao", target = "descricaoSolicitacaoCompra")
     @Mapping(source = "status", target = "status", qualifiedByName = "mapStatusOrcamentoToString")
@@ -62,7 +62,7 @@ public interface OrcamentoMapper {
 
     // --- Mapeamento de Entidade para OrcamentoListaDTO (visão de lista/resumo) ---
     @Mapping(source = "solicitacaoCompra.id", target = "solicitacaoCompraId")
-    @Mapping(source = "fornecedor.nome", target = "nomeFornecedor")
+    @Mapping(source = "fornecedor.razaoSocial", target = "nomeFornecedor") // <--- AJUSTE AQUI
     OrcamentoListaDTO toListaDto(Orcamento orcamento);
 
     List<OrcamentoListaDTO> toListaDtoList(List<Orcamento> orcamentos);
@@ -85,8 +85,8 @@ public interface OrcamentoMapper {
     @Mapping(source = "version", target = "version")
     // CORRIGIDO: Removido BigDecimal.valueOf() redundante. Agora multiplica BigDecimal por BigDecimal.
     @Mapping(target = "subtotal", expression = "java(itemOrcamento.getQuantidade() != null && itemOrcamento.getPrecoUnitarioCotado() != null ? " +
-                                                 "itemOrcamento.getQuantidade().multiply(itemOrcamento.getPrecoUnitarioCotado()) " +
-                                                 ": null)")
+            "itemOrcamento.getQuantidade().multiply(itemOrcamento.getPrecoUnitarioCotado()) " +
+            ": null)")
     ItemOrcamentoResponseDTO toItemOrcamentoResponseDto(ItemOrcamento itemOrcamento);
 
     List<ItemOrcamentoResponseDTO> toItemOrcamentoResponseDtoList(List<ItemOrcamento> itensOrcamento);
