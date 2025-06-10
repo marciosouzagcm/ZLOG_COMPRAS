@@ -8,6 +8,12 @@ import java.util.Optional;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    // Método corrigido para usar 'codigoProduto'
+
+    /**
+     * Busca um produto pelo seu código de produto.
+     *
+     * @param codigoProduto O código único do produto.
+     * @return Um Optional contendo o Produto se encontrado, ou um Optional vazio.
+     */
     Optional<Produto> findByCodigoProduto(String codigoProduto);
 }

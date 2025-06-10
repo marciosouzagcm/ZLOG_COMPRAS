@@ -7,7 +7,13 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-// A CORREÇÃO ESTÁ AQUI: a classe foi declarada como 'public'
+import lombok.AllArgsConstructor; // Opcional: para construtor com todos os argumentos
+import lombok.Data; // Inclui @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
+import lombok.NoArgsConstructor; // Para construtor sem argumentos
+
+@Data // Gera Getters, Setters, toString(), equals() e hashCode() automaticamente
+@NoArgsConstructor // Gera o construtor padrão sem argumentos, necessário para desserialização JSON
+@AllArgsConstructor // Opcional: Gera um construtor com todos os argumentos (útil para builders ou testes)
 public class ItemPedidoCompraRequestDTO {
 
     @NotNull(message = "O ID do produto é obrigatório.")
@@ -37,72 +43,6 @@ public class ItemPedidoCompraRequestDTO {
 
     private String observacoes; // Campo opcional
 
-    // Construtor padrão
-    public ItemPedidoCompraRequestDTO() {
-    }
-
-    // --- Getters e Setters ---
-    public Long getProdutoId() {
-        return produtoId;
-    }
-
-    public void setProdutoId(Long produtoId) {
-        this.produtoId = produtoId;
-    }
-
-    public String getNomeProduto() {
-        return nomeProduto;
-    }
-
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
-    }
-
-    public String getCodigoProduto() {
-        return codigoProduto;
-    }
-
-    public void setCodigoProduto(String codigoProduto) {
-        this.codigoProduto = codigoProduto;
-    }
-
-    public String getUnidadeMedida() {
-        return unidadeMedida;
-    }
-
-    public void setUnidadeMedida(String unidadeMedida) {
-        this.unidadeMedida = unidadeMedida;
-    }
-
-    public Integer getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public BigDecimal getPrecoUnitario() {
-        return precoUnitario;
-    }
-
-    public void setPrecoUnitario(BigDecimal precoUnitario) {
-        this.precoUnitario = precoUnitario;
-    }
-
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
-    }
+    // Os construtores padrão, getters e setters são gerados automaticamente pelo Lombok (@NoArgsConstructor e @Data).
+    // Não há necessidade de declará-los explicitamente.
 }

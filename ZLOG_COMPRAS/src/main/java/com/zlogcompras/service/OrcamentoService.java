@@ -1,20 +1,5 @@
 package com.zlogcompras.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.zlogcompras.mapper.OrcamentoMapper;
 import com.zlogcompras.model.Fornecedor;
 import com.zlogcompras.model.ItemOrcamento;
@@ -31,6 +16,18 @@ import com.zlogcompras.repository.FornecedorRepository;
 import com.zlogcompras.repository.OrcamentoRepository;
 import com.zlogcompras.repository.ProdutoRepository;
 import com.zlogcompras.repository.SolicitacaoCompraRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrcamentoService {
@@ -40,7 +37,7 @@ public class OrcamentoService {
     private final FornecedorRepository fornecedorRepository;
     private final ProdutoRepository produtoRepository;
     private final OrcamentoMapper orcamentoMapper;
-    private final PedidoCompraService pedidoDeCompraService; // Injete o serviço de PedidoDeCompra
+    private final PedidoCompraService pedidoCompraService;
 
     @Autowired
     public OrcamentoService(OrcamentoRepository orcamentoRepository,
@@ -48,341 +45,198 @@ public class OrcamentoService {
                             FornecedorRepository fornecedorRepository,
                             ProdutoRepository produtoRepository,
                             OrcamentoMapper orcamentoMapper,
-                            PedidoCompraService pedidoDeCompraService) {
+                            PedidoCompraService pedidoCompraService) {
         this.orcamentoRepository = orcamentoRepository;
         this.solicitacaoCompraRepository = solicitacaoCompraRepository;
         this.fornecedorRepository = fornecedorRepository;
         this.produtoRepository = produtoRepository;
         this.orcamentoMapper = orcamentoMapper;
-        this.pedidoDeCompraService = pedidoDeCompraService;
+        this.pedidoCompraService = pedidoCompraService;
     }
 
-    /**
-     * Cria um novo orçamento no sistema.
-     *
-     * @param orcamentoRequestDTO O DTO de requisição contendo os dados do
-     * orçamento.
-     * @return OrcamentoResponseDTO do orçamento recém-criado.
-     * @throws ResponseStatusException Se a Solicitação de Compra, Fornecedor ou
-     * Produto não forem encontrados.
-     */
     @Transactional
     public OrcamentoResponseDTO criarOrcamento(OrcamentoRequestDTO orcamentoRequestDTO) {
+        // 1. Validação inicial da lista de itens
+        if (orcamentoRequestDTO.getItensOrcamento() == null || orcamentoRequestDTO.getItensOrcamento().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O orçamento deve conter ao menos um item.");
+        }
 
-        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository
-                .findById(orcamentoRequestDTO.getSolicitacaoCompraId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Solicitação de Compra não encontrada com o ID: "
-                                + orcamentoRequestDTO.getSolicitacaoCompraId()));
-
+        // 2. Buscar entidades relacionadas (antes das validações de itens individuais)
+        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(orcamentoRequestDTO.getSolicitacaoCompraId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de compra não encontrada."));
         Fornecedor fornecedor = fornecedorRepository.findById(orcamentoRequestDTO.getFornecedorId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Fornecedor não encontrado com o ID: " + orcamentoRequestDTO.getFornecedorId()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado."));
 
+        BigDecimal valorTotal = BigDecimal.ZERO;
+        List<ItemOrcamento> itensOrcamento = new ArrayList<>();
+
+        // 3. Validar e processar cada item do orçamento
+        for (ItemOrcamentoRequestDTO itemDTO : orcamentoRequestDTO.getItensOrcamento()) {
+            if (itemDTO.getQuantidade() == null || itemDTO.getQuantidade().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A quantidade do item do orçamento não pode ser zero ou negativa para o produto ID: " + itemDTO.getProdutoId());
+            }
+            if (itemDTO.getPrecoUnitarioCotado() == null || itemDTO.getPrecoUnitarioCotado().compareTo(BigDecimal.ZERO) < 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O preço unitário do item do orçamento não pode ser negativo para o produto ID: " + itemDTO.getProdutoId());
+            }
+
+            Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado para o item com ID: " + itemDTO.getProdutoId()));
+
+            ItemOrcamento itemOrcamento = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
+            itemOrcamento.setProduto(produto);
+            // itemOrcamento.setOrcamento(orcamento); // Associar ao orçamento depois que ele for criado
+            itensOrcamento.add(itemOrcamento);
+
+            valorTotal = valorTotal.add(itemDTO.getQuantidade().multiply(itemDTO.getPrecoUnitarioCotado()));
+        }
+
+        // 4. Mapear DTO para Entidade Orcamento e setar os dados
+        // Agora o orcamentoMapper.toEntity será chamado DEPOIS de todas as validações de itens
         Orcamento orcamento = orcamentoMapper.toEntity(orcamentoRequestDTO);
+        if (orcamento == null) {
+            orcamento = new Orcamento();
+        }
 
         orcamento.setSolicitacaoCompra(solicitacaoCompra);
         orcamento.setFornecedor(fornecedor);
+        orcamento.setDataCotacao(LocalDate.now());
+        orcamento.setStatus(StatusOrcamento.AGUARDANDO_APROVACAO);
+        orcamento.setValorTotal(valorTotal);
 
-        if (orcamento.getDataCotacao() == null) {
-            orcamento.setDataCotacao(LocalDate.now());
+        // Associar os itens ao orçamento principal
+        for (ItemOrcamento item : itensOrcamento) {
+            item.setOrcamento(orcamento);
         }
-        if (orcamento.getStatus() == null) {
-            // Status inicial do orçamento ao ser criado
-            orcamento.setStatus(StatusOrcamento.AGUARDANDO_APROVACAO); // Ou PENDENTE, conforme seu enum
-        }
+        orcamento.setItensOrcamento(itensOrcamento);
 
-        BigDecimal total = BigDecimal.ZERO;
-        List<ItemOrcamento> itensDoOrcamento = new ArrayList<>();
-
-        for (ItemOrcamentoRequestDTO itemDTO : orcamentoRequestDTO.getItensOrcamento()) {
-            Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Produto não encontrado para o item com ID: " + itemDTO.getProdutoId()));
-
-            ItemOrcamento item = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
-            item.setProduto(produto);
-            item.setOrcamento(orcamento); // Garante a ligação bidirecional
-
-            // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
-            item.setNomeProduto(produto.getNome()); // Supondo que Produto.getNome() exista
-            item.setCodigoProduto(produto.getCodigoProduto()); // Correto
-            item.setUnidadeMedidaProduto(produto.getUnidadeMedida()); // Supondo que Produto.getUnidadeMedida() exista
-            // --- FIM ADEQUAÇÃO ---
-
-            itensDoOrcamento.add(item);
-
-            if (item.getPrecoUnitarioCotado() != null && item.getQuantidade() != null) {
-                BigDecimal itemSubtotal = item.getPrecoUnitarioCotado().multiply(item.getQuantidade());
-                total = total.add(itemSubtotal);
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Preço unitário cotado e quantidade são obrigatórios para os itens do orçamento.");
-            }
-        }
-
-        orcamento.setItensOrcamento(itensDoOrcamento);
-        orcamento.setValorTotal(total);
 
         Orcamento savedOrcamento = orcamentoRepository.save(orcamento);
         return orcamentoMapper.toResponseDto(savedOrcamento);
     }
 
-    /**
-     * Lista todos os orçamentos existentes.
-     *
-     * @return Uma lista de OrcamentoListaDTO.
-     */
-    public List<OrcamentoListaDTO> listarTodosOrcamentos() {
-        List<Orcamento> orcamentos = orcamentoRepository.findAll();
-        return orcamentoMapper.toListaDtoList(orcamentos);
+    @Transactional
+    public OrcamentoResponseDTO atualizarOrcamento(Long id, OrcamentoRequestDTO orcamentoRequestDTO) {
+        Orcamento existingOrcamento = orcamentoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado para o ID: " + id));
+
+        if (existingOrcamento.getStatus() != StatusOrcamento.AGUARDANDO_APROVACAO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Somente orçamentos com status 'AGUARDANDO_APROVACAO' podem ser atualizados.");
+        }
+
+        // Validações antes de buscar Solicitacao/Fornecedor caso os IDs sejam alterados
+        if (orcamentoRequestDTO.getSolicitacaoCompraId() != null &&
+            !orcamentoRequestDTO.getSolicitacaoCompraId().equals(existingOrcamento.getSolicitacaoCompra().getId())) {
+            SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(orcamentoRequestDTO.getSolicitacaoCompraId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de compra não encontrada para o ID: " + orcamentoRequestDTO.getSolicitacaoCompraId()));
+            existingOrcamento.setSolicitacaoCompra(solicitacaoCompra);
+        }
+
+        if (orcamentoRequestDTO.getFornecedorId() != null &&
+            !orcamentoRequestDTO.getFornecedorId().equals(existingOrcamento.getFornecedor().getId())) {
+            Fornecedor fornecedor = fornecedorRepository.findById(orcamentoRequestDTO.getFornecedorId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado para o ID: " + orcamentoRequestDTO.getFornecedorId()));
+            existingOrcamento.setFornecedor(fornecedor);
+        }
+
+        orcamentoMapper.updateEntityFromDto(orcamentoRequestDTO, existingOrcamento);
+
+        BigDecimal valorTotal = BigDecimal.ZERO;
+        List<ItemOrcamento> updatedItens = new ArrayList<>();
+
+        if (orcamentoRequestDTO.getItensOrcamento() == null || orcamentoRequestDTO.getItensOrcamento().isEmpty()) {
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O orçamento deve conter ao menos um item.");
+        }
+
+        for (ItemOrcamentoRequestDTO itemDTO : orcamentoRequestDTO.getItensOrcamento()) {
+            if (itemDTO.getQuantidade() == null || itemDTO.getQuantidade().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A quantidade do item do orçamento não pode ser zero ou negativa para o produto ID: " + itemDTO.getProdutoId());
+            }
+            if (itemDTO.getPrecoUnitarioCotado() == null || itemDTO.getPrecoUnitarioCotado().compareTo(BigDecimal.ZERO) < 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O preço unitário do item do orçamento não pode ser negativo para o produto ID: " + itemDTO.getProdutoId());
+            }
+
+            Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado para o item com ID: " + itemDTO.getProdutoId()));
+
+            ItemOrcamento itemOrcamento;
+            if (itemDTO.getId() != null) {
+                itemOrcamento = existingOrcamento.getItensOrcamento().stream()
+                        .filter(i -> i.getId() != null && i.getId().equals(itemDTO.getId()))
+                        .findFirst()
+                        .orElseGet(() -> {
+                            ItemOrcamento newItem = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
+                            newItem.setOrcamento(existingOrcamento);
+                            return newItem;
+                        });
+                itemOrcamento.setQuantidade(itemDTO.getQuantidade());
+                itemOrcamento.setPrecoUnitarioCotado(itemDTO.getPrecoUnitarioCotado());
+                itemOrcamento.setObservacoes(itemDTO.getObservacoes());
+                itemOrcamento.setProduto(produto);
+            } else {
+                itemOrcamento = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
+                itemOrcamento.setProduto(produto);
+                itemOrcamento.setOrcamento(existingOrcamento);
+            }
+            updatedItens.add(itemOrcamento);
+            valorTotal = valorTotal.add(itemDTO.getQuantidade().multiply(itemDTO.getPrecoUnitarioCotado()));
+        }
+
+        existingOrcamento.getItensOrcamento().clear();
+        existingOrcamento.getItensOrcamento().addAll(updatedItens);
+
+        existingOrcamento.setValorTotal(valorTotal);
+
+        Orcamento updatedOrcamento = orcamentoRepository.save(existingOrcamento);
+        return orcamentoMapper.toResponseDto(updatedOrcamento);
     }
 
-    /**
-     * Busca um orçamento por ID.
-     *
-     * @param id O ID do orçamento.
-     * @return Um Optional contendo o Orcamento, se encontrado.
-     */
+    @Transactional(readOnly = true)
+    public List<OrcamentoListaDTO> listarTodosOrcamentos() {
+        List<Orcamento> orcamentos = orcamentoRepository.findAll();
+        return orcamentos.stream()
+                .map(orcamentoMapper::toListaDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public Optional<Orcamento> buscarOrcamentoPorId(Long id) {
         return orcamentoRepository.findById(id);
     }
 
-    /**
-     * Busca orçamentos associados a uma Solicitação de Compra.
-     *
-     * @param solicitacaoId O ID da Solicitação de Compra.
-     * @return Uma lista de OrcamentoListaDTO.
-     * @throws ResponseStatusException Se a Solicitação de Compra não for
-     * encontrada.
-     */
-    public List<OrcamentoListaDTO> buscarOrcamentosPorSolicitacaoCompraId(Long solicitacaoId) {
-        if (!solicitacaoCompraRepository.existsById(solicitacaoId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Solicitação de Compra não encontrada com o ID: " + solicitacaoId);
-        }
-        List<Orcamento> orcamentos = orcamentoRepository.findBySolicitacaoCompraId(solicitacaoId);
-        return orcamentoMapper.toListaDtoList(orcamentos);
-    }
-
-    /**
-     * Atualiza um orçamento existente.
-     *
-     * @param id                O ID do orçamento a ser atualizado.
-     * @param orcamentoRequestDTO O DTO de requisição com os dados atualizados.
-     * @return OrcamentoResponseDTO do orçamento atualizado.
-     * @throws ResponseStatusException Se o orçamento, Solicitação de Compra,
-     * Fornecedor ou Produto não forem encontrados.
-     */
-    @Transactional
-    public OrcamentoResponseDTO atualizarOrcamento(Long id, OrcamentoRequestDTO orcamentoRequestDTO) {
-        Orcamento orcamentoExistente = orcamentoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Orçamento não encontrado com o ID: " + id));
-
-        // Impedir atualização se o orçamento já estiver em um status final
-        if (orcamentoExistente.getStatus() == StatusOrcamento.APROVADO ||
-                orcamentoExistente.getStatus() == StatusOrcamento.REJEITADO ||
-                orcamentoExistente.getStatus() == StatusOrcamento.CANCELADO) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Não é possível atualizar um orçamento que já está no status: " + orcamentoExistente.getStatus().getDescricao());
-        }
-
-        // Atualiza campos básicos do orçamento
-        orcamentoMapper.updateEntityFromDto(orcamentoRequestDTO, orcamentoExistente);
-
-        // Atualiza SolicitacaoCompra se o ID for diferente
-        if (orcamentoRequestDTO.getSolicitacaoCompraId() != null &&
-                !orcamentoRequestDTO.getSolicitacaoCompraId()
-                        .equals(orcamentoExistente.getSolicitacaoCompra() != null ? orcamentoExistente.getSolicitacaoCompra().getId() : null)) {
-            SolicitacaoCompra novaSolicitacao = solicitacaoCompraRepository
-                    .findById(orcamentoRequestDTO.getSolicitacaoCompraId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Nova Solicitação de Compra não encontrada com o ID: "
-                                    + orcamentoRequestDTO.getSolicitacaoCompraId()));
-            orcamentoExistente.setSolicitacaoCompra(novaSolicitacao);
-        }
-
-        // Atualiza Fornecedor se o ID for diferente
-        if (orcamentoRequestDTO.getFornecedorId() != null &&
-                !orcamentoRequestDTO.getFornecedorId().equals(orcamentoExistente.getFornecedor() != null ? orcamentoExistente.getFornecedor().getId() : null)) {
-            Fornecedor novoFornecedor = fornecedorRepository.findById(orcamentoRequestDTO.getFornecedorId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Novo Fornecedor não encontrado com o ID: " + orcamentoRequestDTO.getFornecedorId()));
-            orcamentoExistente.setFornecedor(novoFornecedor);
-        }
-
-        // Lógica para atualização dos itens do orçamento
-        List<ItemOrcamentoRequestDTO> itensDto = orcamentoRequestDTO.getItensOrcamento() != null
-                ? orcamentoRequestDTO.getItensOrcamento()
-                : List.of();
-
-        Set<Long> dtoItemIds = itensDto.stream()
-                .map(ItemOrcamentoRequestDTO::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        List<ItemOrcamento> itensAtualizadosNoOrcamento = new ArrayList<>();
-
-        for (ItemOrcamentoRequestDTO itemDTO : itensDto) {
-            Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Produto não encontrado para o item com ID: " + itemDTO.getProdutoId()));
-
-            if (itemDTO.getPrecoUnitarioCotado() == null || itemDTO.getQuantidade() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Preço unitário cotado e quantidade são obrigatórios para os itens do orçamento.");
-            }
-
-            BigDecimal itemSubtotal = itemDTO.getPrecoUnitarioCotado().multiply(itemDTO.getQuantidade());
-
-            if (itemDTO.getId() == null) {
-                // Novo item
-                ItemOrcamento novoItem = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
-                novoItem.setProduto(produto);
-                novoItem.setOrcamento(orcamentoExistente);
-                // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
-                novoItem.setNomeProduto(produto.getNome());
-                novoItem.setCodigoProduto(produto.getCodigoProduto()); // Use getCodigoProduto()
-                novoItem.setUnidadeMedidaProduto(produto.getUnidadeMedida());
-                // --- FIM ADEQUAÇÃO ---
-                itensAtualizadosNoOrcamento.add(novoItem);
-            } else {
-                // Item existente - procurar na lista original do orçamento
-                Optional<ItemOrcamento> itemExistenteOpt = orcamentoExistente.getItensOrcamento().stream()
-                        .filter(item -> Objects.equals(item.getId(), itemDTO.getId()))
-                        .findFirst();
-
-                if (itemExistenteOpt.isPresent()) {
-                    ItemOrcamento itemExistente = itemExistenteOpt.get();
-                    itemExistente.setProduto(produto);
-                    itemExistente.setQuantidade(itemDTO.getQuantidade());
-                    itemExistente.setPrecoUnitarioCotado(itemDTO.getPrecoUnitarioCotado());
-                    itemExistente.setObservacoes(itemDTO.getObservacoes());
-                    // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
-                    itemExistente.setNomeProduto(produto.getNome());
-                    itemExistente.setCodigoProduto(produto.getCodigoProduto()); // Use getCodigoProduto()
-                    itemExistente.setUnidadeMedidaProduto(produto.getUnidadeMedida());
-                    // --- FIM ADEQUAÇÃO ---
-                    itensAtualizadosNoOrcamento.add(itemExistente);
-                } else {
-                    // Item com ID informado mas que não foi encontrado na lista original
-                    // Isso pode ocorrer se o item foi removido da lista original e agora está sendo adicionado novamente como um "novo" item
-                    ItemOrcamento novoItem = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
-                    novoItem.setProduto(produto);
-                    novoItem.setOrcamento(orcamentoExistente);
-                    // --- ADEQUAÇÃO: Preencher campos do produto na entidade ItemOrcamento ---
-                    novoItem.setNomeProduto(produto.getNome());
-                    novoItem.setCodigoProduto(produto.getCodigoProduto()); // Use getCodigoProduto()
-                    novoItem.setUnidadeMedidaProduto(produto.getUnidadeMedida());
-                    // --- FIM ADEQUAÇÃO ---
-                    itensAtualizadosNoOrcamento.add(novoItem);
-                }
-            }
-        }
-
-        // Remove itens que estavam no orçamento original mas não estão mais no DTO de requisição
-        orcamentoExistente.getItensOrcamento().clear(); // Limpa a lista existente
-        orcamentoExistente.getItensOrcamento().addAll(itensAtualizadosNoOrcamento); // Adiciona os itens atualizados/novos
-
-        // Recalcula o valor total do orçamento
-        BigDecimal novoTotal = BigDecimal.ZERO;
-        for (ItemOrcamento item : orcamentoExistente.getItensOrcamento()) {
-            if (item.getPrecoUnitarioCotado() != null && item.getQuantidade() != null) {
-                novoTotal = novoTotal.add(item.getPrecoUnitarioCotado().multiply(item.getQuantidade()));
-            }
-        }
-        orcamentoExistente.setValorTotal(novoTotal);
-
-        Orcamento updatedOrcamento = orcamentoRepository.save(orcamentoExistente);
-        return orcamentoMapper.toResponseDto(updatedOrcamento);
-    }
-
-    /**
-     * Deleta um orçamento por ID.
-     *
-     * @param id O ID do orçamento a ser deletado.
-     * @throws ResponseStatusException Se o orçamento não for encontrado.
-     */
     @Transactional
     public void deletarOrcamento(Long id) {
-        if (!orcamentoRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado com o ID: " + id);
-        }
-        // Regra de negócio: Não permitir deletar orçamentos aprovados/rejeitados/cancelados
-        Orcamento orcamento = orcamentoRepository.findById(id).get(); // Já verificou que existe
-        if (orcamento.getStatus() == StatusOrcamento.APROVADO ||
-                orcamento.getStatus() == StatusOrcamento.REJEITADO ||
-                orcamento.getStatus() == StatusOrcamento.CANCELADO) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Não é possível deletar um orçamento que já está no status: " + orcamento.getStatus().getDescricao());
-        }
-        orcamentoRepository.deleteById(id);
+        Orcamento orcamento = orcamentoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado."));
+        orcamentoRepository.delete(orcamento);
     }
 
-    /**
-     * Aprova um orçamento específico e rejeita os demais da mesma solicitação de compra.
-     * Também atualiza o status da Solicitação de Compra e inicia a geração do Pedido de Compra.
-     *
-     * @param id O ID do orçamento a ser aprovado.
-     * @return OrcamentoResponseDTO do orçamento aprovado.
-     * @throws ResponseStatusException Se o orçamento não for encontrado,
-     * se a Solicitação de Compra associada não for encontrada,
-     * ou se o orçamento já estiver em um status final (APROVADO/REJEITADO).
-     */
     @Transactional
     public OrcamentoResponseDTO aprovarOrcamento(Long id) {
-        // 1. Buscar o orçamento a ser aprovado
         Orcamento orcamentoAprovado = orcamentoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado."));
 
-        // 2. Validar o status atual do orçamento
-        if (orcamentoAprovado.getStatus() == StatusOrcamento.APROVADO) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento com ID " + id + " já está APROVADO.");
-        }
-        if (orcamentoAprovado.getStatus() == StatusOrcamento.REJEITADO) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento com ID " + id + " já foi REJEITADO e não pode ser aprovado.");
-        }
-        if (orcamentoAprovado.getStatus() == StatusOrcamento.CANCELADO) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento com ID " + id + " foi CANCELADO e não pode ser aprovado.");
+        if (orcamentoAprovado.getStatus() != StatusOrcamento.AGUARDANDO_APROVACAO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Apenas orçamentos com status 'AGUARDANDO_APROVACAO' podem ser aprovados.");
         }
 
-        // 3. Buscar a solicitação de compra associada diretamente do repositório
-        // Isso garante que a SolicitacaoCompra seja carregada de forma robusta e lançará NOT_FOUND se não existir.
-        SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(
-                Optional.ofNullable(orcamentoAprovado.getSolicitacaoCompra())
-                        .map(SolicitacaoCompra::getId)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Orçamento não possui Solicitação de Compra associada.")))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de Compra associada ao orçamento não encontrada."));
-
-        // 4. Validar o status da Solicitação de Compra
-        if (solicitacaoCompra.getStatus() == StatusSolicitacaoCompra.CONCLUIDA ||
-                solicitacaoCompra.getStatus() == StatusSolicitacaoCompra.CANCELADA) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "A Solicitação de Compra associada está no status '" + solicitacaoCompra.getStatus().getDescricao() + "' e não permite aprovação de orçamento.");
-        }
-
-        // 5. Mudar o status do orçamento selecionado para APROVADO
         orcamentoAprovado.setStatus(StatusOrcamento.APROVADO);
         orcamentoRepository.save(orcamentoAprovado);
 
-        // 6. Rejeitar todos os outros orçamentos da mesma solicitação de compra
-        List<Orcamento> outrosOrcamentos = orcamentoRepository.findBySolicitacaoCompraIdAndIdNot(solicitacaoCompra.getId(), id);
-        for (Orcamento outroOrcamento : outrosOrcamentos) {
-            if (outroOrcamento.getStatus() != StatusOrcamento.APROVADO &&
-                outroOrcamento.getStatus() != StatusOrcamento.REJEITADO &&
-                outroOrcamento.getStatus() != StatusOrcamento.CANCELADO) {
-                outroOrcamento.setStatus(StatusOrcamento.REJEITADO);
-                orcamentoRepository.save(outroOrcamento);
+        SolicitacaoCompra solicitacaoCompra = orcamentoAprovado.getSolicitacaoCompra();
+        List<Orcamento> outrosOrcamentos = orcamentoRepository.findBySolicitacaoCompraIdAndIdNot(
+                solicitacaoCompra.getId(), orcamentoAprovado.getId());
+
+        for (Orcamento outro : outrosOrcamentos) {
+            if (outro.getStatus() == StatusOrcamento.AGUARDANDO_APROVACAO) {
+                outro.setStatus(StatusOrcamento.REJEITADO);
+                orcamentoRepository.save(outro);
             }
         }
 
-        // 7. Atualizar o status da Solicitação de Compra
         solicitacaoCompra.setStatus(StatusSolicitacaoCompra.ORCAMENTO_APROVADO);
         solicitacaoCompraRepository.save(solicitacaoCompra);
 
-        // 8. Gerar o Pedido de Compra a partir do Orçamento Aprovado
-        pedidoDeCompraService.criarPedidoCompraDoOrcamento(orcamentoAprovado);
+        pedidoCompraService.criarPedidoCompraDoOrcamento(orcamentoAprovado);
 
         return orcamentoMapper.toResponseDto(orcamentoAprovado);
     }

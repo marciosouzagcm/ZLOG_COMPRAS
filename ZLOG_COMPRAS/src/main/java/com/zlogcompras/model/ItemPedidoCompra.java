@@ -16,8 +16,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data; // Inclui @Getter, @Setter, @ToString, @EqualsAndHashCode
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
 @Table(name = "itens_pedido_compra")
+@Data // ESSENCIAL: Garante Getters e Setters para 'subtotal'
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(of = {"id"})
+@ToString(exclude = {"pedidoCompra"})
 public class ItemPedidoCompra {
 
     @Id
@@ -26,7 +39,7 @@ public class ItemPedidoCompra {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_compra_id", nullable = false)
-    @JsonBackReference // Lado "filho" do relacionamento bidirecional
+    @JsonBackReference
     private PedidoCompra pedidoCompra;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,61 +47,30 @@ public class ItemPedidoCompra {
     private Produto produto;
 
     @Column(nullable = false)
-    private BigDecimal quantidade;
+    private Integer quantidade; // Mantemos como Integer
 
     @Column(name = "preco_unitario", nullable = false, precision = 12, scale = 2)
     private BigDecimal precoUnitario;
 
-    @Column(name = "observacoes", length = 500) // Adicione este campo
+    // *** CERTIFIQUE-SE DE QUE ESTE CAMPO ESTÁ PRESENTE! ***
+    @Column(name = "subtotal", nullable = false, precision = 12, scale = 2)
+    private BigDecimal subtotal;
+
+    @Column(name = "observacoes", length = 500)
     private String observacoes;
+    
+    @Column(name = "nome_produto", length = 255)
+    private String nomeProduto;
+
+    @Column(name = "codigo_produto", length = 100)
+    private String codigoProduto;
+
+    @Column(name = "unidade_medida", length = 50)
+    private String unidadeMedida;
 
     @Version
     private Long version;
 
-    public ItemPedidoCompra() {
-    }
-
-    public ItemPedidoCompra(PedidoCompra pedidoCompra, Produto produto, BigDecimal quantidade, BigDecimal precoUnitario, String observacoes) {
-        this.pedidoCompra = pedidoCompra;
-        this.produto = produto;
-        this.quantidade = quantidade;
-        this.precoUnitario = precoUnitario;
-        this.observacoes = observacoes;
-    }
-
-    // --- Getters e Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public PedidoCompra getPedidoCompra() { return pedidoCompra; }
-    public void setPedidoCompra(PedidoCompra pedidoCompra) { this.pedidoCompra = pedidoCompra; }
-
-    public Produto getProduto() { return produto; }
-    public void setProduto(Produto produto) { this.produto = produto; }
-
-    public BigDecimal getQuantidade() { return quantidade; }
-    public void setQuantidade(BigDecimal quantidade) { this.quantidade = quantidade; }
-
-    public BigDecimal getPrecoUnitario() { return precoUnitario; }
-    public void setPrecoUnitario(BigDecimal precoUnitario) { this.precoUnitario = precoUnitario; }
-
-    public String getObservacoes() { return observacoes; } // Adicione este getter
-    public void setObservacoes(String observacoes) { this.observacoes = observacoes; } // Adicione este setter
-
-    public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ItemPedidoCompra that = (ItemPedidoCompra) o;
-        return Objects.equals(id, that.id); // Comparar por ID é crucial para sets/listas
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+    // Se você estiver usando Lombok e a anotação @Data, não precisa escrever
+    // manualmente os getters e setters para 'subtotal'. Eles serão gerados.
 }

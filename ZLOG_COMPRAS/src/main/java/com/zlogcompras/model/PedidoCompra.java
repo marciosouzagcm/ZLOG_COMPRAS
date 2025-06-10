@@ -1,5 +1,11 @@
 package com.zlogcompras.model;
 
+import java.math.BigDecimal; // Importação adicionada
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,12 +16,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-
-import java.math.BigDecimal; // Importação adicionada
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "pedidos_compra")
@@ -39,8 +39,10 @@ public class PedidoCompra {
     private String observacoes;
 
     // Relacionamento OneToMany com ItemPedidoCompra
-    // orphanRemoval = true: se um item for removido da coleção 'itens', ele será deletado do banco de dados.
-    // cascade = CascadeType.ALL: todas as operações (PERSIST, MERGE, REMOVE, REFRESH, DETACH) são propagadas para os itens.
+    // orphanRemoval = true: se um item for removido da coleção 'itens', ele será
+    // deletado do banco de dados.
+    // cascade = CascadeType.ALL: todas as operações (PERSIST, MERGE, REMOVE,
+    // REFRESH, DETACH) são propagadas para os itens.
     @OneToMany(mappedBy = "pedidoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedidoCompra> itens = new ArrayList<>(); // Inicialize para evitar NullPointerException
 
@@ -49,7 +51,8 @@ public class PedidoCompra {
     }
 
     // Construtor com campos (opcional, para conveniência)
-    public PedidoCompra(Fornecedor fornecedor, Orcamento orcamento, LocalDate dataPedido, BigDecimal valorTotal, String status, String observacoes) {
+    public PedidoCompra(Fornecedor fornecedor, Orcamento orcamento, LocalDate dataPedido, BigDecimal valorTotal,
+            String status, String observacoes) {
         this.fornecedor = fornecedor;
         this.orcamento = orcamento;
         this.dataPedido = dataPedido;
@@ -123,8 +126,10 @@ public class PedidoCompra {
     }
 
     /**
-     * Define a lista de itens para o pedido de compra, garantindo a bidirecionalidade
+     * Define a lista de itens para o pedido de compra, garantindo a
+     * bidirecionalidade
      * e o funcionamento correto do cascade e orphanRemoval.
+     * 
      * @param itens A nova lista de itens.
      */
     public void setItens(List<ItemPedidoCompra> itens) {
@@ -136,6 +141,7 @@ public class PedidoCompra {
 
     /**
      * Adiciona um ItemPedidoCompra à coleção, configurando a relação bidirecional.
+     * 
      * @param item O item a ser adicionado.
      */
     public void addItem(ItemPedidoCompra item) {
@@ -145,6 +151,7 @@ public class PedidoCompra {
 
     /**
      * Remove um ItemPedidoCompra da coleção, desvinculando a relação bidirecional.
+     * 
      * @param item O item a ser removido.
      */
     public void removeItem(ItemPedidoCompra item) {
@@ -154,8 +161,10 @@ public class PedidoCompra {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         PedidoCompra that = (PedidoCompra) o;
         return Objects.equals(id, that.id);
     }
@@ -168,10 +177,10 @@ public class PedidoCompra {
     @Override
     public String toString() {
         return "PedidoCompra{" +
-               "id=" + id +
-               ", dataPedido=" + dataPedido +
-               ", valorTotal=" + valorTotal +
-               ", status='" + status + '\'' +
-               '}';
+                "id=" + id +
+                ", dataPedido=" + dataPedido +
+                ", valorTotal=" + valorTotal +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
