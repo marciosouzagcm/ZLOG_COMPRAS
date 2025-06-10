@@ -11,6 +11,7 @@ PedidoCompraController
 ProcessoCompraController
 ProdutoController
 SolicitacaoCompraController
+
 2. EstoqueController
 Gerencia as operações relacionadas ao estoque de produtos.
 
@@ -48,6 +49,7 @@ JSON
     "localizacao": "Armário B2"
   }
 ]
+
 2.2. Buscar Estoque por ID
 Endpoint: GET /api/estoques/{id}
 Descrição: Recupera um registro de estoque utilizando seu ID.
