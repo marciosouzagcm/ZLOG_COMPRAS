@@ -484,87 +484,269 @@ POST http://localhost:8080/api/orcamentos
 Content-Type: application/json
 
 {
-  "solicitacaoCompraId": 2,
-  "fornecedorId": 2,
-  "dataCotacao": "2025-06-03",
+  "solicitacaoCompraId": 4,
+  "fornecedorId": 16,
+  "numeroOrcamento": "ORC-NOVO-12345",
+  "dataCotacao": "2025-06-11",
+  "observacoes": "Cotação para materiais de escritório urgente.",
+  "condicoesPagamento": "À vista, 5% de desconto",
+  "prazoEntrega": "2 dias úteis",
   "itensOrcamento": [
     {
-      "produtoId": 102,
-      "quantidade": 50,
-      "valorUnitario": 10.00
+      "produtoId": 5,
+      "quantidade": 25,
+      "precoUnitarioCotado": 5.50,
+      "codigoProduto": "CANETA-AZUL"
     },
     {
-      "produtoId": 103,
-      "quantidade": 20,
-      "valorUnitario": 5.00
+      "produtoId": 6,
+      "quantidade": 5,
+      "precoUnitarioCotado": 120.00,
+      "codigoProduto": "IMPR-LASER-X"
     }
   ]
 }
 Exemplo de Resposta (JSON - 201 Created):
 
+{
+    "id": 8,
+    "solicitacaoCompraId": 4,
+    "descricaoSolicitacaoCompra": "Materiais para evento cultural 'Festa Junina' - JUNHO/2025",
+    "fornecedorId": null,
+    "nomeFornecedor": "Gráfica Rápida Qualidade Ltda.",
+    "cnpjFornecedor": "67.890.123/0001-40",
+    "dataCotacao": "2025-06-11",
+    "numeroOrcamento": "ORC-NOVO-12345",
+    "status": "AGUARDANDO_APROVACAO",
+    "valorTotal": 737.50,
+    "observacoes": "Cotação para materiais de escritório urgente.",
+    "condicoesPagamento": "À vista, 5% de desconto",
+    "prazoEntrega": "2 dias úteis",
+    "version": 0,
+    "itensOrcamento": [
+        {
+            "id": 17,
+            "produtoId": 5,
+            "nomeProduto": "Smartphone X10",
+            "codigoProduto": "PQR-456",
+            "unidadeMedidaProduto": "UN",
+            "quantidade": "25",
+            "precoUnitarioCotado": "5.50",
+            "subtotal": "137.50",
+            "observacoes": null,
+            "version": 0
+        },
+        {
+            "id": 18,
+            "produtoId": 6,
+            "nomeProduto": "Teclado Mecânico RGB",
+            "codigoProduto": "LMN-789",
+            "unidadeMedidaProduto": "UN",
+            "quantidade": "5",
+            "precoUnitarioCotado": "120.00",
+            "subtotal": "600.00",
+            "observacoes": null,
+            "version": 0
+        }
+    ],
+    "orcamentoAprovado": null
+}
+
+
+4.3. Criar Orçamento com varios fornecedores
+Endpoint: POST /api/orcamentos/lote
+Descrição: Adiciona mais de um fornecedor um novo orçamento.
+Exemplo de Requisição:
+
+POST http://localhost:8080/api/orcamentos/lote
+Content-Type: application/json
+
 JSON
 
 {
-  "id": 2,
-  "solicitacaoCompra": {
-    "id": 2,
-    "departamento": "Compras",
-    "dataSolicitacao": "2025-06-01",
-    "status": "PENDENTE_ORCAMENTO"
-  },
-  "fornecedor": {
-    "id": 2,
-    "nome": "Fornecedor B",
-    "cnpj": "55.666.777/0001-88"
-  },
-  "dataCotacao": "2025-06-03",
-  "valorTotal": 600.00,
-  "status": "AGUARDANDO_APROVACAO",
-  "itensOrcamento": [
+  "solicitacaoCompraId": 2,
+  "orcamentos": [
     {
-      "id": 11,
-      "produto": {
-        "id": 102,
-        "nomeProduto": "Caderno Universitário",
-        "codigoProduto": "CADE001",
-        "unidadeMedidaProduto": "UNIDADE"
-      },
-      "quantidade": 50,
-      "valorUnitario": 10.00,
-      "valorTotalItem": 500.00
+      "solicitacaoCompraId": 2,
+      "fornecedorId": 9,
+      "numeroOrcamento": "REF-ESC-2025-ABC-001",
+      "dataCotacao": "2025-06-03",
+      "observacoes": "Orçamento do Fornecedor ABC.",
+      "condicoesPagamento": "Pagamento em 30 dias após a entrega.",
+      "prazoEntrega": "15 dias úteis",
+      "itensOrcamento": [
+        {
+          "produtoId": 16,
+          "quantidade": 50,
+          "precoUnitarioCotado": 10.00,
+          "codigoProduto": "PROD-A01"
+        },
+        {
+          "produtoId": 11,
+          "quantidade": 20,
+          "precoUnitarioCotado": 5.00,
+          "codigoProduto": "PROD-B02"
+        }
+      ]
     },
     {
-      "id": 12,
-      "produto": {
-        "id": 103,
-        "nomeProduto": "Borracha",
-        "codigoProduto": "BORA001",
-        "unidadeMedidaProduto": "UNIDADE"
-      },
-      "quantidade": 20,
-      "valorUnitario": 5.00,
-      "valorTotalItem": 100.00
+      "solicitacaoCompraId": 2,
+      "fornecedorId": 11,
+      "numeroOrcamento": "REF-ESC-2025-XYZ-002",
+      "dataCotacao": "2025-06-05",
+      "observacoes": "Orçamento do Fornecedor XYZ.",
+      "condicoesPagamento": "Pagamento em 45 dias, 5% de desconto à vista.",
+      "prazoEntrega": "10 dias úteis",
+      "itensOrcamento": [
+        {
+          "produtoId": 2,
+          "quantidade": 50,
+          "precoUnitarioCotado": 11.50,
+          "codigoProduto": "PROD-A01"
+        },
+        {
+          "produtoId": 4,
+          "quantidade": 20,
+          "precoUnitarioCotado": 4.80,
+          "codigoProduto": "PROD-B02"
+        }
+      ]
     }
   ]
 }
+Exemplo de Resposta (JSON - 200 OK):
+
+JSON
+
+[
+    {
+        "id": 6,
+        "solicitacaoCompraId": 2,
+        "descricaoSolicitacaoCompra": "Materiais para evento cultural 'Festival de Inverno' - JUNHO/2025",
+        "fornecedorId": null,
+        "nomeFornecedor": "Empresa Exemplar Ltda.",
+        "cnpjFornecedor": "92.345.888/0001-90",
+        "dataCotacao": "2025-06-11",
+        "numeroOrcamento": "REF-ESC-2025-ABC-001",
+        "status": "AGUARDANDO_APROVACAO",
+        "valorTotal": 600.00,
+        "observacoes": "Orçamento do Fornecedor ABC.",
+        "condicoesPagamento": "Pagamento em 30 dias após a entrega.",
+        "prazoEntrega": "15 dias úteis",
+        "version": 0,
+        "itensOrcamento": [
+            {
+                "id": 13,
+                "produtoId": 16,
+                "nomeProduto": "Aspirador de Pó Robô",
+                "codigoProduto": "QWE-789",
+                "unidadeMedidaProduto": "UN",
+                "quantidade": "50",
+                "precoUnitarioCotado": "10.00",
+                "subtotal": "500.00",
+                "observacoes": null,
+                "version": 0
+            },
+            {
+                "id": 14,
+                "produtoId": 11,
+                "nomeProduto": "Fones de Ouvido Bluetooth",
+                "codigoProduto": "PST-234",
+                "unidadeMedidaProduto": "UN",
+                "quantidade": "20",
+                "precoUnitarioCotado": "5.00",
+                "subtotal": "100.00",
+                "observacoes": null,
+                "version": 0
+            }
+        ],
+        "orcamentoAprovado": null
+    },
+    {
+        "id": 7,
+        "solicitacaoCompraId": 2,
+        "descricaoSolicitacaoCompra": "Materiais para evento cultural 'Festival de Inverno' - JUNHO/2025",
+        "fornecedorId": null,
+        "nomeFornecedor": "Comércio de Alimentos Bom Gosto Ltda.",
+        "cnpjFornecedor": "12.345.678/0001-90",
+        "dataCotacao": "2025-06-11",
+        "numeroOrcamento": "REF-ESC-2025-XYZ-002",
+        "status": "AGUARDANDO_APROVACAO",
+        "valorTotal": 671.00,
+        "observacoes": "Orçamento do Fornecedor XYZ.",
+        "condicoesPagamento": "Pagamento em 45 dias, 5% de desconto à vista.",
+        "prazoEntrega": "10 dias úteis",
+        "version": 0,
+        "itensOrcamento": [
+            {
+                "id": 15,
+                "produtoId": 2,
+                "nomeProduto": "Monitor LED 27 polegadas",
+                "codigoProduto": "ABC-123",
+                "unidadeMedidaProduto": "UN",
+                "quantidade": "50",
+                "precoUnitarioCotado": "11.50",
+                "subtotal": "575.00",
+                "observacoes": null,
+                "version": 0
+            },
+            {
+                "id": 16,
+                "produtoId": 4,
+                "nomeProduto": "Fiacao 39 mm",
+                "codigoProduto": "MABC-123",
+                "unidadeMedidaProduto": "UN",
+                "quantidade": "20",
+                "precoUnitarioCotado": "4.80",
+                "subtotal": "96.00",
+                "observacoes": null,
+                "version": 0
+            }
+        ],
+        "orcamentoAprovado": null
+    }
+]
+
 4.4. Atualizar Orçamento
 Endpoint: PUT /api/orcamentos/{id}
 Descrição: Atualiza as informações de um orçamento existente.
 Exemplo de Requisição:
 
-PUT http://localhost:8080/api/orcamentos/1
+PUT http://localhost:8080/api/orcamentos/8
 Content-Type: application/json
 
 {
-  "solicitacaoCompraId": 1,
-  "fornecedorId": 1,
-  "dataCotacao": "2025-05-23",
+  "solicitacaoCompraId": 4,
+  "fornecedorId": 16,  
+  "numeroOrcamento": "ORC-NOVO-12345-REVISADO-FINAL",
+  "dataCotacao": "2025-06-11",
+  "observacoes": "Cotação para materiais de escritório. Valores e prazo revisados com a Gráfica Rápida Qualidade Ltda. Novo item de papelaria adicionado.",
+  "condicoesPagamento": "30 dias líquido, com desconto para pagamento à vista.",
+  "prazoEntrega": "3 dias úteis",
+  "status": "AGUARDANDO_APROVACAO",  
   "itensOrcamento": [
     {
-      "id": 10,
-      "produtoId": 101,
-      "quantidade": 120,
-      "valorUnitario": 2.60
+      "id": 17,  
+      "produtoId": 5,
+      "quantidade": 22,            
+      "precoUnitarioCotado": 5.60, 
+      "observacoes": "Smartphone X10 - quantidade e preço atualizados.",
+      "codigoProduto": "PQR-456" 
+    },
+    {
+      "id": 18,  
+      "produtoId": 6,
+      "quantidade": 4,             
+      "precoUnitarioCotado": 122.00, 
+      "observacoes": "Teclado Mecânico RGB - quantidade e preço atualizados.",
+      "codigoProduto": "LMN-789"
+    },
+    {
+      "produtoId": 25,             
+      "quantidade": 100,
+      "precoUnitarioCotado": 0.95,
+      "observacoes": "Adicionado novo item: Canetas Esferográficas (Produto ID 25).",
+      "codigoProduto": "CANETA-ESFER" 
     }
   ]
 }
@@ -573,36 +755,61 @@ Exemplo de Resposta (JSON - 200 OK):
 JSON
 
 {
-  "id": 1,
-  "solicitacaoCompra": {
-    "id": 1,
-    "departamento": "TI",
-    "dataSolicitacao": "2025-05-20",
-    "status": "PENDENTE_ORCAMENTO"
-  },
-  "fornecedor": {
-    "id": 1,
-    "nome": "Fornecedor A",
-    "cnpj": "11.222.333/0001-44"
-  },
-  "dataCotacao": "2025-05-23",
-  "valorTotal": 312.00,
-  "status": "AGUARDANDO_APROVACAO",
-  "itensOrcamento": [
-    {
-      "id": 10,
-      "produto": {
-        "id": 101,
-        "nomeProduto": "Caneta Esferográfica",
-        "codigoProduto": "CANE001",
-        "unidadeMedidaProduto": "UNIDADE"
-      },
-      "quantidade": 120,
-      "valorUnitario": 2.60,
-      "valorTotalItem": 312.00
-    }
-  ]
+    "id": 8,
+    "solicitacaoCompraId": 4,
+    "descricaoSolicitacaoCompra": "Materiais para evento cultural 'Festa Junina' - JUNHO/2025",
+    "fornecedorId": null,
+    "nomeFornecedor": "Gráfica Rápida Qualidade Ltda.",
+    "cnpjFornecedor": "67.890.123/0001-40",
+    "dataCotacao": "2025-06-11",
+    "numeroOrcamento": "ORC-NOVO-12345-REVISADO-FINAL",
+    "status": "AGUARDANDO_APROVACAO",
+    "valorTotal": 706.20,
+    "observacoes": "Cotação para materiais de escritório. Valores e prazo revisados com a Gráfica Rápida Qualidade Ltda. Novo item de papelaria adicionado.",
+    "condicoesPagamento": "30 dias líquido, com desconto para pagamento à vista.",
+    "prazoEntrega": "3 dias úteis",
+    "version": 0,
+    "itensOrcamento": [
+        {
+            "id": 17,
+            "produtoId": 5,
+            "nomeProduto": "Smartphone X10",
+            "codigoProduto": "PQR-456",
+            "unidadeMedidaProduto": "UN",
+            "quantidade": "22",
+            "precoUnitarioCotado": "5.60",
+            "subtotal": "123.20",
+            "observacoes": "Smartphone X10 - quantidade e preço atualizados.",
+            "version": 0
+        },
+        {
+            "id": 18,
+            "produtoId": 6,
+            "nomeProduto": "Teclado Mecânico RGB",
+            "codigoProduto": "LMN-789",
+            "unidadeMedidaProduto": "UN",
+            "quantidade": "4",
+            "precoUnitarioCotado": "122.00",
+            "subtotal": "488.00",
+            "observacoes": "Teclado Mecânico RGB - quantidade e preço atualizados.",
+            "version": 0
+        },
+        {
+            "id": 20,
+            "produtoId": 25,
+            "nomeProduto": "Tênis de Corrida Masculino",
+            "codigoProduto": "SDF-456",
+            "unidadeMedidaProduto": "PAR",
+            "quantidade": "100",
+            "precoUnitarioCotado": "0.95",
+            "subtotal": "95.00",
+            "observacoes": "Adicionado novo item: Canetas Esferográficas (Produto ID 25).",
+            "version": 0
+        }
+    ],
+    "orcamentoAprovado": null
 }
+
 4.5. Aprovar Orçamento
 Endpoint: PATCH /api/orcamentos/{id}/aprovar
 Descrição: Altera o status de um orçamento para APROVADO.
@@ -912,111 +1119,112 @@ Endpoint: PUT /api/pedidos-compra/{id}
 Descrição: Atualiza as informações de um pedido de compra existente.
 Exemplo de Requisição:
 
-PUT http://localhost:8080/api/pedidos-compra/1
+PUT http://localhost:8080/api/pedidos-compra/7
 Content-Type: application/json
 
 {
-  "id": 2,
-  "numeroPedido": "PED-2025-002",
-  "dataCriacao": "2025-06-06T10:00:00Z",
-  "status": "APROVADO",
-  "valorTotal": 1500.50,
-  "fornecedorId": 9,
-  "itens": [
-    {
-      "produtoId": 1,
-      "codigoProduto": "PROD001",
-      "nomeProduto": "Produto A",
-      "quantidade": 50,
-      "precoUnitario": 100.00,
-      "subtotal": 5000.00,
-      "unidadeMedida": "UN"
-    },
-    {
-      "produtoId": 2,
-      "codigoProduto": "PROD002",
-      "nomeProduto": "Produto B",
-      "quantidade": 250,
-      "precoUnitario": 500.25,
-      "subtotal": 125062.50,
-      "unidadeMedida": "KG"
-    }
-  ]
+    "id": 1,
+    "numeroPedido": "PED-2025-001",
+    "dataCriacao": "2025-06-06T10:00:00Z",
+    "status": "RECEBIDO",
+    "valorTotal": 1500.50,
+    "fornecedorId": 9,  
+    "itens": [
+        {
+            "produtoId": 1,
+            "codigoProduto": "PROD001",
+            "nomeProduto": "Produto A",
+            "quantidade": 50,
+            "precoUnitario": 100.00,
+            "subtotal": 5000.00,
+            "unidadeMedida": "UN"
+        },
+        {
+            "produtoId": 2,
+            "codigoProduto": "PROD002",
+            "nomeProduto": "Produto B",
+            "quantidade": 250,
+            "precoUnitario": 500.25,
+            "subtotal": 125062.50,
+            "unidadeMedida": "KG"
+        }
+    ]
 }
 Exemplo de Resposta (JSON - 200 OK):
 
 JSON
 
 {
-  "id": 2,
-  "fornecedor": {
-    "id": 9,
-    "cnpj": "92.345.888/0001-90",
-    "contato": "Fulano de Tal e Tal",
-    "email": "contato@empresa.com.br",
-    "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
-    "telefone": "(11) 98765-4321",
-    "version": 0,
-    "razaoSocial": "Empresa Exemplar Ltda."
-  },
-  "orcamento": null,
-  "dataPedido": "2025-06-07",
-  "valorTotal": 130062.50,
-  "status": "APROVADO",
-  "observacoes": null,
-  "itens": [
-    {
-      "id": 19,
-      "produto": {
-        "id": 1,
-        "codigo": "Cadeira de Escritório",
-        "codigoProduto": "XYZ-789",
-        "nome": "Cadeira de Escritório",
-        "descricao": "Cadeira ergonômica com ajuste de altura e apoio lombar.",
-        "unidadeMedida": "UN",
-        "precoUnitario": 450.00,
-        "categoria": "Mobiliário de Escritório",
-        "estoque": 50,
+    "id": 7,
+    "fornecedor": {
+        "id": 9,
+        "cnpj": "92.345.888/0001-90",
+        "contato": "Fulano de Tal e Tal",
+        "email": "contato@empresa.com.br",
+        "endereco": "Rua da Amostra, 100, Centro - Guarulhos/SP",
+        "telefone": "(11) 98765-4321",
         "version": 0,
-        "dataCriacao": "2025-06-04T15:39:56.12736",
-        "dataAtualizacao": "2025-06-04T15:39:56.12736"
-      },
-      "quantidade": 50,
-      "precoUnitario": 100.00,
-      "subtotal": 5000.00,
-      "observacoes": null,
-      "nomeProduto": "Produto A",
-      "codigoProduto": "PROD001",
-      "unidadeMedida": "UN",
-      "version": 0
+        "razaoSocial": "Empresa Exemplar Ltda."
     },
-    {
-      "id": 20,
-      "produto": {
-        "id": 2,
-        "codigo": "Monitor LED 27 polegadas",
-        "codigoProduto": "ABC-123",
-        "nome": "Monitor LED 27 polegadas",
-        "descricao": "Monitor Full HD com painel IPS e tempo de resposta de 5ms.",
-        "unidadeMedida": "UN",
-        "precoUnitario": 999.99,
-        "categoria": "Eletrônicos",
-        "estoque": 120,
-        "version": 0,
-        "dataCriacao": "2025-06-04T15:39:56.206933",
-        "dataAtualizacao": "2025-06-04T15:39:56.206933"
-      },
-      "quantidade": 250,
-      "precoUnitario": 500.25,
-      "subtotal": 125062.50,
-      "observacoes": null,
-      "nomeProduto": "Produto B",
-      "codigoProduto": "PROD002",
-      "unidadeMedida": "KG",
-      "version": 0
-    }
-  ]
+    "orcamento": null,
+    "dataPedido": "2025-06-11",
+    "valorTotal": 130062.50,
+    "status": "RECEBIDO",
+    "observacoes": null,
+    "itens": [
+        {
+            "id": 32,
+            "produto": {
+                "id": 1,
+                "codigo": "Cadeira de Escritório",
+                "codigoProduto": "XYZ-789",
+                "nome": "Cadeira de Escritório",
+                "descricao": "Cadeira ergonômica com ajuste de altura e apoio lombar.",
+                "unidadeMedida": "UN",
+                "precoUnitario": 450.00,
+                "categoria": "Mobiliário de Escritório",
+                "estoque": 50,
+                "version": 0,
+                "dataCriacao": "2025-06-04T15:39:56.12736",
+                "dataAtualizacao": "2025-06-04T15:39:56.12736"
+            },
+            "quantidade": 50,
+            "precoUnitario": 100.00,
+            "subtotal": 5000.00,
+            "observacoes": null,
+            "nomeProduto": "Produto A",
+            "codigoProduto": "PROD001",
+            "unidadeMedida": "UN",
+            "version": 0
+        },
+        {
+            "id": 33,
+            "produto": {
+                "id": 2,
+                "codigo": "Monitor LED 27 polegadas",
+                "codigoProduto": "ABC-123",
+                "nome": "Monitor LED 27 polegadas",
+                "descricao": "Monitor Full HD com painel IPS e tempo de resposta de 5ms.",
+                "unidadeMedida": "UN",
+                "precoUnitario": 999.99,
+                "categoria": "Eletrônicos",
+                "estoque": 120,
+                "version": 0,
+                "dataCriacao": "2025-06-04T15:39:56.206933",
+                "dataAtualizacao": "2025-06-04T15:39:56.206933"
+            },
+            "quantidade": 250,
+            "precoUnitario": 500.25,
+            "subtotal": 125062.50,
+            "observacoes": null,
+            "nomeProduto": "Produto B",
+            "codigoProduto": "PROD002",
+            "unidadeMedida": "KG",
+            "version": 0
+        }
+    ]
 }
+
 5.5. Atualizar Status do Pedido de Compra
 Endpoint: PUT /api/pedidos-compra/{id}/status
 Descrição: Altera o status de um pedido de compra.
@@ -1025,14 +1233,9 @@ Exemplo de Requisição (via Query Param):
 PUT http://localhost:8080/api/pedidos-compra/1/status?novoStatus=CANCELADO
 Instruções para Postman (ou similar):
 
-Selecione o método PUT.
-Insira a URL: http://localhost:8080/api/pedidos-compra/1/status.
-Vá para a aba Params (ou "Query Params").
-Adicione uma nova linha:
-Key (Chave): novoStatus
-Value (Valor): CANCELADO
-Certifique-se de que a aba Body está vazia (ou selecionada como none).
-6. ProcessoCompraController
+Exemplo de Resposta (JSON - 204 No Content):
+
+1. ProcessoCompraController
 Gerencia o início de um processo de compra.
 
 6.1. Iniciar Processo de Compra

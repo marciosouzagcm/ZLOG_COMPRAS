@@ -10,6 +10,7 @@ import com.zlogcompras.model.StatusOrcamento;
 import com.zlogcompras.model.StatusSolicitacaoCompra;
 import com.zlogcompras.model.dto.ItemOrcamentoRequestDTO;
 import com.zlogcompras.model.dto.OrcamentoListaDTO;
+import com.zlogcompras.model.dto.OrcamentoLoteRequestDTO;
 import com.zlogcompras.model.dto.OrcamentoRequestDTO;
 import com.zlogcompras.model.dto.OrcamentoResponseDTO;
 import com.zlogcompras.repository.FornecedorRepository;
@@ -56,12 +57,10 @@ public class OrcamentoService {
 
     @Transactional
     public OrcamentoResponseDTO criarOrcamento(OrcamentoRequestDTO orcamentoRequestDTO) {
-        // 1. Validação inicial da lista de itens
         if (orcamentoRequestDTO.getItensOrcamento() == null || orcamentoRequestDTO.getItensOrcamento().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O orçamento deve conter ao menos um item.");
         }
 
-        // 2. Buscar entidades relacionadas (antes das validações de itens individuais)
         SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(orcamentoRequestDTO.getSolicitacaoCompraId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de compra não encontrada."));
         Fornecedor fornecedor = fornecedorRepository.findById(orcamentoRequestDTO.getFornecedorId())
@@ -70,7 +69,6 @@ public class OrcamentoService {
         BigDecimal valorTotal = BigDecimal.ZERO;
         List<ItemOrcamento> itensOrcamento = new ArrayList<>();
 
-        // 3. Validar e processar cada item do orçamento
         for (ItemOrcamentoRequestDTO itemDTO : orcamentoRequestDTO.getItensOrcamento()) {
             if (itemDTO.getQuantidade() == null || itemDTO.getQuantidade().compareTo(BigDecimal.ZERO) <= 0) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A quantidade do item do orçamento não pode ser zero ou negativa para o produto ID: " + itemDTO.getProdutoId());
@@ -84,14 +82,15 @@ public class OrcamentoService {
 
             ItemOrcamento itemOrcamento = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
             itemOrcamento.setProduto(produto);
-            // itemOrcamento.setOrcamento(orcamento); // Associar ao orçamento depois que ele for criado
+            itemOrcamento.setNomeProduto(produto.getNome());
+            itemOrcamento.setUnidadeMedidaProduto(produto.getUnidadeMedida());
+            itemOrcamento.setCodigoProduto(produto.getCodigoProduto()); // NOVO: Atribui o código do produto
+
             itensOrcamento.add(itemOrcamento);
 
             valorTotal = valorTotal.add(itemDTO.getQuantidade().multiply(itemDTO.getPrecoUnitarioCotado()));
         }
 
-        // 4. Mapear DTO para Entidade Orcamento e setar os dados
-        // Agora o orcamentoMapper.toEntity será chamado DEPOIS de todas as validações de itens
         Orcamento orcamento = orcamentoMapper.toEntity(orcamentoRequestDTO);
         if (orcamento == null) {
             orcamento = new Orcamento();
@@ -103,15 +102,35 @@ public class OrcamentoService {
         orcamento.setStatus(StatusOrcamento.AGUARDANDO_APROVACAO);
         orcamento.setValorTotal(valorTotal);
 
-        // Associar os itens ao orçamento principal
         for (ItemOrcamento item : itensOrcamento) {
             item.setOrcamento(orcamento);
         }
         orcamento.setItensOrcamento(itensOrcamento);
 
-
         Orcamento savedOrcamento = orcamentoRepository.save(orcamento);
         return orcamentoMapper.toResponseDto(savedOrcamento);
+    }
+
+    @Transactional
+    public List<OrcamentoResponseDTO> criarOrcamentosEmLote(OrcamentoLoteRequestDTO orcamentoLoteRequestDTO) {
+        Long solicitacaoCompraIdDoLote = orcamentoLoteRequestDTO.getSolicitacaoCompraId();
+        SolicitacaoCompra solicitacaoCompraPrincipal = solicitacaoCompraRepository.findById(solicitacaoCompraIdDoLote)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação de Compra não encontrada com o ID: " + solicitacaoCompraIdDoLote));
+
+        List<OrcamentoResponseDTO> orcamentosCriados = new ArrayList<>();
+
+        for (OrcamentoRequestDTO orcamentoRequestDTO : orcamentoLoteRequestDTO.getOrcamentos()) {
+            if (orcamentoRequestDTO.getSolicitacaoCompraId() == null ||
+                !orcamentoRequestDTO.getSolicitacaoCompraId().equals(solicitacaoCompraIdDoLote)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "O 'solicitacaoCompraId' em cada orçamento individual do lote deve ser o mesmo do 'solicitacaoCompraId' do lote (" + solicitacaoCompraIdDoLote + ").");
+            }
+
+            OrcamentoResponseDTO novoOrcamento = criarOrcamento(orcamentoRequestDTO);
+            orcamentosCriados.add(novoOrcamento);
+        }
+
+        return orcamentosCriados;
     }
 
     @Transactional
@@ -123,7 +142,6 @@ public class OrcamentoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Somente orçamentos com status 'AGUARDANDO_APROVACAO' podem ser atualizados.");
         }
 
-        // Validações antes de buscar Solicitacao/Fornecedor caso os IDs sejam alterados
         if (orcamentoRequestDTO.getSolicitacaoCompraId() != null &&
             !orcamentoRequestDTO.getSolicitacaoCompraId().equals(existingOrcamento.getSolicitacaoCompra().getId())) {
             SolicitacaoCompra solicitacaoCompra = solicitacaoCompraRepository.findById(orcamentoRequestDTO.getSolicitacaoCompraId())
@@ -144,8 +162,12 @@ public class OrcamentoService {
         List<ItemOrcamento> updatedItens = new ArrayList<>();
 
         if (orcamentoRequestDTO.getItensOrcamento() == null || orcamentoRequestDTO.getItensOrcamento().isEmpty()) {
-             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O orçamento deve conter ao menos um item.");
+              throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O orçamento deve conter ao menos um item.");
         }
+
+        java.util.Map<Long, ItemOrcamento> existingItemsMap = existingOrcamento.getItensOrcamento().stream()
+                .filter(item -> item.getId() != null)
+                .collect(Collectors.toMap(ItemOrcamento::getId, item -> item));
 
         for (ItemOrcamentoRequestDTO itemDTO : orcamentoRequestDTO.getItensOrcamento()) {
             if (itemDTO.getQuantidade() == null || itemDTO.getQuantidade().compareTo(BigDecimal.ZERO) <= 0) {
@@ -160,22 +182,24 @@ public class OrcamentoService {
 
             ItemOrcamento itemOrcamento;
             if (itemDTO.getId() != null) {
-                itemOrcamento = existingOrcamento.getItensOrcamento().stream()
-                        .filter(i -> i.getId() != null && i.getId().equals(itemDTO.getId()))
-                        .findFirst()
-                        .orElseGet(() -> {
-                            ItemOrcamento newItem = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
-                            newItem.setOrcamento(existingOrcamento);
-                            return newItem;
-                        });
+                itemOrcamento = existingItemsMap.get(itemDTO.getId());
+                if (itemOrcamento == null) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item de orçamento existente com ID " + itemDTO.getId() + " não encontrado no orçamento.");
+                }
                 itemOrcamento.setQuantidade(itemDTO.getQuantidade());
                 itemOrcamento.setPrecoUnitarioCotado(itemDTO.getPrecoUnitarioCotado());
                 itemOrcamento.setObservacoes(itemDTO.getObservacoes());
                 itemOrcamento.setProduto(produto);
+                itemOrcamento.setNomeProduto(produto.getNome());
+                itemOrcamento.setUnidadeMedidaProduto(produto.getUnidadeMedida());
+                itemOrcamento.setCodigoProduto(produto.getCodigoProduto()); // NOVO: Atribui o código do produto
             } else {
                 itemOrcamento = orcamentoMapper.toItemOrcamentoEntity(itemDTO);
                 itemOrcamento.setProduto(produto);
                 itemOrcamento.setOrcamento(existingOrcamento);
+                itemOrcamento.setNomeProduto(produto.getNome());
+                itemOrcamento.setUnidadeMedidaProduto(produto.getUnidadeMedida());
+                itemOrcamento.setCodigoProduto(produto.getCodigoProduto()); // NOVO: Atribui o código do produto
             }
             updatedItens.add(itemOrcamento);
             valorTotal = valorTotal.add(itemDTO.getQuantidade().multiply(itemDTO.getPrecoUnitarioCotado()));
