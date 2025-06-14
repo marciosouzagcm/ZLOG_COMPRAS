@@ -1603,3 +1603,351 @@ Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character (
 2025-06-14T03:16:35.149-03:00 DEBUG 18256 --- [zlog_compras] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 48, 46, 49, 34, 44, 34, 105, 110, 10 (truncated)...]
 2025-06-14T03:16:35.149-03:00 DEBUG 18256 --- [zlog_compras] [http-nio-8080-exec-7] o.j.s.OpenEntityManagerInViewInterceptor : Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
 2025-06-14T03:16:35.149-03:00 DEBUG 18256 --- [zlog_compras] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-06-14T03:19:32.621-03:00  INFO 12048 --- [zlog_compras] [main] c.z.ZlogComprasApplicationTests          : Starting ZlogComprasApplicationTests using Java 21.0.7 with PID 12048 (started by DELL in C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS)
+2025-06-14T03:19:32.621-03:00  INFO 12048 --- [zlog_compras] [main] c.z.ZlogComprasApplicationTests          : No active profile set, falling back to 1 default profile: "default"
+2025-06-14T03:19:32.677-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@8eb6f9a
+2025-06-14T03:19:33.840-03:00  INFO 12048 --- [zlog_compras] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-14T03:19:33.918-03:00  INFO 12048 --- [zlog_compras] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 71 ms. Found 11 JPA repository interfaces.
+2025-06-14T03:19:34.625-03:00 DEBUG 12048 --- [zlog_compras] [main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2025-06-14T03:19:34.651-03:00  INFO 12048 --- [zlog_compras] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-14T03:19:34.738-03:00  INFO 12048 --- [zlog_compras] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2025-06-14T03:19:34.779-03:00  INFO 12048 --- [zlog_compras] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-14T03:19:34.922-03:00  INFO 12048 --- [zlog_compras] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-14T03:19:34.953-03:00  INFO 12048 --- [zlog_compras] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-14T03:19:35.400-03:00  INFO 12048 --- [zlog_compras] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@784c74e
+2025-06-14T03:19:35.410-03:00  INFO 12048 --- [zlog_compras] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-14T03:19:35.481-03:00  WARN 12048 --- [zlog_compras] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-06-14T03:19:36.622-03:00  INFO 12048 --- [zlog_compras] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-14T03:19:36.831-03:00  INFO 12048 --- [zlog_compras] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-14T03:19:36.947-03:00 DEBUG 12048 --- [zlog_compras] [main] .c.JpaMetamodelMappingContextFactoryBean : Initializing JpaMetamodelMappingContext…
+2025-06-14T03:19:36.970-03:00 DEBUG 12048 --- [zlog_compras] [main] .c.JpaMetamodelMappingContextFactoryBean : Finished initializing JpaMetamodelMappingContext
+2025-06-14T03:19:37.037-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:37.114-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:37.232-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:37.330-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Estoque.findByProduto
+2025-06-14T03:19:37.338-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Estoque.findByProduto
+2025-06-14T03:19:37.348-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:37.457-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Estoque.findByProduto_CodigoProduto
+2025-06-14T03:19:37.460-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Estoque.findByProduto_CodigoProduto
+2025-06-14T03:19:37.460-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:37.487-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:37.488-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:37.494-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Produto.findByCodigoProduto
+2025-06-14T03:19:37.496-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Produto.findByCodigoProduto
+2025-06-14T03:19:37.496-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.250-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.255-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.260-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Fornecedor.findByCnpj
+2025-06-14T03:19:38.260-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Fornecedor.findByCnpj
+2025-06-14T03:19:38.260-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.269-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.293-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.300-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findBySolicitacaoCompraIdAndIdNot
+2025-06-14T03:19:38.302-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompraIdAndIdNot
+2025-06-14T03:19:38.302-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.302-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findBySolicitacaoCompra_Id
+2025-06-14T03:19:38.302-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompra_Id
+2025-06-14T03:19:38.302-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.302-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findByDataCotacaoBetween
+2025-06-14T03:19:38.302-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByDataCotacaoBetween
+2025-06-14T03:19:38.302-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findByFornecedor_Id
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByFornecedor_Id
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findBySolicitacaoCompraId
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompraId
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findByStatus
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByStatus
+2025-06-14T03:19:38.310-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.323-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.324-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.334-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.340-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.340-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query PedidoCompra.findByFornecedorId
+2025-06-14T03:19:38.340-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query PedidoCompra.findByFornecedorId
+2025-06-14T03:19:38.340-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.340-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query PedidoCompra.findByStatus
+2025-06-14T03:19:38.340-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query PedidoCompra.findByStatus
+2025-06-14T03:19:38.340-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.411-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.411-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.416-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query ItemSolicitacaoCompra.findBySolicitacaoCompraId
+2025-06-14T03:19:38.416-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemSolicitacaoCompra.findBySolicitacaoCompraId
+2025-06-14T03:19:38.416-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:38.885-03:00  WARN 12048 --- [zlog_compras] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-14T03:19:38.990-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.EstoqueController:
+	{PUT [/api/estoques/{id}/retirar-quantidade]}: retirarQuantidadeEstoque(Long,EstoqueMovimentacaoDTO)
+	{POST [/api/estoques/batch]}: criarMultiplosEstoques(List)
+	{PUT [/api/estoques/{id}/adicionar-quantidade]}: adicionarQuantidadeEstoque(Long,EstoqueMovimentacaoDTO)
+	{GET [/api/estoques]}: listarTodosEstoques()
+	{GET [/api/estoques/produto/{codigoProduto}]}: buscarEstoquePorCodigoProduto(String)
+	{PUT [/api/estoques/{id}]}: atualizarEstoque(Long,EstoqueRequestDTO)
+	{DELETE [/api/estoques/{id}]}: deletarEstoque(Long)
+	{GET [/api/estoques/{id}]}: buscarEstoquePorId(Long)
+	{POST [/api/estoques]}: criarEstoque(EstoqueRequestDTO)
+2025-06-14T03:19:39.003-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.FornecedorController:
+	{GET [/api/fornecedores/{id}]}: buscarFornecedorPorId(Long)
+	{GET [/api/fornecedores]}: listarTodosFornecedores()
+	{PUT [/api/fornecedores/{id}]}: atualizarFornecedor(Long,FornecedorRequestDTO)
+	{POST [/api/fornecedores]}: criarFornecedor(FornecedorRequestDTO)
+	{DELETE [/api/fornecedores/{id}]}: deletarFornecedor(Long)
+2025-06-14T03:19:39.007-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.OrcamentoController:
+	{PATCH [/api/orcamentos/{id}/aprovar]}: aprovarOrcamento(Long)
+	{PUT [/api/orcamentos/{id}]}: atualizarOrcamento(Long,OrcamentoRequestDTO)
+	{POST [/api/orcamentos]}: criarOrcamento(OrcamentoRequestDTO)
+	{GET [/api/orcamentos/{id}]}: buscarOrcamentoPorId(Long)
+	{POST [/api/orcamentos/lote]}: criarOrcamentosEmLote(OrcamentoLoteRequestDTO)
+	{GET [/api/orcamentos]}: listarTodosOrcamentos()
+	{DELETE [/api/orcamentos/{id}]}: deletarOrcamento(Long)
+2025-06-14T03:19:39.010-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.PedidoCompraController:
+	{PUT [/pedidos-compra/{id}]}: atualizarPedidoCompra(Long,PedidoCompraRequestDTO)
+	{GET [/pedidos-compra/status/{status}]}: buscarPedidosPorStatus(String)
+	{GET [/pedidos-compra]}: listarTodosPedidosCompra()
+	{GET [/pedidos-compra/{id}]}: buscarPedidoCompraPorId(Long)
+	{POST [/pedidos-compra/{id}/itens]}: adicionarItensAoPedido(Long,List)
+	{DELETE [/pedidos-compra/{id}]}: deletarPedidoCompra(Long)
+	{POST [/pedidos-compra]}: criarPedidoCompra(PedidoCompraRequestDTO)
+	{PUT [/pedidos-compra/{id}/status]}: atualizarStatusPedidoCompra(Long,String)
+2025-06-14T03:19:39.013-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProcessoCompraController:
+	{POST [/api/processo-compra/iniciar/{solicitacaoId}]}: iniciarProcessoCompra(Long)
+2025-06-14T03:19:39.018-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProdutoController:
+	{GET [/api/produtos]}: listarTodosProdutos()
+	{POST [/api/produtos/multiplos]}: criarMultiplosProdutos(List)
+	{GET [/api/produtos/{id}]}: buscarProdutoPorId(Long)
+	{POST [/api/produtos]}: criarProduto(ProdutoRequestDTO)
+	{DELETE [/api/produtos/{id}]}: deletarProduto(Long)
+	{PUT [/api/produtos/{id}]}: atualizarProduto(Long,ProdutoRequestDTO)
+2025-06-14T03:19:39.020-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.SolicitacaoCompraController:
+	{GET [/api/solicitacoes-compra]}: listarTodasSolicitacoes()
+	{PUT [/api/solicitacoes-compra/{id}]}: atualizarSolicitacao(Long,SolicitacaoCompraRequestDTO)
+	{GET [/api/solicitacoes-compra/{id}]}: buscarSolicitacaoPorId(Long)
+	{DELETE [/api/solicitacoes-compra/{id}]}: deletarSolicitacao(Long)
+	{POST [/api/solicitacoes-compra]}: criarSolicitacao(SolicitacaoCompraRequestDTO)
+2025-06-14T03:19:39.020-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.b.a.w.s.e.BasicErrorController:
+	{ [/error]}: error(HttpServletRequest)
+	{ [/error], produces [text/html]}: errorHtml(HttpServletRequest,HttpServletResponse)
+2025-06-14T03:19:39.042-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.w.a.OpenApiWebMvcResource:
+	{GET [/v3/api-docs], produces [application/json]}: openapiJson(HttpServletRequest,String,Locale)
+	{GET [/v3/api-docs.yaml], produces [application/vnd.oai.openapi]}: openapiYaml(HttpServletRequest,String,Locale)
+2025-06-14T03:19:39.044-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.w.u.SwaggerWelcomeWebMvc:
+	{GET [/swagger-ui.html]}: redirectToUi(HttpServletRequest)
+2025-06-14T03:19:39.045-03:00 TRACE 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.w.u.SwaggerConfigResource:
+	{GET [/v3/api-docs/swagger-config], produces [application/json]}: openapiJson(HttpServletRequest)
+2025-06-14T03:19:39.047-03:00 DEBUG 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 47 mappings in 'requestMappingHandlerMapping'
+2025-06-14T03:19:39.198-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-06-14T03:19:39.250-03:00 DEBUG 12048 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-06-14T03:19:39.290-03:00 DEBUG 12048 --- [zlog_compras] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-06-14T03:19:39.440-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.440-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.440-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query ItemPedidoCompra.findByPedidoCompraId
+2025-06-14T03:19:39.440-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemPedidoCompra.findByPedidoCompraId
+2025-06-14T03:19:39.440-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.447-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.450-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.450-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc
+2025-06-14T03:19:39.450-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc
+2025-06-14T03:19:39.450-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.462-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.466-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.466-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query NotaFiscal.findByPedidoCompraId
+2025-06-14T03:19:39.466-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query NotaFiscal.findByPedidoCompraId
+2025-06-14T03:19:39.466-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.474-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.474-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.476-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query ItemOrcamento.findByOrcamento_Id
+2025-06-14T03:19:39.476-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemOrcamento.findByOrcamento_Id
+2025-06-14T03:19:39.476-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.478-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query ItemOrcamento.findByProduto_Id
+2025-06-14T03:19:39.478-03:00 DEBUG 12048 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemOrcamento.findByProduto_Id
+2025-06-14T03:19:39.478-03:00 DEBUG 12048 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:19:39.556-03:00  INFO 12048 --- [zlog_compras] [main] c.z.ZlogComprasApplicationTests          : Started ZlogComprasApplicationTests in 7.32 seconds (process running for 12.16)
+2025-06-14T03:19:39.601-03:00 DEBUG 12048 --- [zlog_compras] [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@8eb6f9a, started on Sat Jun 14 03:19:32 BRT 2025
+2025-06-14T03:19:39.601-03:00  INFO 12048 --- [zlog_compras] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-14T03:19:39.601-03:00  INFO 12048 --- [zlog_compras] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-14T03:19:39.621-03:00  INFO 12048 --- [zlog_compras] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-06-14T03:23:45.552-03:00  INFO 11776 --- [zlog_compras] [main] c.z.ZlogComprasApplicationTests          : Starting ZlogComprasApplicationTests using Java 21.0.7 with PID 11776 (started by DELL in C:\Users\DELL\ZLOG_COMPRAS\ZLOG_COMPRAS)
+2025-06-14T03:23:45.555-03:00  INFO 11776 --- [zlog_compras] [main] c.z.ZlogComprasApplicationTests          : No active profile set, falling back to 1 default profile: "default"
+2025-06-14T03:23:45.610-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@8eb6f9a
+2025-06-14T03:23:46.600-03:00  INFO 11776 --- [zlog_compras] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-14T03:23:46.676-03:00  INFO 11776 --- [zlog_compras] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 71 ms. Found 11 JPA repository interfaces.
+2025-06-14T03:23:47.326-03:00 DEBUG 11776 --- [zlog_compras] [main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2025-06-14T03:23:47.340-03:00  INFO 11776 --- [zlog_compras] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-14T03:23:47.390-03:00  INFO 11776 --- [zlog_compras] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2025-06-14T03:23:47.422-03:00  INFO 11776 --- [zlog_compras] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-14T03:23:47.537-03:00  INFO 11776 --- [zlog_compras] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-14T03:23:47.563-03:00  INFO 11776 --- [zlog_compras] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-14T03:23:47.939-03:00  INFO 11776 --- [zlog_compras] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@294ab038
+2025-06-14T03:23:47.940-03:00  INFO 11776 --- [zlog_compras] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-14T03:23:48.023-03:00  WARN 11776 --- [zlog_compras] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-06-14T03:23:49.123-03:00  INFO 11776 --- [zlog_compras] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-14T03:23:49.276-03:00  INFO 11776 --- [zlog_compras] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-14T03:23:49.341-03:00 DEBUG 11776 --- [zlog_compras] [main] .c.JpaMetamodelMappingContextFactoryBean : Initializing JpaMetamodelMappingContext…
+2025-06-14T03:23:49.363-03:00 DEBUG 11776 --- [zlog_compras] [main] .c.JpaMetamodelMappingContextFactoryBean : Finished initializing JpaMetamodelMappingContext
+2025-06-14T03:23:49.391-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:49.440-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:49.539-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:49.590-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Estoque.findByProduto_CodigoProduto
+2025-06-14T03:23:49.594-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Estoque.findByProduto_CodigoProduto
+2025-06-14T03:23:49.597-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:49.641-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Estoque.findByProduto
+2025-06-14T03:23:49.641-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Estoque.findByProduto
+2025-06-14T03:23:49.641-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:49.660-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:49.661-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:49.663-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Produto.findByCodigoProduto
+2025-06-14T03:23:49.663-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Produto.findByCodigoProduto
+2025-06-14T03:23:49.664-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.093-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.107-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.110-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Fornecedor.findByCnpj
+2025-06-14T03:23:50.110-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Fornecedor.findByCnpj
+2025-06-14T03:23:50.110-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.131-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.177-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.182-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findBySolicitacaoCompraIdAndIdNot
+2025-06-14T03:23:50.183-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompraIdAndIdNot
+2025-06-14T03:23:50.183-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.188-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findByStatus
+2025-06-14T03:23:50.188-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByStatus
+2025-06-14T03:23:50.190-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.192-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findBySolicitacaoCompra_Id
+2025-06-14T03:23:50.196-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompra_Id
+2025-06-14T03:23:50.197-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.215-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findByFornecedor_Id
+2025-06-14T03:23:50.217-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByFornecedor_Id
+2025-06-14T03:23:50.217-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.221-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findByDataCotacaoBetween
+2025-06-14T03:23:50.223-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findByDataCotacaoBetween
+2025-06-14T03:23:50.224-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.229-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query Orcamento.findBySolicitacaoCompraId
+2025-06-14T03:23:50.231-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query Orcamento.findBySolicitacaoCompraId
+2025-06-14T03:23:50.231-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.242-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.242-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.242-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.261-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.263-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query PedidoCompra.findByStatus
+2025-06-14T03:23:50.263-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query PedidoCompra.findByStatus
+2025-06-14T03:23:50.263-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.264-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query PedidoCompra.findByFornecedorId
+2025-06-14T03:23:50.265-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query PedidoCompra.findByFornecedorId
+2025-06-14T03:23:50.265-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.310-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.310-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.310-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query ItemSolicitacaoCompra.findBySolicitacaoCompraId
+2025-06-14T03:23:50.310-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemSolicitacaoCompra.findBySolicitacaoCompraId
+2025-06-14T03:23:50.310-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:50.661-03:00  WARN 11776 --- [zlog_compras] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-14T03:23:50.752-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.EstoqueController:
+	{PUT [/api/estoques/{id}/adicionar-quantidade]}: adicionarQuantidadeEstoque(Long,EstoqueMovimentacaoDTO)
+	{GET [/api/estoques]}: listarTodosEstoques()
+	{POST [/api/estoques/batch]}: criarMultiplosEstoques(List)
+	{PUT [/api/estoques/{id}/retirar-quantidade]}: retirarQuantidadeEstoque(Long,EstoqueMovimentacaoDTO)
+	{GET [/api/estoques/produto/{codigoProduto}]}: buscarEstoquePorCodigoProduto(String)
+	{POST [/api/estoques]}: criarEstoque(EstoqueRequestDTO)
+	{GET [/api/estoques/{id}]}: buscarEstoquePorId(Long)
+	{DELETE [/api/estoques/{id}]}: deletarEstoque(Long)
+	{PUT [/api/estoques/{id}]}: atualizarEstoque(Long,EstoqueRequestDTO)
+2025-06-14T03:23:50.762-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.FornecedorController:
+	{PUT [/api/fornecedores/{id}]}: atualizarFornecedor(Long,FornecedorRequestDTO)
+	{GET [/api/fornecedores/{id}]}: buscarFornecedorPorId(Long)
+	{GET [/api/fornecedores]}: listarTodosFornecedores()
+	{DELETE [/api/fornecedores/{id}]}: deletarFornecedor(Long)
+	{POST [/api/fornecedores]}: criarFornecedor(FornecedorRequestDTO)
+2025-06-14T03:23:50.762-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.OrcamentoController:
+	{PATCH [/api/orcamentos/{id}/aprovar]}: aprovarOrcamento(Long)
+	{POST [/api/orcamentos]}: criarOrcamento(OrcamentoRequestDTO)
+	{PUT [/api/orcamentos/{id}]}: atualizarOrcamento(Long,OrcamentoRequestDTO)
+	{DELETE [/api/orcamentos/{id}]}: deletarOrcamento(Long)
+	{POST [/api/orcamentos/lote]}: criarOrcamentosEmLote(OrcamentoLoteRequestDTO)
+	{GET [/api/orcamentos]}: listarTodosOrcamentos()
+	{GET [/api/orcamentos/{id}]}: buscarOrcamentoPorId(Long)
+2025-06-14T03:23:50.762-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.PedidoCompraController:
+	{DELETE [/pedidos-compra/{id}]}: deletarPedidoCompra(Long)
+	{POST [/pedidos-compra/{id}/itens]}: adicionarItensAoPedido(Long,List)
+	{POST [/pedidos-compra]}: criarPedidoCompra(PedidoCompraRequestDTO)
+	{GET [/pedidos-compra/status/{status}]}: buscarPedidosPorStatus(String)
+	{PUT [/pedidos-compra/{id}]}: atualizarPedidoCompra(Long,PedidoCompraRequestDTO)
+	{GET [/pedidos-compra/{id}]}: buscarPedidoCompraPorId(Long)
+	{GET [/pedidos-compra]}: listarTodosPedidosCompra()
+	{PUT [/pedidos-compra/{id}/status]}: atualizarStatusPedidoCompra(Long,String)
+2025-06-14T03:23:50.774-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProcessoCompraController:
+	{POST [/api/processo-compra/iniciar/{solicitacaoId}]}: iniciarProcessoCompra(Long)
+2025-06-14T03:23:50.777-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.ProdutoController:
+	{POST [/api/produtos/multiplos]}: criarMultiplosProdutos(List)
+	{GET [/api/produtos]}: listarTodosProdutos()
+	{PUT [/api/produtos/{id}]}: atualizarProduto(Long,ProdutoRequestDTO)
+	{POST [/api/produtos]}: criarProduto(ProdutoRequestDTO)
+	{GET [/api/produtos/{id}]}: buscarProdutoPorId(Long)
+	{DELETE [/api/produtos/{id}]}: deletarProduto(Long)
+2025-06-14T03:23:50.777-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	c.z.c.SolicitacaoCompraController:
+	{PUT [/api/solicitacoes-compra/{id}]}: atualizarSolicitacao(Long,SolicitacaoCompraRequestDTO)
+	{GET [/api/solicitacoes-compra]}: listarTodasSolicitacoes()
+	{GET [/api/solicitacoes-compra/{id}]}: buscarSolicitacaoPorId(Long)
+	{DELETE [/api/solicitacoes-compra/{id}]}: deletarSolicitacao(Long)
+	{POST [/api/solicitacoes-compra]}: criarSolicitacao(SolicitacaoCompraRequestDTO)
+2025-06-14T03:23:50.777-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.b.a.w.s.e.BasicErrorController:
+	{ [/error]}: error(HttpServletRequest)
+	{ [/error], produces [text/html]}: errorHtml(HttpServletRequest,HttpServletResponse)
+2025-06-14T03:23:50.806-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.w.a.OpenApiWebMvcResource:
+	{GET [/v3/api-docs], produces [application/json]}: openapiJson(HttpServletRequest,String,Locale)
+	{GET [/v3/api-docs.yaml], produces [application/vnd.oai.openapi]}: openapiYaml(HttpServletRequest,String,Locale)
+2025-06-14T03:23:50.809-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.w.u.SwaggerWelcomeWebMvc:
+	{GET [/swagger-ui.html]}: redirectToUi(HttpServletRequest)
+2025-06-14T03:23:50.811-03:00 TRACE 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 
+	o.s.w.u.SwaggerConfigResource:
+	{GET [/v3/api-docs/swagger-config], produces [application/json]}: openapiJson(HttpServletRequest)
+2025-06-14T03:23:50.811-03:00 DEBUG 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 47 mappings in 'requestMappingHandlerMapping'
+2025-06-14T03:23:50.955-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-06-14T03:23:50.994-03:00 DEBUG 11776 --- [zlog_compras] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-06-14T03:23:51.056-03:00 DEBUG 11776 --- [zlog_compras] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-06-14T03:23:51.208-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.211-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.215-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc
+2025-06-14T03:23:51.215-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query MovimentacaoEstoque.findByCodigoMaterialOrderByDataMovimentacaoDesc
+2025-06-14T03:23:51.215-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.229-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.230-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.231-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query ItemOrcamento.findByOrcamento_Id
+2025-06-14T03:23:51.232-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemOrcamento.findByOrcamento_Id
+2025-06-14T03:23:51.232-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.235-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query ItemOrcamento.findByProduto_Id
+2025-06-14T03:23:51.235-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemOrcamento.findByProduto_Id
+2025-06-14T03:23:51.236-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.244-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.245-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.247-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query ItemPedidoCompra.findByPedidoCompraId
+2025-06-14T03:23:51.247-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query ItemPedidoCompra.findByPedidoCompraId
+2025-06-14T03:23:51.247-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.255-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.256-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.260-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Looking up named query NotaFiscal.findByPedidoCompraId
+2025-06-14T03:23:51.260-03:00 DEBUG 11776 --- [zlog_compras] [main] o.s.d.jpa.repository.query.NamedQuery    : Did not find named query NotaFiscal.findByPedidoCompraId
+2025-06-14T03:23:51.260-03:00 DEBUG 11776 --- [zlog_compras] [main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2025-06-14T03:23:51.362-03:00  INFO 11776 --- [zlog_compras] [main] c.z.ZlogComprasApplicationTests          : Started ZlogComprasApplicationTests in 6.135 seconds (process running for 9.359)
+2025-06-14T03:23:51.445-03:00 DEBUG 11776 --- [zlog_compras] [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@8eb6f9a, started on Sat Jun 14 03:23:45 BRT 2025
+2025-06-14T03:23:51.452-03:00  INFO 11776 --- [zlog_compras] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-14T03:23:51.456-03:00  INFO 11776 --- [zlog_compras] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-14T03:23:51.484-03:00  INFO 11776 --- [zlog_compras] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
