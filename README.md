@@ -1,6 +1,5 @@
-Com certeza! Uma boa diagramação é essencial para um README.md atraente e fácil de ler. Vamos refatorar o texto para melhorar a clareza visual e o impacto, incorporando a licença MIT e usando mais recursos de Markdown.
-
 ZLOG Compras: Sistema de Gerenciamento de Compras Empresariais
+
 🎯 Sobre o Projeto
 O ZLOG Compras é um sistema robusto e modular, desenvolvido para otimizar e gerenciar o fluxo completo de compras em ambientes empresariais. Desde a criação de solicitações de materiais até a geração de pedidos de compra e o controle de recebimento, nosso objetivo é automatizar e trazer transparência a todas as etapas da aquisição.
 
