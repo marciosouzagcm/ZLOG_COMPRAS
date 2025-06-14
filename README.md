@@ -1,132 +1,83 @@
-# ZLOG_COMPRAS - Sistema Integrado de Solicitação e Rastreabilidade de Compras
+# ZLOG Compras: Sistema de Gerenciamento de Compras Empresariais
 
-Visão Geral
-Este projeto implementa um sistema completo de solicitação, aprovação, compra e rastreabilidade de materiais e serviços, construído com Java e o framework Spring Boot. O objetivo é otimizar o processo de aquisição, desde a requisição inicial até a entrega no destino final e a prestação de contas, garantindo total transparência e controle em cada etapa.
+🎯 Sobre o Projeto
+O ZLOG Compras é um sistema robusto e modular, desenvolvido para otimizar e gerenciar o fluxo completo de compras em ambientes empresariais. Desde a criação de solicitações de materiais até a geração de pedidos de compra e o controle de recebimento, nosso objetivo é automatizar e trazer transparência a todas as etapas da aquisição.
 
-Funcionalidades Detalhadas
-Software de Solicitação ou Requisição de Compra:
+Construímos este projeto com foco em qualidade de código, documentação interativa e testes abrangentes, garantindo uma solução confiável e de fácil manutenção.
 
-Telas: Interface de usuário a ser desenvolvida para que os usuários possam criar novas solicitações de materiais ou serviços.
-Lógica: SolicitacaoCompraController e SolicitacaoCompraService para receber, validar e persistir as solicitações no banco de dados. A entidade SolicitacaoCompra e ItemSolicitacaoCompra modelarão esses dados.
-Verificação de Estoque:
+✨ Funcionalidades Desenvolvidas (Até o Momento)
+Desenvolvemos e validamos as seguintes funcionalidades essenciais:
 
-Lógica: O EstoqueService consultará o repositório Estoque para verificar a quantidade disponível dos itens solicitados.
-Atendimento da Solicitação e Atualização do Estoque:
+Gerenciamento de Solicitações de Compra: Crie, visualize e gerencie solicitações de materiais ou serviços de forma intuitiva.
+Processo de Cotação e Orçamento:
+Criação e gestão de orçamentos detalhados para fornecedores.
+Validação Crucial: Impedimos a criação de novos orçamentos para solicitações já finalizadas, assegurando a integridade do processo de compras.
+Aprovação de orçamentos para dar continuidade ao fluxo.
+Geração de Pedidos de Compra:
+Crie pedidos de compra de forma automatizada, diretamente de orçamentos aprovados.
+Associação clara com fornecedores e os itens do orçamento original.
+Validações de Dados Robustas: Implementamos validações rigorosas para preços e quantidades nos itens de compra e orçamento, garantindo a qualidade e a consistência dos dados inseridos no sistema.
+Base para Recebimento de Itens: Já temos a estrutura inicial e os endpoints definidos para o futuro registro e controle do recebimento de itens do pedido.
+Atualização de Status do Pedido: Capacidade de atualizar o status do pedido de compra em cada etapa do seu progresso.
+🛠️ Tecnologias e Ferramentas
+Nosso projeto é construído com tecnologias modernas e eficientes:
 
-Lógica: Se o material estiver em estoque, o EstoqueService gerará registros na entidade MovimentacaoEstoque para saída e atualizará a quantidade na entidade Estoque.
-Validação de Compras Anteriores:
+Linguagem de Programação: Java 21
+Framework: Spring Boot (v3.3.0)
+Banco de Dados: MySQL
+Persistência: Spring Data JPA / Hibernate
+Ferramenta de Build: Maven
+Documentação da API: Swagger UI / OpenAPI
+Testes: JUnit (com 18 testes unitários para Fornecedores e Orçamentos, todos com 100% de sucesso!)
+Controle de Versão: Git
+🚀 Como Executar o Projeto
+Siga os passos abaixo para colocar o ZLOG Compras em funcionamento localmente:
 
-Lógica: O SolicitacaoCompraService ou um serviço dedicado, como HistoricoComprasService, poderá consultar os repositórios de PedidoCompra e ItemPedidoCompra para obter informações sobre preços praticados, fornecedores anteriores, etc., para os itens solicitados.
-Compra Autorizada e Apresentação de Orçamentos:
+Pré-requisitos
+Certifique-se de ter instalado em sua máquina:
 
-Workflow: Aprovadores poderão autorizar as solicitações. A lógica de aprovação pode ser implementada em um FluxoAprovacaoService e entidades relacionadas.
-Orçamentos: Funcionalidades permitirão registrar e comparar orçamentos de diferentes Fornecedor para as solicitações aprovadas através de controladores e serviços como OrcamentoController e OrcamentoService, com a entidade Orcamento.
-Criação de Mapa de Compras:
+JDK 21 ou superior
+Apache Maven
+Um servidor MySQL (lembre-se de configurar as credenciais do banco de dados no arquivo src/main/resources/application.properties ou application.yml).
+Instalação e Execução
+Clone o repositório:
+Bash
 
-Lógica: Um MapaComprasService poderá agregar as necessidades de compra de diversas solicitações aprovadas, facilitando a consolidação de pedidos. Este serviço consultaria as entidades SolicitacaoCompra e ItemSolicitacaoCompra com status apropriados.
-Geração de Ordem de Compra:
+git clone https://github.com/marciosouzagcm/ZLOG_COMPRAS.git
+Navegue até o diretório do projeto:
+Bash
 
-Lógica: O PedidoCompraService criará formalmente o pedido para o Fornecedor, utilizando informações do mapa de compras e dos orçamentos aprovados. As entidades PedidoCompra e ItemPedidoCompra armazenarão os detalhes.
-Envio ao Fornecedor:
+cd ZLOG_COMPRAS
+Construa o projeto (opcional, se não estiver usando IDE):
+Bash
 
-Integração: Um ComunicacaoFornecedorService poderia ser responsável por integrar com sistemas de comunicação para enviar as ordens de compra geradas.
-Gerenciamento de Entrega e Recebimento:
+mvn clean install
+Execute a aplicação:
+Bash
 
-Lógica: Um EntregaRecebimentoController e EntregaRecebimentoService permitirão acompanhar o status da entrega e registrar o recebimento dos materiais ou serviços, atualizando o status do pedido.
-Envio para Obra Rastreabilidade:
+mvn spring-boot:run
+A aplicação estará disponível em http://localhost:8080 (ou na porta configurada em seu application.properties).
 
-Lógica: A rastreabilidade da movimentação dos materiais até o local da obra pode ser implementada através da entidade MovimentacaoEstoque registrando a saída para a obra com informações sobre o destino e possivelmente uma entidade adicional como MovimentacaoObra para um controle mais granular. Controladores e serviços específicos seriam necessários.
-Atualização de Estoque:
+📖 Documentação da API (Swagger UI)
+Após iniciar a aplicação, você pode explorar e testar todos os endpoints da API de forma interativa através do Swagger UI, acessando:
 
-Lógica: Ao receber os materiais, o EstoqueService registrará as entradas na entidade MovimentacaoEstoque e atualizará as quantidades na entidade Estoque.
-Lançamento do Pedido no Sistema:
+http://localhost:8080/swagger-ui.html
 
-Lógica: Todas as informações relevantes do pedido serão persistidas nas entidades PedidoCompra, ItemPedidoCompra e relacionadas para referência futura.
-Processo para Prestação de Contas com Histórico de Notas:
+✅ Testes Unitários
+Para garantir a qualidade e a estabilidade do código, executamos testes unitários. Para rodá-los em sua máquina, utilize o comando Maven:
 
-Lógica: O NotaFiscalController e NotaFiscalService permitirão o registro das notas fiscais, associando-as aos PedidoCompras correspondentes. Relatórios para prestação de contas podem ser gerados consultando essas entidades.
-Progresso Atual e Arquitetura
-O projeto já possui as APIs CRUD (Create, Read, Update, Delete) para as seguintes entidades completamente implementadas e testadas:
+Bash
 
-Produtos
-Fornecedores
-Solicitação de Compra
-Essas APIs foram desenvolvidas seguindo uma arquitetura em camadas bem definida, que separa as responsabilidades entre:
+mvn test
+Este comando executará todos os testes e exibirá o relatório de sucesso ou falha diretamente no console.
 
-controller/: Lida com as requisições HTTP e a comunicação com o cliente.
-service/: Contém a lógica de negócio principal da aplicação.
-repository/: Gerencia a interação com o banco de dados (Spring Data JPA).
-Adicionalmente, implementamos mecanismos importantes como:
+🤝 Como Contribuir
+Este projeto está em constante evolução e valorizamos muito a colaboração da comunidade! Se você é um desenvolvedor, estudante ou entusiasta de software, sinta-se à vontade para:
 
-Controle de Concorrência Otimista (@Version): Garante a integridade dos dados durante atualizações concorrentes.
-Validações de Unicidade: Como CNPJ e E-mail de fornecedor únicos, para manter a consistência dos dados.
+Explorar o Código: Mergulhe na estrutura do projeto e entenda nossas implementações.
+Abrir Issues: Reporte bugs, sugira novas funcionalidades ou melhorias.
+Submeter Pull Requests: Contribua com código, novos testes, melhorias na documentação ou refatorações.
+Sua contribuição é fundamental para tornar o ZLOG Compras uma solução cada vez mais completa e eficiente!
 
-Próximos Passos
-
-Modelagem de Dados Completa: Detalhar todas as entidades JPA necessárias para suportar as funcionalidades descritas, incluindo relacionamentos e atributos específicos.
-Implementação dos Serviços: Desenvolver a lógica de negócios em cada serviço, utilizando os repositórios para interagir com o banco de dados e implementando as regras de negócio para cada funcionalidade.
-Criação das APIs REST: Expor as funcionalidades através de endpoints RESTful nos controladores, permitindo a interação com a aplicação através de requisições HTTP.
-Implementação da Lógica de Rastreabilidade: Utilizar a entidade MovimentacaoEstoque e possivelmente MovimentacaoObra para registrar cada etapa da movimentação dos materiais.
-Desenvolvimento da Interface de Usuário: Criar as telas e a lógica front-end para os usuários interagirem com o sistema.
-Implementação do Workflow de Aprovação: Definir e implementar o fluxo de aprovação de compras.
-Integrações: Desenvolver as integrações necessárias com outros sistemas.
-Testes: Escrever testes unitários e de integração para garantir a qualidade e a robustez do sistema.
-Segurança: Implementar mecanismos de segurança para proteger a aplicação e os dados.
-
-Estrutura do Projeto Spring Boot
-ZLOG_COMPRAS/
-├── .mvn/
-│   └── wrapper/
-├── Docs/                  <-- Adicionado para documentação
-├── logs/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/zlogcompras/
-│   │   │       ├── conexao/      <-- Nova pasta para classes de conexão
-│   │   │       ├── controller/
-│   │   │       ├── model/
-│   │   │       │   └── dto/      <-- Nova pasta para Data Transfer Objects (DTOs)
-│   │   │       ├── repository/
-│   │   │       └── service/
-│   │   └── resources/
-│   │       ├── static/
-│   │       └── templates/
-│   └── test/
-│       └── java/
-│           └── com/zlogcompras/
-│               └── ZLOG_COMPRAS/
-└── target/
-    ├── classes/
-    │   └── com/zlogcompras/
-    │       ├── controller/
-    │       ├── model/
-    │       │   └── dto/
-    │       ├── repository/
-    │       └── service/
-    ├── generated-sources/
-    │   └── annotations/
-    ├── generated-test-sources/
-    │   └── test-annotations/
-    ├── maven-status/
-    │   ├── maven-compiler-plugin/
-    │   │   ├── compile/
-    │   │   │   └── default-compile/
-    │   │   └── testCompile/
-    │   │       └── default-testCompile/
-    └── test-classes/
-        └── com/zlogcompras/
-            └── ZLOG_COMPRAS/
-
-Como Executar a Aplicação
-Certifique-se de ter o Java Development Kit (JDK) 17 ou superior instalado.
-Utilize um gerenciador de dependências como Maven.
-Navegue até o diretório raiz do projeto (ZLOG_COMPRAS) no seu terminal.
-Execute o comando para iniciar a aplicação Spring Boot: mvn spring-boot:run
-A aplicação estará disponível, geralmente na porta 8080.
-
-Contribuição
-Contribuições são muito bem-vindas! Sinta-se à vontade para abrir issues para relatar bugs ou sugerir funcionalidades, e enviar pull requests para melhorias e novas implementações.
-
-Licença
-Este projeto está licenciado sob a MIT License.
+📝 Licença
+Este projeto está licenciado sob a Licença MIT. Você pode ver os detalhes completos da licença no arquivo LICENSE no repositório.
