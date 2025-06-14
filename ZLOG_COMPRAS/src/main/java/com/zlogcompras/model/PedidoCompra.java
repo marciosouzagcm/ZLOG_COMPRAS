@@ -1,13 +1,16 @@
 package com.zlogcompras.model;
 
-import java.math.BigDecimal; // Importação adicionada
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column; // <--- Adicione esta importação
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType; // <--- Adicione esta importação
+import jakarta.persistence.Enumerated; // <--- Adicione esta importação
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,25 +37,26 @@ public class PedidoCompra {
     private Orcamento orcamento;
 
     private LocalDate dataPedido;
-    private BigDecimal valorTotal; // Alterado de Double para BigDecimal
-    private String status; // Usar String para o nome do Enum StatusPedidoCompra
+    private BigDecimal valorTotal;
+
+    @Enumerated(EnumType.STRING) // <<< ESTA LINHA É CRUCIAL!
+    @Column(name = "status") // <<< É uma boa prática explicitar o nome da coluna no banco
+    private StatusPedidoCompra status; // <<< ALTERADO: O tipo agora é o Enum
+
     private String observacoes;
 
     // Relacionamento OneToMany com ItemPedidoCompra
-    // orphanRemoval = true: se um item for removido da coleção 'itens', ele será
-    // deletado do banco de dados.
-    // cascade = CascadeType.ALL: todas as operações (PERSIST, MERGE, REMOVE,
-    // REFRESH, DETACH) são propagadas para os itens.
     @OneToMany(mappedBy = "pedidoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemPedidoCompra> itens = new ArrayList<>(); // Inicialize para evitar NullPointerException
+    private List<ItemPedidoCompra> itens = new ArrayList<>();
 
     // Construtor padrão (necessário para JPA)
     public PedidoCompra() {
     }
 
     // Construtor com campos (opcional, para conveniência)
+    // O construtor também precisa ser atualizado para receber o enum
     public PedidoCompra(Fornecedor fornecedor, Orcamento orcamento, LocalDate dataPedido, BigDecimal valorTotal,
-            String status, String observacoes) {
+                        StatusPedidoCompra status, String observacoes) { // <<< ALTERADO: Tipo do parâmetro 'status'
         this.fornecedor = fornecedor;
         this.orcamento = orcamento;
         this.dataPedido = dataPedido;
@@ -95,19 +99,19 @@ public class PedidoCompra {
         this.dataPedido = dataPedido;
     }
 
-    public BigDecimal getValorTotal() { // Alterado o tipo de retorno
+    public BigDecimal getValorTotal() {
         return valorTotal;
     }
 
-    public void setValorTotal(BigDecimal valorTotal) { // Alterado o tipo do parâmetro
+    public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
 
-    public String getStatus() {
+    public StatusPedidoCompra getStatus() { // <<< ALTERADO: Tipo de retorno agora é o Enum
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusPedidoCompra status) { // <<< ALTERADO: Tipo do parâmetro agora é o Enum
         this.status = status;
     }
 
@@ -129,34 +133,34 @@ public class PedidoCompra {
      * Define a lista de itens para o pedido de compra, garantindo a
      * bidirecionalidade
      * e o funcionamento correto do cascade e orphanRemoval.
-     * 
+     *
      * @param itens A nova lista de itens.
      */
     public void setItens(List<ItemPedidoCompra> itens) {
-        this.itens.clear(); // Remove todos os itens existentes (e os órfãos serão excluídos pelo JPA)
+        this.itens.clear();
         if (itens != null) {
-            itens.forEach(this::addItem); // Adiciona cada item novo usando o método addItem
+            itens.forEach(this::addItem);
         }
     }
 
     /**
      * Adiciona um ItemPedidoCompra à coleção, configurando a relação bidirecional.
-     * 
+     *
      * @param item O item a ser adicionado.
      */
     public void addItem(ItemPedidoCompra item) {
         this.itens.add(item);
-        item.setPedidoCompra(this); // Garante a referência de volta ao PedidoCompra
+        item.setPedidoCompra(this);
     }
 
     /**
      * Remove um ItemPedidoCompra da coleção, desvinculando a relação bidirecional.
-     * 
+     *
      * @param item O item a ser removido.
      */
     public void removeItem(ItemPedidoCompra item) {
         this.itens.remove(item);
-        item.setPedidoCompra(null); // Desvincula explicitamente
+        item.setPedidoCompra(null);
     }
 
     @Override
@@ -180,7 +184,7 @@ public class PedidoCompra {
                 "id=" + id +
                 ", dataPedido=" + dataPedido +
                 ", valorTotal=" + valorTotal +
-                ", status='" + status + '\'' +
+                ", status=" + (status != null ? status.name() : "null") + // Melhor forma de exibir o enum no toString
                 '}';
     }
 }

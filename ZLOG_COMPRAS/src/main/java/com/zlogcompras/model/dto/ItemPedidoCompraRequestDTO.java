@@ -4,12 +4,13 @@ import java.math.BigDecimal;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive; // Mais específico que @Min(1) para IDs
+import jakarta.validation.constraints.Size;
 
-import lombok.AllArgsConstructor; // Opcional: para construtor com todos os argumentos
-import lombok.Data; // Inclui @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
-import lombok.NoArgsConstructor; // Para construtor sem argumentos
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data // Gera Getters, Setters, toString(), equals() e hashCode() automaticamente
 @NoArgsConstructor // Gera o construtor padrão sem argumentos, necessário para desserialização JSON
@@ -17,32 +18,23 @@ import lombok.NoArgsConstructor; // Para construtor sem argumentos
 public class ItemPedidoCompraRequestDTO {
 
     @NotNull(message = "O ID do produto é obrigatório.")
-    @Min(value = 1, message = "O ID do produto deve ser um número positivo.")
+    @Positive(message = "O ID do produto deve ser um número positivo.") // Melhor que @Min(1) para IDs
     private Long produtoId; // Referência ao ID do Produto
 
-    @NotBlank(message = "O nome do produto é obrigatório.")
-    private String nomeProduto;
-
-    @NotBlank(message = "O código do produto é obrigatório.")
-    private String codigoProduto;
-
-    @NotBlank(message = "A unidade de medida é obrigatória.")
-    private String unidadeMedida;
-
     @NotNull(message = "A quantidade é obrigatória.")
-    @Min(value = 1, message = "A quantidade deve ser de pelo menos 1.")
+    @Min(value = 1, message = "A quantidade deve ser de pelo menos 1.") // Assumindo quantidade inteira
     private Integer quantidade;
 
     @NotNull(message = "O preço unitário é obrigatório.")
     @DecimalMin(value = "0.01", message = "O preço unitário deve ser maior que zero.")
     private BigDecimal precoUnitario;
 
-    @NotNull(message = "O subtotal é obrigatório.")
-    @DecimalMin(value = "0.00", message = "O subtotal não pode ser negativo.")
-    private BigDecimal subtotal;
-
+    @Size(max = 500, message = "As observações não podem exceder 500 caracteres.")
     private String observacoes; // Campo opcional
 
-    // Os construtores padrão, getters e setters são gerados automaticamente pelo Lombok (@NoArgsConstructor e @Data).
-    // Não há necessidade de declará-los explicitamente.
+    // Campos REMOVIDOS do DTO de REQUEST, pois devem ser calculados/preenchidos pelo serviço:
+    // private BigDecimal subtotal;
+    // private String nomeProduto;
+    // private String codigoProduto;
+    // private String unidadeMedida;
 }

@@ -1,7 +1,7 @@
 package com.zlogcompras.serviceTest;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.ArrayList; // Importação adicionada para LocalDate
 import java.util.List;
 import java.util.Optional;
 
@@ -174,7 +174,8 @@ class OrcamentoServiceTest {
         });
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("A quantidade do item do orçamento não pode ser zero ou negativa para o produto ID: 100", exception.getReason());
+        // CORREÇÃO AQUI: Atualize a mensagem esperada
+        assertEquals("A quantidade do item do orçamento deve ser maior que zero para o produto ID: 100", exception.getReason());
 
         // Verificações: Solicitacao e Fornecedor são buscados, mas o mapeador do ORÇAMENTO principal não é chamado.
         verify(solicitacaoCompraRepository, times(1)).findById(mockOrcamentoRequestDTO.getSolicitacaoCompraId());
@@ -206,7 +207,8 @@ class OrcamentoServiceTest {
         });
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("A quantidade do item do orçamento não pode ser zero ou negativa para o produto ID: 100", exception.getReason());
+        // CORREÇÃO AQUI: Atualize a mensagem esperada
+        assertEquals("A quantidade do item do orçamento deve ser maior que zero para o produto ID: 100", exception.getReason());
 
         verify(solicitacaoCompraRepository, times(1)).findById(mockOrcamentoRequestDTO.getSolicitacaoCompraId());
         verify(fornecedorRepository, times(1)).findById(mockOrcamentoRequestDTO.getFornecedorId());
@@ -237,7 +239,8 @@ class OrcamentoServiceTest {
         });
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("O preço unitário do item do orçamento não pode ser negativo para o produto ID: 100", exception.getReason());
+        // CORREÇÃO AQUI: Atualize a mensagem esperada
+        assertEquals("O preço unitário do item do orçamento deve ser maior que zero para o produto ID: 100", exception.getReason());
 
         verify(solicitacaoCompraRepository, times(1)).findById(mockOrcamentoRequestDTO.getSolicitacaoCompraId());
         verify(fornecedorRepository, times(1)).findById(mockOrcamentoRequestDTO.getFornecedorId());
@@ -311,28 +314,6 @@ class OrcamentoServiceTest {
         existingOrcamento.setItensOrcamento(new ArrayList<>(List.of(existingItem)));
 
         when(orcamentoRepository.findById(orcamentoId)).thenReturn(Optional.of(existingOrcamento));
-        // Mockar as chamadas que *sabemos* que vão ocorrer no método antes da validação do item.
-        // Se os IDs de solicitação/fornecedor no DTO são iguais aos da entidade existente,
-        // a condição `!equals` será falsa e `findById` não será chamado para eles.
-        // No entanto, se eles forem diferentes, as chamadas serão feitas.
-        // Para este cenário de teste, os IDs são iguais, então as chamadas para `findById` em `solicitacaoCompraRepository`
-        // e `fornecedorRepository` não devem ser esperadas *se elas fossem apenas para atualizar as entidades*.
-        // Mas a lógica do serviço as chama *antes* da validação dos itens, para setup.
-        // A validação da quantidade é a primeira a falhar no loop de itens.
-        // Reavaliando, o método `atualizarOrcamento` *sempre* busca `solicitacaoCompraRepository` e `fornecedorRepository`
-        // no início, *mesmo que os IDs não mudem*, para popular as entidades no `existingOrcamento` caso o mapper
-        // `updateEntityFromDto` precise delas.
-        // Não, re-lendo meu próprio código:
-        // `if (orcamentoRequestDTO.getSolicitacaoCompraId() != null && !orcamentoRequestDTO.getSolicitacaoCompraId().equals(existingOrcamento.getSolicitacaoCompra().getId()))`
-        // Isso SÓ busca se o ID *mudou*. No meu mock de `updateRequestDTO`, o `solicitacaoCompraId` é o mesmo do `mockSolicitacaoCompra.getId()`.
-        // Então, essa busca `solicitacaoCompraRepository.findById` *não deveria acontecer* neste cenário.
-        // Portanto, a verificação `verify(solicitacaoCompraRepository, times(1)).findById(mockSolicitacaoCompra.getId());`
-        // estava de fato incorreta para este caso específico de teste.
-
-        // Removendo a verificação da solicitacaoCompraRepository.findById e fornecedorRepository.findById
-        // porque no cenário de teste atual, o ID da solicitação no DTO é o mesmo da existente,
-        // então a busca pelo repositório não é acionada.
-        // Além disso, a falha na quantidade do item acontece antes que o produtoRepository seja chamado.
         doNothing().when(orcamentoMapper).updateEntityFromDto(any(OrcamentoRequestDTO.class), any(Orcamento.class));
 
         // ACT & ASSERT
@@ -341,11 +322,12 @@ class OrcamentoServiceTest {
         });
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("A quantidade do item do orçamento não pode ser zero ou negativa para o produto ID: " + mockProduto.getId(), exception.getReason());
+        // CORREÇÃO AQUI: Atualize a mensagem esperada
+        assertEquals("A quantidade do item do orçamento deve ser maior que zero para o produto ID: " + mockProduto.getId(), exception.getReason());
 
         verify(orcamentoRepository, times(1)).findById(orcamentoId);
-        verify(solicitacaoCompraRepository, never()).findById(anyLong()); // Não deve ser invocado se o ID não mudou no DTO
-        verify(fornecedorRepository, never()).findById(anyLong());     // Não deve ser invocado se o ID não mudou no DTO
+        verify(solicitacaoCompraRepository, never()).findById(anyLong()); 
+        verify(fornecedorRepository, never()).findById(anyLong()); 
         verify(produtoRepository, never()).findById(anyLong());
         verify(orcamentoRepository, never()).save(any(Orcamento.class));
         verify(orcamentoMapper, times(1)).updateEntityFromDto(any(OrcamentoRequestDTO.class), any(Orcamento.class));
@@ -382,6 +364,11 @@ class OrcamentoServiceTest {
         when(orcamentoRepository.save(any(Orcamento.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(orcamentoMapper.toResponseDto(any(Orcamento.class))).thenReturn(new OrcamentoResponseDTO());
         when(solicitacaoCompraRepository.save(any(SolicitacaoCompra.class))).thenReturn(solicitacao);
+        
+        // Mock do método criarPedidoCompraDoOrcamento do pedidoCompraService
+        // Assumimos que ele retorna um PedidoCompra, mas para o teste de aprovação de orçamento,
+        // só precisamos saber que ele foi chamado.
+        when(pedidoCompraService.criarPedidoCompraDoOrcamento(any(Orcamento.class))).thenReturn(null); // ou mock de um PedidoCompra
 
         // ACT
         orcamentoService.aprovarOrcamento(orcamentoIdAprovado);
@@ -397,6 +384,7 @@ class OrcamentoServiceTest {
         verify(orcamentoRepository, times(1)).findBySolicitacaoCompraIdAndIdNot(solicitacaoId, orcamentoIdAprovado);
         verify(orcamentoRepository, times(3)).save(any(Orcamento.class));
         verify(solicitacaoCompraRepository, times(1)).save(solicitacao);
+        // Verifica se o serviço de pedido de compra foi chamado
         verify(pedidoCompraService, times(1)).criarPedidoCompraDoOrcamento(orcamentoAprovado);
     }
 }

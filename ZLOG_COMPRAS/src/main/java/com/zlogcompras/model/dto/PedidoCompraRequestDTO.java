@@ -1,78 +1,34 @@
 package com.zlogcompras.model.dto;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.math.BigDecimal; // Importado apenas para demonstrar que seria removido o valorTotal
+import java.time.LocalDate; // Importado apenas para demonstrar que seria removido a dataPedido
 import java.util.List;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.Valid; // Essencial para validar os itens da lista
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive; // Mais específico que @Min(1) para IDs
+import jakarta.validation.constraints.Size; // Para validar o tamanho da lista de itens
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data // Gera Getters, Setters, toString(), equals() e hashCode() automaticamente
+@NoArgsConstructor // Gera o construtor padrão sem argumentos, necessário para desserialização JSON
+@AllArgsConstructor // Opcional: Gera um construtor com todos os argumentos (útil para builders ou testes)
 public class PedidoCompraRequestDTO {
 
     @NotNull(message = "O ID do fornecedor é obrigatório.")
-    @Min(value = 1, message = "O ID do fornecedor deve ser um número positivo.")
+    @Positive(message = "O ID do fornecedor deve ser um número positivo.")
     private Long fornecedorId;
 
-    // A data do pedido pode ser enviada, ou você pode defini-la automaticamente no serviço
-    // @NotNull(message = "A data do pedido é obrigatória.")
-    private LocalDate dataPedido;
-
-    // O status inicial geralmente é definido no serviço (ex: "Pendente")
-    // @NotBlank(message = "O status é obrigatório.")
-    private String status;
-
-    @NotNull(message = "O valor total é obrigatório.")
-    @DecimalMin(value = "0.01", message = "O valor total deve ser maior que zero.")
-    private BigDecimal valorTotal;
+    // Campos REMOVIDOS do DTO de REQUEST, pois devem ser calculados/preenchidos pelo serviço:
+    // private LocalDate dataPedido; // Definida automaticamente no serviço (LocalDate.now())
+    // private String status;       // Definido automaticamente no serviço (StatusPedidoCompra.PENDENTE)
+    // private BigDecimal valorTotal; // Calculado no serviço com base nos itens
 
     @Valid // Garante que as validações dentro de ItemPedidoCompraRequestDTO também sejam aplicadas
     @NotNull(message = "A lista de itens do pedido não pode ser nula.")
+    @Size(min = 1, message = "O pedido deve conter ao menos um item.") // Garante que a lista não é vazia
     private List<ItemPedidoCompraRequestDTO> itens;
-
-    // Construtor padrão (necessário para serialização/desserialização JSON)
-    public PedidoCompraRequestDTO() {
-    }
-
-    // --- Getters e Setters ---
-    public Long getFornecedorId() {
-        return fornecedorId;
-    }
-
-    public void setFornecedorId(Long fornecedorId) {
-        this.fornecedorId = fornecedorId;
-    }
-
-    public LocalDate getDataPedido() {
-        return dataPedido;
-    }
-
-    public void setDataPedido(LocalDate dataPedido) {
-        this.dataPedido = dataPedido;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public BigDecimal getValorTotal() {
-        return valorTotal;
-    }
-
-    public void setValorTotal(BigDecimal valorTotal) {
-        this.valorTotal = valorTotal;
-    }
-
-    public List<ItemPedidoCompraRequestDTO> getItens() {
-        return itens;
-    }
-
-    public void setItens(List<ItemPedidoCompraRequestDTO> itens) {
-        this.itens = itens;
-    }
 }

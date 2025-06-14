@@ -5,7 +5,15 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data // Gera getters, setters, toString, equals e hashCode
+@NoArgsConstructor // Gera construtor sem argumentos
+@AllArgsConstructor // Gera construtor com todos os argumentos
+@Builder // Permite construir objetos de forma fluente (ex: ItemOrcamentoRequestDTO.builder()...build())
 public class ItemOrcamentoRequestDTO {
 
     private Long id; // Adicionar o ID para permitir atualizações de itens existentes
@@ -25,67 +33,6 @@ public class ItemOrcamentoRequestDTO {
     @Size(max = 500, message = "As observações não podem exceder 500 caracteres.")
     private String observacoes;
 
-    // Construtor padrão
-    public ItemOrcamentoRequestDTO() {
-    }
-
-    // Construtor completo
-    public ItemOrcamentoRequestDTO(Long id, Long produtoId, BigDecimal quantidade, BigDecimal precoUnitarioCotado, String observacoes) {
-        this.id = id; // Adicionar id ao construtor
-        this.produtoId = produtoId;
-        this.quantidade = quantidade;
-        this.precoUnitarioCotado = precoUnitarioCotado;
-        this.observacoes = observacoes;
-    }
-
-    // --- Getters e Setters ---
-    public Long getId() { // Alterar o retorno para Long
-        return id;
-    }
-
-    public void setId(Long id) { // Adicionar setter para id
-        this.id = id;
-    }
-
-    public Long getProdutoId() {
-        return produtoId;
-    }
-
-    public void setProdutoId(Long produtoId) {
-        this.produtoId = produtoId;
-    }
-
-    public BigDecimal getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(BigDecimal quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public BigDecimal getPrecoUnitarioCotado() {
-        return precoUnitarioCotado;
-    }
-
-    public void setPrecoUnitarioCotado(BigDecimal precoUnitarioCotado) {
-        this.precoUnitarioCotado = precoUnitarioCotado;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemOrcamentoRequestDTO{" +
-                "id=" + id + // Incluir id no toString
-                ", produtoId=" + produtoId +
-                ", quantidade=" + quantidade +
-                ", precoUnitarioCotado=" + precoUnitarioCotado +
-                '}';
-    }
+    // Campos como nomeProduto, codigoProduto, unidadeMedidaProduto não devem estar aqui
+    // pois são derivados do produtoId e devem ser populados pelo serviço.
 }
