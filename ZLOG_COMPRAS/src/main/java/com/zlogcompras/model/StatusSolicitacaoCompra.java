@@ -5,11 +5,12 @@ public enum StatusSolicitacaoCompra {
     PENDENTE("Pendente"),
     ORCAMENTO_APROVADO("Orçamento Aprovado"),
     EM_ANDAMENTO("Em Andamento"),
-    CONCLUIDA("Concluída"),
+    CONCLUIDA("Concluída"), // Mantemos CONCLUIDA como o status final.
     CANCELADA("Cancelada"),
     AGUARDANDO_PARECER("Aguardando Parecer"),
     SUSPENSO("Suspenso"),
-    REJEITADO("Rejeitado");
+    REJEITADO("Rejeitado"),
+    PEDIDO_GERADO("Pedido Gerado");
 
     private final String descricao;
 

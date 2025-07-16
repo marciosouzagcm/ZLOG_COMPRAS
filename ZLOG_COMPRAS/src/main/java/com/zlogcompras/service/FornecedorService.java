@@ -2,6 +2,7 @@ package com.zlogcompras.service;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,8 @@ public class FornecedorService {
         return fornecedorMapper.toListaDtoList(fornecedores); // Converte a lista de entidades para DTOs
     }
 
-    // AJUSTADO: Agora retorna Optional<Fornecedor> para indicar que pode não encontrar
+    // AJUSTADO: Agora retorna Optional<Fornecedor> para indicar que pode não
+    // encontrar
     public Optional<Fornecedor> buscarFornecedorPorId(Long id) {
         System.out.println("Serviço: Buscando fornecedor por ID: " + id);
         return fornecedorRepository.findById(id); // Retorna Optional<Fornecedor>
@@ -61,13 +63,17 @@ public class FornecedorService {
 
         // Busca o fornecedor existente ou lança exceção se não encontrado
         Fornecedor fornecedorExistente = fornecedorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Fornecedor não encontrado com ID: " + id));
 
-        // Verifica se o CNPJ foi alterado e se o novo CNPJ já existe para outro fornecedor
+        // Verifica se o CNPJ foi alterado e se o novo CNPJ já existe para outro
+        // fornecedor
         if (!fornecedorExistente.getCnpj().equals(fornecedorRequestDTO.getCnpj())) {
-            Optional<Fornecedor> fornecedorComMesmoCnpj = fornecedorRepository.findByCnpj(fornecedorRequestDTO.getCnpj());
+            Optional<Fornecedor> fornecedorComMesmoCnpj = fornecedorRepository
+                    .findByCnpj(fornecedorRequestDTO.getCnpj());
             if (fornecedorComMesmoCnpj.isPresent() && !fornecedorComMesmoCnpj.get().getId().equals(id)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro fornecedor com o CNPJ informado.");
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Já existe outro fornecedor com o CNPJ informado.");
             }
         }
 

@@ -1,5 +1,17 @@
 package com.zlogcompras.service;
 
+import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.List; // Adicionar import para List
+import java.util.Set;
+import java.util.stream.Collectors; // Adicionar import para Collectors
+
+import org.hibernate.Hibernate; // Importar Hibernate para inicialização lazy
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.zlogcompras.mapper.SolicitacaoCompraMapper;
 import com.zlogcompras.model.ItemSolicitacaoCompra;
 import com.zlogcompras.model.Produto;
 import com.zlogcompras.model.SolicitacaoCompra;
@@ -8,20 +20,9 @@ import com.zlogcompras.model.StatusSolicitacaoCompra;
 import com.zlogcompras.model.dto.ItemSolicitacaoCompraRequestDTO;
 import com.zlogcompras.model.dto.SolicitacaoCompraRequestDTO;
 import com.zlogcompras.model.dto.SolicitacaoCompraResponseDTO;
-import com.zlogcompras.mapper.SolicitacaoCompraMapper;
 import com.zlogcompras.repository.ItemSolicitacaoCompraRepository;
 import com.zlogcompras.repository.ProdutoRepository;
 import com.zlogcompras.repository.SolicitacaoCompraRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.hibernate.Hibernate; // Importar Hibernate para inicialização lazy
-
-import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.List; // Adicionar import para List
-import java.util.Set;
-import java.util.stream.Collectors; // Adicionar import para Collectors
 
 @Service
 public class SolicitacaoCompraService {
@@ -33,9 +34,9 @@ public class SolicitacaoCompraService {
 
     @Autowired
     public SolicitacaoCompraService(SolicitacaoCompraRepository solicitacaoCompraRepository,
-                                    ItemSolicitacaoCompraRepository itemSolicitacaoCompraRepository,
-                                    ProdutoRepository produtoRepository,
-                                    SolicitacaoCompraMapper solicitacaoCompraMapper) {
+            ItemSolicitacaoCompraRepository itemSolicitacaoCompraRepository,
+            ProdutoRepository produtoRepository,
+            SolicitacaoCompraMapper solicitacaoCompraMapper) {
         this.solicitacaoCompraRepository = solicitacaoCompraRepository;
         this.itemSolicitacaoCompraRepository = itemSolicitacaoCompraRepository;
         this.produtoRepository = produtoRepository;
@@ -57,7 +58,8 @@ public class SolicitacaoCompraService {
 
         for (ItemSolicitacaoCompraRequestDTO itemDTO : solicitacaoRequestDTO.getItens()) {
             Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
-                    .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
+                    .orElseThrow(
+                            () -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
 
             ItemSolicitacaoCompra item = solicitacaoCompraMapper.toItemEntity(itemDTO);
 
@@ -74,18 +76,24 @@ public class SolicitacaoCompraService {
 
         // *** ADIÇÃO: Inicializar produtos antes de mapear para DTO de resposta ***
         // Isso é crucial se 'produto' é LAZY e você quer acessá-lo fora da transação.
-        // O erro de tipo incompatível na linha 79 pode estar aqui se o import do Hibernate não for org.hibernate.Hibernate
+        // O erro de tipo incompatível na linha 79 pode estar aqui se o import do
+        // Hibernate não for org.hibernate.Hibernate
         // ou se você estiver usando um item de forma incorreta.
         // A linha 79 é provavelmente esta:
-        // CUIDADO: if (item.getProduto() != null) { item.getProduto().getId(); } // Isso inicializa o proxy
+        // CUIDADO: if (item.getProduto() != null) { item.getProduto().getId(); } //
+        // Isso inicializa o proxy
         // ou:
-        // for (ItemSolicitacaoCompra item : savedSolicitacao.getItens()) { // Se a linha 79 é a declaração do loop
-        //     if (item.getProduto() != null) {
-        //         Hibernate.initialize(item.getProduto()); // Garante que o produto lazy seja carregado
-        //     }
+        // for (ItemSolicitacaoCompra item : savedSolicitacao.getItens()) { // Se a
+        // linha 79 é a declaração do loop
+        // if (item.getProduto() != null) {
+        // Hibernate.initialize(item.getProduto()); // Garante que o produto lazy seja
+        // carregado
         // }
-        // Se a linha 79 é 'Hibernate.initialize(item);' (passando o item inteiro em vez do produto), pode ser o erro.
-        // O correto é passar o proxy lazy que precisa ser inicializado, que é 'item.getProduto()'.
+        // }
+        // Se a linha 79 é 'Hibernate.initialize(item);' (passando o item inteiro em vez
+        // do produto), pode ser o erro.
+        // O correto é passar o proxy lazy que precisa ser inicializado, que é
+        // 'item.getProduto()'.
 
         // FORÇANDO A INICIALIZAÇÃO DE TODOS OS PRODUTOS ASSOCIADOS AOS ITENS
         savedSolicitacao.getItens().forEach(item -> {
@@ -129,7 +137,8 @@ public class SolicitacaoCompraService {
     }
 
     @Transactional
-    public SolicitacaoCompraResponseDTO atualizarSolicitacao(Long id, SolicitacaoCompraRequestDTO solicitacaoRequestDTO) {
+    public SolicitacaoCompraResponseDTO atualizarSolicitacao(Long id,
+            SolicitacaoCompraRequestDTO solicitacaoRequestDTO) {
         SolicitacaoCompra solicitacaoExistente = solicitacaoCompraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitação de Compra não encontrada com ID: " + id));
 
@@ -149,7 +158,8 @@ public class SolicitacaoCompraService {
             Set<ItemSolicitacaoCompra> novosItens = new LinkedHashSet<>();
             for (ItemSolicitacaoCompraRequestDTO itemDTO : solicitacaoRequestDTO.getItens()) {
                 Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
-                        .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
+                        .orElseThrow(
+                                () -> new RuntimeException("Produto não encontrado com ID: " + itemDTO.getProdutoId()));
 
                 ItemSolicitacaoCompra novoItem = solicitacaoCompraMapper.toItemEntity(itemDTO);
                 novoItem.setProduto(produto);

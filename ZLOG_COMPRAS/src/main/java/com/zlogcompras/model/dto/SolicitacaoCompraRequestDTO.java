@@ -1,9 +1,10 @@
 package com.zlogcompras.model.dto;
 
 import java.util.List;
+
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.Valid;
 
 public class SolicitacaoCompraRequestDTO {
 

@@ -1,12 +1,24 @@
 package com.zlogcompras.model;
 
 public enum StatusPedidoCompra {
-    PENDENTE("Pendente"),
-    APROVADO("Aprovado"),
-    REJEITADO("Rejeitado"),
+    // Status iniciais/de processamento
+    AGUARDANDO_APROVACAO("Aguardando Aprovação"), // ADICIONADO para corresponder ao serviço
+    AGUARDANDO_ENVIO("Aguardando Envio"),
     ENVIADO("Enviado"),
-    RECEBIDO("Recebido"), // Este é o status final que o serviço estava procurando
-    CANCELADO("Cancelado");
+
+    // Status de recebimento
+    RECEBIDO_PARCIALMENTE("Recebido Parcialmente"),
+    RECEBIDO_TOTALMENTE("Recebido Totalmente"),
+
+    // Status de exceção
+    CANCELADO("Cancelado"),
+    RECUSADO("Recusado"), // ADICIONADO/REATIVADO para corresponder ao serviço (se for o mesmo que
+                          // REJEITADO_PELO_FORNECEDOR)
+    REJEITADO_PELO_FORNECEDOR("Rejeitado pelo Fornecedor"),
+
+    // Status de conclusão
+    CONCLUIDO("Concluído"), // ADICIONADO para corresponder ao serviço
+    FINALIZADO("Finalizado");
 
     private final String descricao;
 

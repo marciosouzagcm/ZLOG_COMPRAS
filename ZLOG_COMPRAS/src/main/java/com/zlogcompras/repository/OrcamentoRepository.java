@@ -6,39 +6,40 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.zlogcompras.model.Orcamento;
-import com.zlogcompras.model.StatusSolicitacaoCompra; // Certifique-se que está importado e é o Enum correto
+import com.zlogcompras.model.StatusOrcamento; // Importe o Enum StatusOrcamento
 
 public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
-    // Este método pode estar com a assinatura incorreta se você realmente quer buscar
-    // orçamentos por uma solicitacaoCompra_Id através de um StatusSolicitacaoCompra.
-    // O mais comum seria buscar por solicitacaoCompra.id
-    // List<Orcamento> findBySolicitacaoCompra(StatusSolicitacaoCompra solicitacaoCompra);
+    // ... (seus métodos existentes) ...
 
-    // Busca orçamentos pelo ID da solicitação de compra (já existe e está correto)
     List<Orcamento> findBySolicitacaoCompra_Id(Long solicitacaoCompraId);
 
-    // Busca orçamentos pelo ID do fornecedor (já existe e está correto)
     List<Orcamento> findByFornecedor_Id(Long fornecedorId);
 
-    // Busca orçamentos por período de data de cotação (já existe e está correto)
     List<Orcamento> findByDataCotacaoBetween(LocalDate dataInicio, LocalDate dataFim);
 
-    // Busca orçamentos por status (já existe e está correto, assumindo que `status` é um Enum ou String)
-    List<Orcamento> findByStatus(String status); // Se StatusOrcamento for Enum, mude para List<Orcamento> findByStatus(StatusOrcamento status);
+    // Se StatusOrcamento for Enum, mude para:
+    List<Orcamento> findByStatus(StatusOrcamento status);
+    // Se 'status' no Orcamento é String, então mantenha:
+    // List<Orcamento> findByStatus(String status);
 
-    // Busca orçamentos para uma solicitação de compra específica (já existe e está correto)
     List<Orcamento> findBySolicitacaoCompraId(Long solicitacaoId);
 
+    List<Orcamento> findBySolicitacaoCompraIdAndIdNot(Long solicitacaoCompraId, Long idDoOrcamentoExcluir);
 
-    // --- NOVO MÉTODO NECESSÁRIO PARA O FLUXO DE APROVAÇÃO ---
+    // --- NOVO MÉTODO ESSENCIAL PARA O FLUXO DE APROVAÇÃO ---
     /**
      * Busca todos os orçamentos associados a uma Solicitação de Compra,
-     * exceto aquele cujo ID é fornecido.
-     * Usado para encontrar os orçamentos a serem rejeitados quando um é aprovado.
+     * exceto aquele cujo ID é fornecido, e que estejam em um status específico.
+     * Usado para encontrar os orçamentos que podem ser rejeitados quando um é
+     * aprovado.
      *
-     * @param solicitacaoCompraId O ID da Solicitação de Compra.
-     * @param idDoOrcamentoExcluir O ID do orçamento que deve ser excluído do resultado.
+     * @param solicitacaoCompraId  O ID da Solicitação de Compra.
+     * @param idDoOrcamentoExcluir O ID do orçamento que deve ser excluído do
+     *                             resultado.
+     * @param status               O status dos orçamentos a serem buscados (e.g.,
+     *                             AGUARDANDO_APROVACAO).
      * @return Uma lista de orçamentos.
      */
-    List<Orcamento> findBySolicitacaoCompraIdAndIdNot(Long solicitacaoCompraId, Long idDoOrcamentoExcluir);
+    List<Orcamento> findBySolicitacaoCompraIdAndIdNotAndStatus(Long solicitacaoCompraId, Long idDoOrcamentoExcluir,
+            StatusOrcamento status);
 }
