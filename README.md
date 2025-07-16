@@ -1,12 +1,7 @@
------
+ZLOG Compras: Sistema de Gerenciamento de Compras Empresariais
 
-# ZLOG Compras: Sistema de Gerenciamento de Compras Empresariais
-
------
-
-## 🎯 Sobre o Projeto
-
-O ZLOG Compras é um sistema robusto e modular, desenvolvido para **otimizar e gerenciar o fluxo completo de compras em ambientes empresariais**. Desde a criação de solicitações de materiais até a geração de pedidos de compra e o controle de recebimento, nosso objetivo é automatizar e trazer transparência a todas as etapas da aquisição.
+🎯 Sobre o Projeto
+O ZLOG Compras é um sistema robusto e modular, desenvolvido para otimizar e gerenciar o fluxo completo de compras em ambientes empresariais. Desde a criação de solicitações de materiais até a geração de pedidos de compra e o controle de recebimento, nosso objetivo é automatizar e trazer transparência a todas as etapas da aquisição.
 
 Construímos este projeto com foco em qualidade de código, documentação interativa e testes abrangentes, garantindo uma solução confiável e de fácil manutenção.
 
@@ -116,8 +111,5 @@ Este projeto está em constante evolução e valorizamos muito a colaboração d
 
 Sua contribuição é fundamental para tornar o ZLOG Compras uma solução cada vez mais completa e eficiente\!
 
------
-
-## 📝 Licença
-
-Este projeto está licenciado sob a Licença MIT. Você pode ver os detalhes completos da licença no arquivo `LICENSE` no repositório.
+📝 Licença
+Este projeto está licenciado sob a Licença MIT. Você pode ver os detalhes completos da licença no arquivo LICENSE no repositório.
