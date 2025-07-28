@@ -18,8 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings; // Importação adicionada
-import org.mockito.quality.Strictness; // Importação adicionada
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,6 +27,7 @@ import com.zlogcompras.mapper.OrcamentoMapper;
 import com.zlogcompras.model.Fornecedor;
 import com.zlogcompras.model.ItemOrcamento;
 import com.zlogcompras.model.Orcamento;
+import com.zlogcompras.model.PedidoCompra; // Importação adicionada para PedidoCompra
 import com.zlogcompras.model.Produto;
 import com.zlogcompras.model.SolicitacaoCompra;
 import com.zlogcompras.model.StatusOrcamento;
@@ -43,7 +44,7 @@ import com.zlogcompras.service.OrcamentoService;
 import com.zlogcompras.service.PedidoCompraService;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT) // Adicionado para silenciar UnnecessaryStubbing
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OrcamentoServiceTest {
 
     @Mock
@@ -182,7 +183,7 @@ public class OrcamentoServiceTest {
         when(solicitacaoCompraRepository.findById(solicitacaoCompra.getId()))
                 .thenReturn(Optional.of(solicitacaoCompra));
         when(fornecedorRepository.findById(fornecedor.getId())).thenReturn(Optional.of(fornecedor));
-        when(produtoRepository.findById(produto1.getId())).thenReturn(Optional.of(produto1));
+        when(produtoRepository.findById(itemDTO.getProdutoId())).thenReturn(Optional.of(produto1)); // Use itemDTO.getProdutoId()
 
         when(orcamentoRepository.save(any(Orcamento.class))).thenAnswer(invocation -> {
             Orcamento orc = invocation.getArgument(0);
@@ -206,7 +207,7 @@ public class OrcamentoServiceTest {
         assertThat(responseDTO).isNotNull();
         assertThat(responseDTO.getId()).isEqualTo(1L);
         assertThat(responseDTO.getStatus()).isEqualTo(StatusOrcamento.AGUARDANDO_APROVACAO.name());
-        // CORREÇÃO: Comparar BigDecimal ignorando a escala
+        // Comparar BigDecimal ignorando a escala
         assertThat(responseDTO.getValorTotal().compareTo(new BigDecimal("90.00"))).isEqualTo(0);
 
         verify(solicitacaoCompraRepository, times(1)).findById(solicitacaoCompra.getId());
@@ -270,7 +271,7 @@ public class OrcamentoServiceTest {
         // Then
         assertThat(responseDTO).isNotNull();
         assertThat(responseDTO.getId()).isEqualTo(orcamentoId);
-        // CORREÇÃO: Comparar BigDecimal ignorando a escala
+        // Comparar BigDecimal ignorando a escala
         assertThat(orcamento1.getValorTotal().compareTo(new BigDecimal("150.00"))).isEqualTo(0);
         assertThat(orcamento1.getItensOrcamento()).hasSize(1);
         assertThat(orcamento1.getItensOrcamento().get(0).getQuantidade()).isEqualTo(new BigDecimal("3.00"));
@@ -335,7 +336,7 @@ public class OrcamentoServiceTest {
 
         when(orcamentoRepository.findById(orcamentoAprovadoId)).thenReturn(Optional.of(orcamento1));
         when(orcamentoRepository.findBySolicitacaoCompraIdAndIdNot(
-                solicitacaoCompra.getId(), orcamentoAprovadoId))
+                        solicitacaoCompra.getId(), orcamentoAprovadoId))
                 .thenReturn(Arrays.asList(orcamento2));
 
         when(orcamentoRepository.save(any(Orcamento.class))).thenAnswer(invocation -> {
@@ -351,20 +352,11 @@ public class OrcamentoServiceTest {
         when(solicitacaoCompraRepository.save(any(SolicitacaoCompra.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // CORREÇÃO: Assumindo que criarPedidoCompraDoOrcamento retorna um PedidoCompra
-        // (ou similar)
-        // Se for um método void, o doNothing() original estaria correto, mas o Mockito
-        // diz que não é.
-        // Se você não precisa que ele retorne um objeto real, retorne null ou um mock
-        // vazio.
-        when(pedidoCompraService.criarPedidoCompraDoOrcamento(any(Orcamento.class))).thenReturn(null); // Ou new
-                                                                                                       // PedidoCompra()
-                                                                                                       // se houver um
-                                                                                                       // construtor
-        // Se o método criarPedidoCompraDoOrcamento for realmente void, mas o Mockito
-        // ainda reclamar,
-        // pode haver um erro na assinatura do método real ou no import. Verifique a
-        // classe PedidoCompraService.
+        // CORREÇÃO: Usar when().thenReturn() para método não-void
+        // Se criarPedidoCompraDoOrcamento retorna um PedidoCompra, simule o retorno.
+        // Se você não precisa de um objeto PedidoCompra real para o teste, pode retornar null
+        // ou um mock simples.
+        when(pedidoCompraService.criarPedidoCompraDoOrcamento(any(Orcamento.class))).thenReturn(new PedidoCompra()); // ou null, dependendo do que for esperado
 
         // When
         orcamentoService.aprovarOrcamento(orcamentoAprovadoId);

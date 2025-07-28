@@ -2,6 +2,7 @@ package com.zlogcompras.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,55 +14,64 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zlogcompras.exceptions.ResourceNotFoundException;
+import com.zlogcompras.model.Produto;
 import com.zlogcompras.model.dto.ProdutoRequestDTO;
-import com.zlogcompras.model.dto.ProdutoResponseDTO;
 import com.zlogcompras.service.ProdutoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoController {
 
-    private final ProdutoService produtoService;
-
-    public ProdutoController(ProdutoService produtoService) {
-        this.produtoService = produtoService;
-    }
+    @Autowired
+    private ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> criarProduto(@RequestBody ProdutoRequestDTO produtoRequestDTO) {
-        ProdutoResponseDTO produtoCriado = produtoService.criarProduto(produtoRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
+    public ResponseEntity<Produto> criarProduto(@Valid @RequestBody ProdutoRequestDTO produtoRequestDTO) {
+        Produto novoProduto = produtoService.criarProduto(produtoRequestDTO); // <--- Este método
+        return new ResponseEntity<>(novoProduto, HttpStatus.CREATED);
     }
 
-    @PostMapping("/multiplos")
-    public ResponseEntity<List<ProdutoResponseDTO>> criarMultiplosProdutos(@RequestBody List<ProdutoRequestDTO> produtosRequestDTO) {
-        List<ProdutoResponseDTO> produtosCriados = produtoService.criarMultiplosProdutos(produtosRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtosCriados);
+    @PostMapping("/lote")
+    public ResponseEntity<List<Produto>> criarMultiplosProdutos(
+            @Valid @RequestBody List<ProdutoRequestDTO> produtosRequestDTO) {
+        List<Produto> novosProdutos = produtoService.criarMultiplosProdutos(produtosRequestDTO); // <--- Este método
+        return new ResponseEntity<>(novosProdutos, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoResponseDTO>> listarTodosProdutos() {
-        List<ProdutoResponseDTO> produtos = produtoService.listarTodosProdutos();
+    public ResponseEntity<List<Produto>> listarTodosProdutos() {
+        List<Produto> produtos = produtoService.listarTodosProdutos(); // <--- Este método
         return ResponseEntity.ok(produtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDTO> buscarProdutoPorId(@PathVariable Long id) {
-        ProdutoResponseDTO produto = produtoService.buscarProdutoPorId(id);
+    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable Long id) {
+        Produto produto = produtoService.buscarProdutoPorId(id); // <--- Este método
         return ResponseEntity.ok(produto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDTO> atualizarProduto(@PathVariable Long id, @RequestBody ProdutoRequestDTO produtoRequestDTO) {
-        ProdutoResponseDTO produtoAtualizado = produtoService.atualizarProduto(id, produtoRequestDTO);
+    public ResponseEntity<Produto> atualizarProduto(@PathVariable Long id,
+            @Valid @RequestBody ProdutoRequestDTO produtoRequestDTO) {
+        Produto produtoAtualizado = produtoService.atualizarProduto(id, produtoRequestDTO); // <--- Este método
         return ResponseEntity.ok(produtoAtualizado);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarProduto(@PathVariable Long id) {
-        if (produtoService.deletarProduto(id)) {
+        try {
+            produtoService.deletarProduto(id);
             return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            // Logar o erro completo para depuração
+            System.err.println("Erro ao deletar produto com ID " + id + ": " + e.getMessage());
+            // Pode retornar um 500 ou um DTO de erro mais específico se desejar
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.notFound().build();
     }
 }

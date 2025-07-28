@@ -1,7 +1,7 @@
 package com.zlogcompras.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime; // Import para LocalDateTime
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -12,14 +12,14 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType; // Import para EnumType
-import jakarta.persistence.Enumerated; // Import para Enumerated
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist; // Import para PrePersist
-import jakarta.persistence.PreUpdate;  // Import para PreUpdate
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
@@ -38,9 +38,9 @@ public class SolicitacaoCompra {
     @Column(nullable = false)
     private String solicitante;
 
-    @Enumerated(EnumType.STRING) // Mapeia o Enum para String no banco de dados
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusSolicitacaoCompra status; // Alterado para o Enum StatusSolicitacaoCompra
+    private StatusSolicitacaoCompra status;
 
     @Column(name = "descricao", nullable = true)
     private String descricao;
@@ -49,32 +49,30 @@ public class SolicitacaoCompra {
     private Long version;
 
     @Column(name = "data_criacao", nullable = false, updatable = false)
-    private LocalDateTime dataCriacao; // Adicionado: Data de criação
+    private LocalDateTime dataCriacao;
 
     @Column(name = "data_atualizacao", nullable = false)
-    private LocalDateTime dataAtualizacao; // Adicionado: Data de última atualização
+    private LocalDateTime dataAtualizacao;
 
-    @JsonManagedReference("solicitacao-orcamento") // Nomeie a referência para evitar conflitos
+    @JsonManagedReference("solicitacao-orcamento")
     @OneToMany(mappedBy = "solicitacaoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Orcamento> orcamentos = new HashSet<>(); // Adicionado: Relacionamento com Orçamentos
+    private Set<Orcamento> orcamentos = new HashSet<>();
 
-    @JsonManagedReference("solicitacao-item") // Nomeie a referência para evitar conflitos
+    @JsonManagedReference("solicitacao-item")
     @OneToMany(mappedBy = "solicitacaoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ItemSolicitacaoCompra> itens = new HashSet<>();
 
     public SolicitacaoCompra() {
         this.dataSolicitacao = LocalDate.now();
-        this.status = StatusSolicitacaoCompra.PENDENTE; // Inicializa com um status padrão do Enum
+        this.status = StatusSolicitacaoCompra.PENDENTE;
     }
 
-    // Construtor com campos básicos para facilitar a criação (opcional, mas útil)
     public SolicitacaoCompra(String solicitante, String descricao) {
-        this(); // Chama o construtor padrão para inicializar data e status
+        this();
         this.solicitante = solicitante;
         this.descricao = descricao;
     }
 
-    // Métodos de callback JPA para preencher automaticamente as datas
     @PrePersist
     protected void onCreate() {
         this.dataCriacao = LocalDateTime.now();
@@ -99,7 +97,7 @@ public class SolicitacaoCompra {
         return solicitante;
     }
 
-    public StatusSolicitacaoCompra getStatus() { // Retorna o Enum
+    public StatusSolicitacaoCompra getStatus() {
         return status;
     }
 
@@ -140,7 +138,7 @@ public class SolicitacaoCompra {
         this.solicitante = solicitante;
     }
 
-    public void setStatus(StatusSolicitacaoCompra status) { // Recebe o Enum
+    public void setStatus(StatusSolicitacaoCompra status) {
         this.status = status;
     }
 
@@ -170,57 +168,30 @@ public class SolicitacaoCompra {
     }
 
     /**
-     * IMPORTANTE: Este setter gerencia a coleção de itens para atualizações
-     * completas (PUT).
-     * Ele lida com a adição de novos itens, atualização de itens existentes
-     * e remoção de itens que não estão mais presentes na lista fornecida.
+     * IMPORTANTE: Este setter agora gerencia a coleção de itens de forma mais idiomática com `orphanRemoval = true`.
+     * Ele limpa a coleção existente e adiciona os novos itens. O JPA/Hibernate cuidará
+     * automaticamente de deletar os "órfãos" (itens que não estão mais presentes) e persistir/atualizar os demais.
      *
      * @param novosItens A nova lista de ItemSolicitacaoCompra a ser aplicada.
      */
     public void setItens(Set<ItemSolicitacaoCompra> novosItens) {
-        if (novosItens == null) {
-            novosItens = new HashSet<>(); // Garante que a coleção não seja nula
-        }
-
-        // Crie um set temporário para itens que devem ser mantidos ou adicionados
-        Set<ItemSolicitacaoCompra> itensParaManterOuAdicionar = new HashSet<>();
-
-        for (ItemSolicitacaoCompra novoOuAtualizadoItem : novosItens) {
-            novoOuAtualizadoItem.setSolicitacaoCompra(this); // Garante a bidirecionalidade
-
-            if (novoOuAtualizadoItem.getId() == null) {
-                // É um item novo
-                itensParaManterOuAdicionar.add(novoOuAtualizadoItem);
-            } else {
-                // É um item existente (possui ID), encontre-o na coleção gerenciada para atualização
-                this.itens.stream()
-                    .filter(itemExistente -> novoOuAtualizadoItem.getId().equals(itemExistente.getId()))
-                    .findFirst()
-                    .ifPresentOrElse(existingItem -> {
-                        // Atualiza as propriedades do item existente
-                        existingItem.setProduto(novoOuAtualizadoItem.getProduto());
-                        existingItem.setQuantidade(novoOuAtualizadoItem.getQuantidade());
-                        existingItem.setDescricaoAdicional(novoOuAtualizadoItem.getDescricaoAdicional());
-                        existingItem.setStatus(novoOuAtualizadoItem.getStatus());
-                        itensParaManterOuAdicionar.add(existingItem); // Adiciona o item atualizado para manter
-                    }, () -> {
-                        // Se o item tem ID, mas não está na coleção atual, adiciona como novo
-                        itensParaManterOuAdicionar.add(novoOuAtualizadoItem);
-                    });
+        // Garante que a coleção esteja sempre sincronizada com o pai
+        this.itens.clear();
+        if (novosItens != null) {
+            for (ItemSolicitacaoCompra item : novosItens) {
+                this.addItem(item); // Usa o método auxiliar para manter a bidirecionalidade
             }
         }
-        // Limpa a coleção atual e adiciona todos os itens que devem ser mantidos ou adicionados
-        this.itens.clear();
-        this.itens.addAll(itensParaManterOuAdicionar);
     }
+
 
     // --- Métodos auxiliares para gerenciar a coleção de itens e a bidirecionalidade ---
     public void addItem(ItemSolicitacaoCompra item) {
         if (item != null) {
             if (!this.itens.contains(item)) {
                 this.itens.add(item);
-                item.setSolicitacaoCompra(this);
             }
+            item.setSolicitacaoCompra(this); // Garante a bidirecionalidade
         }
     }
 
@@ -236,8 +207,8 @@ public class SolicitacaoCompra {
         if (orcamento != null) {
             if (!this.orcamentos.contains(orcamento)) {
                 this.orcamentos.add(orcamento);
-                orcamento.setSolicitacaoCompra(this);
             }
+            orcamento.setSolicitacaoCompra(this); // Garante a bidirecionalidade
         }
     }
 
@@ -269,7 +240,7 @@ public class SolicitacaoCompra {
                 "id=" + id +
                 ", dataSolicitacao=" + dataSolicitacao +
                 ", solicitante='" + solicitante + '\'' +
-                ", status=" + status + // Exibir o Enum
+                ", status=" + status +
                 ", descricao='" + descricao + '\'' +
                 ", version=" + version +
                 ", dataCriacao=" + dataCriacao +

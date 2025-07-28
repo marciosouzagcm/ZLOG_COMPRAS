@@ -83,8 +83,10 @@ public interface OrcamentoMapper {
     @Mapping(source = "precoUnitarioCotado", target = "precoUnitarioCotado")
     @Mapping(source = "observacoes", target = "observacoes")
     @Mapping(source = "version", target = "version")
-    // CORRIGIDO: Removido BigDecimal.valueOf() redundante. Agora multiplica BigDecimal por BigDecimal.
-    @Mapping(target = "subtotal", expression = "java(itemOrcamento.getQuantidade() != null && itemOrcamento.getPrecoUnitarioCotado() != null ? " +
+    // CORRIGIDO: Removido BigDecimal.valueOf() redundante. Agora multiplica
+    // BigDecimal por BigDecimal.
+    @Mapping(target = "subtotal", expression = "java(itemOrcamento.getQuantidade() != null && itemOrcamento.getPrecoUnitarioCotado() != null ? "
+            +
             "itemOrcamento.getQuantidade().multiply(itemOrcamento.getPrecoUnitarioCotado()) " +
             ": null)")
     ItemOrcamentoResponseDTO toItemOrcamentoResponseDto(ItemOrcamento itemOrcamento);
@@ -112,7 +114,8 @@ public interface OrcamentoMapper {
         return statusEnum.name();
     }
 
-    // --- Método auxiliar para mapear um ID para uma entidade Produto (referência) ---
+    // --- Método auxiliar para mapear um ID para uma entidade Produto (referência)
+    // ---
     @Named("mapProdutoIdToProduto")
     default Produto mapProdutoIdToProduto(Long produtoId) {
         if (produtoId == null) {

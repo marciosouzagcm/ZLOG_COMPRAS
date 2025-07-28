@@ -1,8 +1,8 @@
 package com.zlogcompras;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication; // ADICIONE ESTA LINHA
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing; // Esta você já adicionou
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
