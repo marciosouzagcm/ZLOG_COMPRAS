@@ -28,49 +28,47 @@ public class ProdutoService {
 
     /**
      * Cria um novo produto a partir de um DTO de requisição.
+     * * @param produtoRequestDTO O DTO contendo os dados do novo produto.
      * 
-     * @param produtoRequestDTO O DTO contendo os dados do novo produto.
      * @return O produto criado e salvo no banco de dados.
      */
     @Transactional
     public Produto criarProduto(ProdutoRequestDTO produtoRequestDTO) {
-        // Mapear o DTO para a entidade Produto
         Produto produto = new Produto();
-        // Exemplo: produto.setNome(produtoRequestDTO.getNome());
-        // produto.setDescricao(produtoRequestDTO.getDescricao());
-        // ... mapeie todos os campos relevantes do DTO para a entidade Produto
-
-        // Para simplificar e compilar, vou apenas preencher alguns campos para exemplo.
-        // Você deve ter um método de mapeamento ou um construtor no DTO/Entidade para
-        // isso.
-        produto.setNome(produtoRequestDTO.getNome());
+        // Mapear TODOS os campos relevantes do DTO para a entidade Produto
         produto.setCodigo(produtoRequestDTO.getCodigo());
+        produto.setCodigoProduto(produtoRequestDTO.getCodigoProduto()); // <-- Campo que faltava!
+        produto.setNome(produtoRequestDTO.getNome());
         produto.setDescricao(produtoRequestDTO.getDescricao());
         produto.setUnidadeMedida(produtoRequestDTO.getUnidadeMedida());
         produto.setPrecoUnitario(produtoRequestDTO.getPrecoUnitario());
+        produto.setCategoria(produtoRequestDTO.getCategoria()); // <-- Campo que faltava e causava o erro!
+        produto.setEstoque(produtoRequestDTO.getEstoque()); // <-- Campo que faltava!
 
         return produtoRepository.save(produto);
     }
 
     /**
      * Cria múltiplos produtos a partir de uma lista de DTOs de requisição.
+     * * @param produtosRequestDTO Uma lista de DTOs contendo os dados dos novos
+     * produtos.
      * 
-     * @param produtosRequestDTO Uma lista de DTOs contendo os dados dos novos
-     *                           produtos.
      * @return Uma lista dos produtos criados e salvos no banco de dados.
      */
     @Transactional
     public List<Produto> criarMultiplosProdutos(List<ProdutoRequestDTO> produtosRequestDTO) {
-        // Mapear cada DTO para uma entidade Produto e salvar
         List<Produto> produtos = produtosRequestDTO.stream()
                 .map(dto -> {
                     Produto produto = new Produto();
-                    // Mapear campos do DTO para a entidade Produto
-                    produto.setNome(dto.getNome());
+                    // Mapear TODOS os campos do DTO para a entidade Produto
                     produto.setCodigo(dto.getCodigo());
+                    produto.setCodigoProduto(dto.getCodigoProduto()); // <-- Campo que faltava!
+                    produto.setNome(dto.getNome());
                     produto.setDescricao(dto.getDescricao());
                     produto.setUnidadeMedida(dto.getUnidadeMedida());
                     produto.setPrecoUnitario(dto.getPrecoUnitario());
+                    produto.setCategoria(dto.getCategoria()); // <-- Campo que faltava e causava o erro!
+                    produto.setEstoque(dto.getEstoque()); // <-- Campo que faltava!
                     return produto;
                 })
                 .collect(Collectors.toList());
@@ -80,8 +78,7 @@ public class ProdutoService {
 
     /**
      * Lista todos os produtos existentes.
-     * 
-     * @return Uma lista de todos os produtos.
+     * * @return Uma lista de todos os produtos.
      */
     public List<Produto> listarTodosProdutos() {
         return produtoRepository.findAll();
@@ -89,8 +86,8 @@ public class ProdutoService {
 
     /**
      * Busca um produto pelo seu ID.
+     * * @param id O ID do produto a ser buscado.
      * 
-     * @param id O ID do produto a ser buscado.
      * @return O produto encontrado.
      * @throws ResourceNotFoundException se o produto não for encontrado.
      */
@@ -101,8 +98,8 @@ public class ProdutoService {
 
     /**
      * Atualiza um produto existente.
+     * * @param id O ID do produto a ser atualizado.
      * 
-     * @param id                O ID do produto a ser atualizado.
      * @param produtoRequestDTO O DTO com os dados atualizados do produto.
      * @return O produto atualizado.
      * @throws ResourceNotFoundException se o produto não for encontrado.
@@ -111,13 +108,17 @@ public class ProdutoService {
     public Produto atualizarProduto(Long id, ProdutoRequestDTO produtoRequestDTO) {
         return produtoRepository.findById(id)
                 .map(produtoExistente -> {
-                    // Atualize os campos do produtoExistente com os dados do produtoRequestDTO
+                    // Atualize TODOS os campos do produtoExistente com os dados do
+                    // produtoRequestDTO
+                    produtoExistente.setCodigo(produtoRequestDTO.getCodigo());
+                    produtoExistente.setCodigoProduto(produtoRequestDTO.getCodigoProduto());
                     produtoExistente.setNome(produtoRequestDTO.getNome());
                     produtoExistente.setDescricao(produtoRequestDTO.getDescricao());
-                    produtoExistente.setCodigo(produtoRequestDTO.getCodigo());
                     produtoExistente.setUnidadeMedida(produtoRequestDTO.getUnidadeMedida());
                     produtoExistente.setPrecoUnitario(produtoRequestDTO.getPrecoUnitario());
-                    // ... outros campos que podem ser atualizados
+                    produtoExistente.setCategoria(produtoRequestDTO.getCategoria());
+                    produtoExistente.setEstoque(produtoRequestDTO.getEstoque());
+                    // dataAtualizacao é atualizada automaticamente pelo @LastModifiedDate
 
                     return produtoRepository.save(produtoExistente);
                 }).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
@@ -125,8 +126,8 @@ public class ProdutoService {
 
     /**
      * Deleta um produto pelo seu ID, removendo primeiro suas dependências.
+     * * @param id O ID do produto a ser deletado.
      * 
-     * @param id O ID do produto a ser deletado.
      * @throws ResourceNotFoundException se o produto não for encontrado.
      */
     @Transactional

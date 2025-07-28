@@ -3,6 +3,7 @@ package com.zlogcompras.controller;
 import com.zlogcompras.model.PedidoCompra; // Importar PedidoCompra
 import com.zlogcompras.model.SolicitacaoCompra; // Importar SolicitacaoCompra (se for usada para retornar)
 import com.zlogcompras.model.StatusSolicitacaoCompra; // Importar StatusSolicitacaoCompra
+import com.zlogcompras.model.dto.SolicitacaoCompraResponseDTO;
 import com.zlogcompras.service.ProcessoCompraService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +43,10 @@ public class ProcessoCompraController {
      * @return ResponseEntity com a SolicitaçãoCompra atualizada e status 200 OK.
      */
     @PutMapping("/{solicitacaoId}/status/{novoStatus}") // Usando PUT para atualização de status
-    public ResponseEntity<SolicitacaoCompra> atualizarStatusSolicitacao(
+    public ResponseEntity<SolicitacaoCompraResponseDTO> atualizarStatusSolicitacao(
             @PathVariable Long solicitacaoId,
             @PathVariable StatusSolicitacaoCompra novoStatus) {
-        SolicitacaoCompra solicitacaoAtualizada = processoCompraService.atualizarStatusSolicitacao(solicitacaoId, novoStatus);
+        SolicitacaoCompraResponseDTO solicitacaoAtualizada = processoCompraService.atualizarStatusSolicitacao(solicitacaoId, novoStatus);
         return ResponseEntity.ok(solicitacaoAtualizada);
     }
 

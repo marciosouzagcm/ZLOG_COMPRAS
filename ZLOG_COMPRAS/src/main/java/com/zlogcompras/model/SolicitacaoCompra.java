@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference; // Manter este se ItemSolicitacaoCompra tiver @JsonBackReference
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -54,11 +54,14 @@ public class SolicitacaoCompra {
     @Column(name = "data_atualizacao", nullable = false)
     private LocalDateTime dataAtualizacao;
 
-    @JsonManagedReference("solicitacao-orcamento")
+    // REMOVIDO: @JsonManagedReference para 'orcamentos'
+    // Se você não precisa serializar orçamentos diretamente da SolicitacaoCompra,
+    // essa anotação não é necessária e pode causar LazyInitializationException.
     @OneToMany(mappedBy = "solicitacaoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Orcamento> orcamentos = new HashSet<>();
 
-    @JsonManagedReference("solicitacao-item")
+    @JsonManagedReference("solicitacao-item") // Mantenha este se ItemSolicitacaoCompra tiver @JsonBackReference e você
+                                              // quer serializar itens.
     @OneToMany(mappedBy = "solicitacaoCompra", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ItemSolicitacaoCompra> itens = new HashSet<>();
 
@@ -168,9 +171,12 @@ public class SolicitacaoCompra {
     }
 
     /**
-     * IMPORTANTE: Este setter agora gerencia a coleção de itens de forma mais idiomática com `orphanRemoval = true`.
-     * Ele limpa a coleção existente e adiciona os novos itens. O JPA/Hibernate cuidará
-     * automaticamente de deletar os "órfãos" (itens que não estão mais presentes) e persistir/atualizar os demais.
+     * IMPORTANTE: Este setter agora gerencia a coleção de itens de forma mais
+     * idiomática com `orphanRemoval = true`.
+     * Ele limpa a coleção existente e adiciona os novos itens. O JPA/Hibernate
+     * cuidará
+     * automaticamente de deletar os "órfãos" (itens que não estão mais presentes) e
+     * persistir/atualizar os demais.
      *
      * @param novosItens A nova lista de ItemSolicitacaoCompra a ser aplicada.
      */
@@ -184,8 +190,8 @@ public class SolicitacaoCompra {
         }
     }
 
-
-    // --- Métodos auxiliares para gerenciar a coleção de itens e a bidirecionalidade ---
+    // --- Métodos auxiliares para gerenciar a coleção de itens e a
+    // bidirecionalidade ---
     public void addItem(ItemSolicitacaoCompra item) {
         if (item != null) {
             if (!this.itens.contains(item)) {
@@ -222,8 +228,10 @@ public class SolicitacaoCompra {
     // --- Métodos equals e hashCode ---
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         SolicitacaoCompra that = (SolicitacaoCompra) o;
         return Objects.equals(id, that.id);
     }
