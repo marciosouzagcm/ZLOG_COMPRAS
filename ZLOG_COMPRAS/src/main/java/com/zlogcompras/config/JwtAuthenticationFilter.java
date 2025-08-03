@@ -1,7 +1,11 @@
-package com.zlogcompras.config;
+package com.zlogcompras.config; // Certifique-se de que este pacote corresponde ao seu projeto
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,32 +21,71 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger; // Importar Logger
-import org.slf4j.LoggerFactory; // Importar LoggerFactory
-
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class); // Instanciar Logger
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+
+    // Lista de URLs que o filtro JWT deve IGNORAR (correspondência EXATA)
+    private static final List<String> EXACT_EXCLUDED_URLS = Arrays.asList(
+            "/api/auth/login",
+            "/api/auth/register",
+            "/error");
+
+    // Lista de URLs que o filtro JWT deve IGNORAR (correspondência por PREFIXO,
+    // para Swagger, etc.)
+    private static final List<String> PREFIX_EXCLUDED_URLS = Arrays.asList(
+            "/swagger-ui/",
+            "/v3/api-docs/",
+            "/swagger-resources/",
+            "/webjars/");
 
     public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }
 
+    // --- MÉTODO CRÍTICO AJUSTADO PARA CORRESPONDÊNCIA MAIS ROBUSTA ---
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+
+        // Verifica se a URI da requisição corresponde a uma URL de exclusão exata
+        if (EXACT_EXCLUDED_URLS.contains(path)) {
+            logger.debug("Should not filter (exact match): {}", path);
+            return true;
+        }
+
+        // Verifica se a URI da requisição começa com uma das URLs de exclusão de
+        // prefixo
+        if (PREFIX_EXCLUDED_URLS.stream().anyMatch(path::startsWith)) {
+            logger.debug("Should not filter (prefix match): {}", path);
+            return true;
+        }
+
+        logger.debug("Should filter: {}", path);
+        return false;
+    }
+    // --- FIM DO MÉTODO CRÍTICO AJUSTADO ---
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+
+        // Se shouldNotFilter retornou true, este método não será executado.
+        // Se shouldNotFilter retornou false (ou seja, a URL não é pública),
+        // então a lógica de validação JWT abaixo será aplicada.
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         String userEmail = null;
 
-        logger.debug("Requisição recebida: {}", request.getRequestURI()); // Logar URI
+        logger.debug("Requisição recebida: {}", request.getRequestURI());
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             logger.debug("Cabeçalho Authorization ausente ou inválido. Passando para o próximo filtro.");
@@ -51,15 +94,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        logger.debug("Token JWT extraído: {}", jwt); // Logar o token (CUIDADO em produção!)
+        logger.debug("Token JWT extraído: {}", jwt);
 
         try {
             userEmail = jwtService.extractUsername(jwt);
             logger.debug("Username extraído do token: {}", userEmail);
         } catch (Exception e) {
             logger.error("Erro ao extrair username ou token inválido/expirado: {}", e.getMessage());
-            // Se o token for inválido/expirado, o SecurityContext permanecerá nulo,
-            // e a requisição será tratada como não autenticada.
+            filterChain.doFilter(request, response);
+            return;
         }
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -67,14 +110,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 userDetails = this.userDetailsService.loadUserByUsername(userEmail);
                 logger.debug("Detalhes do usuário carregados para: {}", userEmail);
-                logger.debug("Autoridades do usuário: {}", userDetails.getAuthorities()); // Logar as autoridades
+                logger.debug("Autoridades do usuário: {}", userDetails.getAuthorities());
             } catch (Exception e) {
                 logger.error("Erro ao carregar UserDetails para {}: {}", userEmail, e.getMessage());
-                // Não conseguimos carregar o usuário, não podemos autenticar.
                 filterChain.doFilter(request, response);
-                return; // Importante: pare o processamento se o UserDetails falhar
+                return;
             }
-            
+
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
@@ -87,11 +129,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.warn("Token JWT é inválido para o usuário: {}", userEmail);
             }
         } else if (SecurityContextHolder.getContext().getAuthentication() != null) {
-             logger.debug("Usuário já autenticado no SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication().getName());
+            logger.debug("Usuário já autenticado no SecurityContext: {}",
+                    SecurityContextHolder.getContext().getAuthentication().getName());
         } else {
             logger.debug("UserEmail é nulo ou SecurityContext já está vazio.");
         }
-        
+
         filterChain.doFilter(request, response);
     }
 }

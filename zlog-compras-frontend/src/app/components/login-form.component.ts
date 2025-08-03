@@ -9,19 +9,20 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ],
   templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.css'] // <-- MUDAR PARA .css AQUI
+  styleUrls: ['./login-form.component.css']
 })
 export class LoginFormComponent {
-  email: string = '';
+  username: string = '';
   password: string = '';
 
-  @Output() submitForm = new EventEmitter<{ email: string, password: string }>();
+  @Output() submitForm = new EventEmitter<{ username: string, password: string }>();
 
   constructor() { }
 
   onSubmit(): void {
-    this.submitForm.emit({ email: this.email, password: this.password });
-    this.email = '';
+    console.log('1. [LoginFormComponent] onSubmit() chamado. Dados:', { username: this.username, password: this.password }); 
+    this.submitForm.emit({ username: this.username, password: this.password });
+    this.username = '';
     this.password = '';
   }
 }

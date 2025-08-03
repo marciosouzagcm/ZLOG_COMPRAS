@@ -1,7 +1,7 @@
 # ZLOG Compras: Sistema de Gerenciamento de Compras Empresariais
 
 <p align="center">
-  <img src="https://via.placeholder.com/150?text=Logo+ZLOG" alt="Logo ZLOG Compras" width="150"/>
+  <img src="logo_ZLOG.png" alt="Logo ZLOG Compras" width="150"/>
 </p>
 
 🎯 **Sobre o Projeto**
