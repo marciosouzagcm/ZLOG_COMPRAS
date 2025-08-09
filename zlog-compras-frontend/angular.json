@@ -29,12 +29,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -93,12 +88,20 @@
               "src/styles.css"
             ],
             "scripts": []
+            }
           }
         }
       }
+      },
+      "cli": {
+        "analytics": "e917565a-a921-4951-b31e-de7b5c6385be"
+      }
+    },
+        "cli": {
+          "analytics": "1c11c7fc-a7cf-44b2-b5e7-a5408ad6b61f"
+        }
+      }
     }
-  },
-  "cli": {
-    "analytics": "1c11c7fc-a7cf-44b2-b5e7-a5408ad6b61f"
-  }
-}
+
+
+

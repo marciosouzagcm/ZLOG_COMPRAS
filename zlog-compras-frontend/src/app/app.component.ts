@@ -1,18 +1,15 @@
 // src/app/app.component.ts
-// REMOVA ESTA LINHA: import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { LoginComponent } from './components/login.component';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms'; // Adicione esta linha
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    FormsModule,
-    LoginComponent
-  ],
+  imports: [CommonModule, RouterOutlet, ReactiveFormsModule], // Adicione aqui também
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'zlog-compras-frontend';
