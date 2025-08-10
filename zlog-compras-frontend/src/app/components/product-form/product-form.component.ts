@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Produto } from '../../models/produto.model';
-import { ProductService } from '../../services/product.service';
+import { ProdutoService } from '../../services/produto.service';
 
 @Component({
   selector: 'app-product-form',
@@ -18,7 +18,7 @@ export class ProductFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private productService: ProductService,
+    private ProdutoService: ProdutoService,
     private router: Router
   ) {
     this.productForm = this.fb.group({
@@ -46,12 +46,12 @@ export class ProductFormComponent implements OnInit {
         estoque: Number(this.productForm.value.estoque)
       };
 
-      this.productService.createProduct(produtoParaEnviar).subscribe({
-        next: (response) => {
+      this.ProdutoService.createProduto(produtoParaEnviar).subscribe({
+        next: (response: any) => {
           console.log('Produto criado com sucesso!', response);
           this.router.navigate(['/products']);
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao criar produto:', error);
           alert('Erro ao criar produto. Verifique o console para mais detalhes.');
         }

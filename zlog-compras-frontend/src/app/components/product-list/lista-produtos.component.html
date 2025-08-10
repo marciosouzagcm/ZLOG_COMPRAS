@@ -1,0 +1,30 @@
+<div class="produtos-container">
+  <h2>Lista de Produtos</h2>
+
+  <div class="header-tabela">
+    <button routerLink="/adicionar-produto" class="btn-adicionar">
+      <i class="fas fa-plus"></i> Adicionar Produto
+    </button>
+  </div>
+
+  <table class="produtos-tabela">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Código</th>
+        <th>Descrição</th>
+        <th>Preço</th>
+        <th>Estoque</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let produto of produtos">
+        <td>{{ produto.nome }}</td>
+        <td>{{ produto.codigo }}</td>
+        <td>{{ produto.descricao }}</td>
+        <td>{{ produto.precoUnitario | currency:'BRL' }}</td>
+        <td>{{ produto.estoque }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

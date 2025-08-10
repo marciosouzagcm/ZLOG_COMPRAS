@@ -1,0 +1,35 @@
+<div class="adicionar-container">
+  <h2>Adicionar Novo Produto</h2>
+
+  <form [formGroup]="produtoForm" (ngSubmit)="salvarProduto()">
+    <div class="form-group">
+      <label for="nome">Nome:</label>
+      <input id="nome" type="text" formControlName="nome">
+    </div>
+
+    <div class="form-group">
+      <label for="codigo">Código:</label>
+      <input id="codigo" type="text" formControlName="codigo">
+    </div>
+
+    <div class="form-group">
+      <label for="descricao">Descrição:</label>
+      <textarea id="descricao" formControlName="descricao"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="precoUnitario">Preço:</label>
+      <input id="precoUnitario" type="number" formControlName="precoUnitario">
+    </div>
+
+    <div class="form-group">
+      <label for="estoque">Estoque:</label>
+      <input id="estoque" type="number" formControlName="estoque">
+    </div>
+
+    <div class="botoes-form">
+      <button type="submit" [disabled]="!produtoForm.valid" class="btn-salvar">Salvar</button>
+      <button type="button" routerLink="/produtos" class="btn-cancelar">Cancelar</button>
+    </div>
+  </form>
+</div>

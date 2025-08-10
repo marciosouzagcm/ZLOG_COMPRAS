@@ -1,19 +1,15 @@
-// src/main.ts
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-
-// Corrija os caminhos para apontar para a pasta 'app'
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { AuthInterceptor } from './app/auth-interceptor';
+import { authInterceptor } from './app/auth-interceptor'; // <-- Caminho corrigido
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([AuthInterceptor])
-    ),
-    provideRouter(routes)
+    provideRouter(routes),
+    // O 'provideHttpClient' agora é configurado com 'withInterceptors' para usar o nosso interceptor.
+    // Isso é a forma correta e mais simples de se fazer em aplicações 'standalone'.
+    provideHttpClient(withInterceptors([authInterceptor]))
   ]
 }).catch(err => console.error(err));

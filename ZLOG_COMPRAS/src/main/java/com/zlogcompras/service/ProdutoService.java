@@ -5,13 +5,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.zlogcompras.exceptions.ResourceNotFoundException;
 import com.zlogcompras.model.Produto;
-import com.zlogcompras.model.dto.ProdutoRequestDTO; // Importe este DTO
-import com.zlogcompras.repository.ItemOrcamentoRepository;
-import com.zlogcompras.repository.ItemSolicitacaoCompraRepository;
+import com.zlogcompras.model.dto.ProdutoRequestDTO;
 import com.zlogcompras.repository.ProdutoRepository;
 
 @Service
@@ -20,132 +17,61 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    @Autowired
-    private ItemOrcamentoRepository itemOrcamentoRepository;
-
-    @Autowired
-    private ItemSolicitacaoCompraRepository itemSolicitacaoCompraRepository;
-
     /**
-     * Cria um novo produto a partir de um DTO de requisição.
-     * * @param produtoRequestDTO O DTO contendo os dados do novo produto.
+     * Converte um DTO de requisição para uma entidade Produto.
      * 
-     * @return O produto criado e salvo no banco de dados.
+     * @param produtoRequestDTO DTO de entrada.
+     * @return A entidade Produto.
      */
-    @Transactional
-    public Produto criarProduto(ProdutoRequestDTO produtoRequestDTO) {
+    private Produto convertToEntity(ProdutoRequestDTO produtoRequestDTO) {
         Produto produto = new Produto();
-        // Mapear TODOS os campos relevantes do DTO para a entidade Produto
-        produto.setCodigo(produtoRequestDTO.getCodigo());
-        produto.setCodigoProduto(produtoRequestDTO.getCodigoProduto()); // <-- Campo que faltava!
         produto.setNome(produtoRequestDTO.getNome());
+        produto.setCodigo(produtoRequestDTO.getCodigo());
         produto.setDescricao(produtoRequestDTO.getDescricao());
-        produto.setUnidadeMedida(produtoRequestDTO.getUnidadeMedida());
         produto.setPrecoUnitario(produtoRequestDTO.getPrecoUnitario());
-        produto.setCategoria(produtoRequestDTO.getCategoria()); // <-- Campo que faltava e causava o erro!
-        produto.setEstoque(produtoRequestDTO.getEstoque()); // <-- Campo que faltava!
-
-        return produtoRepository.save(produto);
+        produto.setEstoque(produtoRequestDTO.getEstoque());
+        return produto;
     }
 
-    /**
-     * Cria múltiplos produtos a partir de uma lista de DTOs de requisição.
-     * * @param produtosRequestDTO Uma lista de DTOs contendo os dados dos novos
-     * produtos.
-     * 
-     * @return Uma lista dos produtos criados e salvos no banco de dados.
-     */
-    @Transactional
-    public List<Produto> criarMultiplosProdutos(List<ProdutoRequestDTO> produtosRequestDTO) {
-        List<Produto> produtos = produtosRequestDTO.stream()
-                .map(dto -> {
-                    Produto produto = new Produto();
-                    // Mapear TODOS os campos do DTO para a entidade Produto
-                    produto.setCodigo(dto.getCodigo());
-                    produto.setCodigoProduto(dto.getCodigoProduto()); // <-- Campo que faltava!
-                    produto.setNome(dto.getNome());
-                    produto.setDescricao(dto.getDescricao());
-                    produto.setUnidadeMedida(dto.getUnidadeMedida());
-                    produto.setPrecoUnitario(dto.getPrecoUnitario());
-                    produto.setCategoria(dto.getCategoria()); // <-- Campo que faltava e causava o erro!
-                    produto.setEstoque(dto.getEstoque()); // <-- Campo que faltava!
-                    return produto;
-                })
+    public Produto criar(ProdutoRequestDTO produtoRequestDTO) {
+        Produto novoProduto = convertToEntity(produtoRequestDTO);
+        return produtoRepository.save(novoProduto);
+    }
+
+    public List<Produto> criarMultiplos(List<ProdutoRequestDTO> produtosRequestDTO) {
+        List<Produto> produtosParaSalvar = produtosRequestDTO.stream()
+                .map(this::convertToEntity)
                 .collect(Collectors.toList());
-
-        return produtoRepository.saveAll(produtos);
+        return produtoRepository.saveAll(produtosParaSalvar);
     }
 
-    /**
-     * Lista todos os produtos existentes.
-     * * @return Uma lista de todos os produtos.
-     */
-    public List<Produto> listarTodosProdutos() {
+    public List<Produto> listarTodos() {
         return produtoRepository.findAll();
     }
 
-    /**
-     * Busca um produto pelo seu ID.
-     * * @param id O ID do produto a ser buscado.
-     * 
-     * @return O produto encontrado.
-     * @throws ResourceNotFoundException se o produto não for encontrado.
-     */
-    public Produto buscarProdutoPorId(Long id) {
+    public Produto buscarPorId(Long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
     }
 
-    /**
-     * Atualiza um produto existente.
-     * * @param id O ID do produto a ser atualizado.
-     * 
-     * @param produtoRequestDTO O DTO com os dados atualizados do produto.
-     * @return O produto atualizado.
-     * @throws ResourceNotFoundException se o produto não for encontrado.
-     */
-    @Transactional
-    public Produto atualizarProduto(Long id, ProdutoRequestDTO produtoRequestDTO) {
-        return produtoRepository.findById(id)
-                .map(produtoExistente -> {
-                    // Atualize TODOS os campos do produtoExistente com os dados do
-                    // produtoRequestDTO
-                    produtoExistente.setCodigo(produtoRequestDTO.getCodigo());
-                    produtoExistente.setCodigoProduto(produtoRequestDTO.getCodigoProduto());
-                    produtoExistente.setNome(produtoRequestDTO.getNome());
-                    produtoExistente.setDescricao(produtoRequestDTO.getDescricao());
-                    produtoExistente.setUnidadeMedida(produtoRequestDTO.getUnidadeMedida());
-                    produtoExistente.setPrecoUnitario(produtoRequestDTO.getPrecoUnitario());
-                    produtoExistente.setCategoria(produtoRequestDTO.getCategoria());
-                    produtoExistente.setEstoque(produtoRequestDTO.getEstoque());
-                    // dataAtualizacao é atualizada automaticamente pelo @LastModifiedDate
-
-                    return produtoRepository.save(produtoExistente);
-                }).orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
-    }
-
-    /**
-     * Deleta um produto pelo seu ID, removendo primeiro suas dependências.
-     * * @param id O ID do produto a ser deletado.
-     * 
-     * @throws ResourceNotFoundException se o produto não for encontrado.
-     */
-    @Transactional
-    public void deletarProduto(Long id) {
-        Produto produto = produtoRepository.findById(id)
+    public Produto atualizar(Long id, ProdutoRequestDTO produtoRequestDTO) {
+        Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
 
-        // 1. Deletar todos os itens de ORÇAMENTO associados a este produto
-        itemOrcamentoRepository.deleteByProduto_Id(id);
-        System.out.println("Itens de orçamento relacionados ao produto " + id + " deletados.");
+        produtoExistente.setNome(produtoRequestDTO.getNome());
+        produtoExistente.setCodigo(produtoRequestDTO.getCodigo());
+        produtoExistente.setDescricao(produtoRequestDTO.getDescricao());
+        produtoExistente.setPrecoUnitario(produtoRequestDTO.getPrecoUnitario());
+        produtoExistente.setEstoque(produtoRequestDTO.getEstoque());
+        // O campo 'version' será atualizado automaticamente pelo JPA
 
-        // 2. Deletar todos os itens de SOLICITAÇÃO DE COMPRA associados a este produto
-        // (se houver)
-        itemSolicitacaoCompraRepository.deleteByProduto_Id(id);
-        System.out.println("Itens de solicitação de compra relacionados ao produto " + id + " deletados.");
+        return produtoRepository.save(produtoExistente);
+    }
 
-        // 3. Deletar o produto principal
-        produtoRepository.delete(produto);
-        System.out.println("Produto com ID " + id + " deletado com sucesso.");
+    public void deletar(Long id) {
+        if (!produtoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Produto não encontrado com ID: " + id);
+        }
+        produtoRepository.deleteById(id);
     }
 }
