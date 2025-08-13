@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="header">
+    <h2>Lista de Produtos</h2>
+    <div class="actions">
+      <button routerLink="/produtos/novo" class="new-product-button">Novo Produto</button>
+      <button (click)="logout()" class="logout-button">Sair</button>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <table class="produtos-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código do Produto</th>
+        <th>Nome</th>
+        <th>Preço Unitário</th>
+        <th>Unidade de Medida</th>
+        <th>Estoque</th>
+        <th>Categoria</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let produto of produtos">
+        <td>{{ produto.id }}</td>
+        <td>{{ produto.codigoProduto }}</td>
+        <td>{{ produto.nome }}</td>
+        <td>{{ produto.precoUnitario | currency:'BRL':'symbol' }}</td>
+        <td>{{ produto.unidadeMedida }}</td>
+        <td>{{ produto.estoque }}</td>
+        <td>{{ produto.categoria }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

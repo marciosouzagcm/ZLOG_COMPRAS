@@ -1,13 +1,16 @@
 // src/app/app.config.ts
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+
+import { provideHttpClient, withInterceptors } from '@angular/common/http'; // Importe estes módulos
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
+
 import { routes } from './app.routes';
-import { AuthInterceptor } from './auth-interceptor';
+import { authInterceptor } from './auth-interceptor'; // Importe o seu interceptor
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([AuthInterceptor]))
+    // Registra o interceptor na aplicação
+    provideHttpClient(withInterceptors([authInterceptor]))
   ]
 };

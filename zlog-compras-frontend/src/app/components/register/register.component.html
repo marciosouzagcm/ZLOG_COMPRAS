@@ -1,0 +1,38 @@
+<div class="register-container">
+  <h2>Crie sua conta</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Usuário</label>
+      <input id="username" type="text" formControlName="username" />
+      <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="error-message">
+        O nome de usuário é obrigatório.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+      <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-message">
+        Por favor, insira um email válido.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input id="password" type="password" formControlName="password" />
+      <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-message">
+        A senha deve ter pelo menos 6 caracteres.
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="!registerForm.valid">Registrar</button>
+
+    <div *ngIf="registerError" class="error-message">
+      {{ registerError }}
+    </div>
+  </form>
+
+  <div class="login-link">
+    <p>Já tem uma conta? <a [routerLink]="['/login']">Faça login aqui</a></p>
+  </div>
+</div>

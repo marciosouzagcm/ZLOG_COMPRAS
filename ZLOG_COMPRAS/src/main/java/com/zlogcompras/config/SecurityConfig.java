@@ -8,13 +8,18 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer; // Importar se estiver usando Spring Security 6.x ou superior
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -47,29 +52,35 @@ public class SecurityConfig {
     }
 
     @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Permite requisições do seu frontend Angular
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Desabilita CSRF para APIs REST sem estado (forma moderna)
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Adiciona a configuração de CORS
                 .authorizeHttpRequests(auth -> auth
-                        // Permite acesso público ao endpoint de login e registro
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/error").permitAll() // <--
-                                                                                                        // Adicionado
-                                                                                                        // /error
-                        // Permite acesso público às URLs do Swagger UI para documentação da API
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/error").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")
                         .permitAll()
-                        // Requer que o usuário tenha a role "ADMIN" OU "USER" para acessar
-                        // /api/produtos
                         .requestMatchers("/api/produtos/**").hasAnyRole("ADMIN", "USER")
-                        // Todas as outras requisições exigem apenas que o usuário esteja autenticado
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Define política de sessão como
-                                                                                // stateless para JWT
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authenticationProvider(authenticationProvider()) // Adiciona o provedor de autenticação customizado
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // Adiciona seu filtro JWT
-                                                                                             // antes do filtro padrão
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

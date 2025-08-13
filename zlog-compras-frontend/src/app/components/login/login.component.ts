@@ -3,13 +3,14 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  // IMPORTANTE: Adicione o RouterModule aqui para que o [routerLink] funcione.
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -22,7 +23,6 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    // Você pode ajustar 'username' aqui se o seu backend usa outro nome
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
@@ -32,12 +32,12 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
-      this.authService.login({ username, password }, password).subscribe({
-        next: (response) => {
+      this.authService.login({ username, password }).subscribe({
+        next: (response: any) => {
           localStorage.setItem('access_token', response.token);
           this.router.navigate(['/produtos']);
         },
-        error: (error) => {
+        error: (error: any) => {
           this.loginError = 'Usuário ou senha incorretos.';
           console.error('Erro de login:', error);
         }

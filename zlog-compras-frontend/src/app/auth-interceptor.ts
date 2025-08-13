@@ -1,20 +1,24 @@
+// src/app/auth-interceptor.ts
+
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('access_token');
-  const loginUrl = 'http://localhost:8080/auth/login'; // Ou a sua URL de login
+  const loginUrl = 'http://localhost:8080/api/auth/login';
 
-  // Não adiciona o token se a requisição for para a URL de login
+  // Ignora a requisição de login para evitar loops infinitos
   if (req.url === loginUrl) {
     return next(req);
   }
 
   if (token) {
-    const cloned = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
+    // Clona a requisição e adiciona o cabeçalho de autorização
+    const authReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
     });
-    return next(cloned);
+    return next(authReq);
   }
 
   return next(req);
