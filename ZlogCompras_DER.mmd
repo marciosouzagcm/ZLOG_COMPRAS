@@ -1,0 +1,117 @@
+erDiagram
+    USUARIO ||--o{ USER_ROLES : possui
+    ROLE    ||--o{ USER_ROLES : atribui
+
+    SOLICITACAO_COMPRA ||--o{ ITEM_SOLICITACAO_COMPRA : contem
+    SOLICITACAO_COMPRA ||--o{ ORCAMENTO              : recebe
+    PRODUTO            ||--o{ ITEM_SOLICITACAO_COMPRA : referenciado_em
+    PRODUTO            ||--o{ ITEM_ORCAMENTO          : referenciado_em
+    PRODUTO            ||--o{ ITEM_PEDIDO_COMPRA      : referenciado_em
+    PRODUTO            ||--|| ESTOQUE                 : possui
+    PRODUTO            ||--o{ MOVIMENTACAO_ESTOQUE    : movimenta
+
+    FORNECEDOR ||--o{ ORCAMENTO     : emite
+    FORNECEDOR ||--o{ PEDIDO_COMPRA : atende
+
+    ORCAMENTO     ||--o{ ITEM_ORCAMENTO     : contem
+    ORCAMENTO     ||--o| PEDIDO_COMPRA      : origina
+    PEDIDO_COMPRA ||--o{ ITEM_PEDIDO_COMPRA : contem
+    PEDIDO_COMPRA ||--o{ NOTA_FISCAL        : gera
+
+    USUARIO {
+        bigint id PK
+        string nome
+        string email UK
+        string senha_hash
+        bool   ativo
+    }
+    ROLE {
+        bigint id PK
+        string nome UK
+    }
+    USER_ROLES {
+        bigint user_id PK
+        bigint role_id PK
+    }
+    SOLICITACAO_COMPRA {
+        bigint id PK
+        date   data_solicitacao
+        string solicitante
+        string status
+        string descricao
+    }
+    ITEM_SOLICITACAO_COMPRA {
+        bigint id PK
+        bigint solicitacao_compra_id FK
+        bigint produto_id FK
+        decimal quantidade
+        string status
+    }
+    PRODUTO {
+        bigint id PK
+        string codigo UK
+        string nome
+        string unidade_medida
+        decimal preco_unitario
+        string categoria
+    }
+    FORNECEDOR {
+        bigint id PK
+        string cnpj UK
+        string razao_social
+        string email UK
+        string telefone
+    }
+    ORCAMENTO {
+        bigint id PK
+        bigint solicitacao_compra_id FK
+        bigint fornecedor_id FK
+        string numero_orcamento
+        date   data_cotacao
+        decimal valor_total
+        string status
+    }
+    ITEM_ORCAMENTO {
+        bigint id PK
+        bigint orcamento_id FK
+        bigint produto_id FK
+        decimal quantidade
+        decimal preco_unitario_cotado
+    }
+    PEDIDO_COMPRA {
+        bigint id PK
+        bigint fornecedor_id FK
+        bigint orcamento_id FK
+        date   data_pedido
+        decimal valor_total
+        string status
+    }
+    ITEM_PEDIDO_COMPRA {
+        bigint id PK
+        bigint pedido_compra_id FK
+        bigint produto_id FK
+        int    quantidade
+        decimal preco_unitario
+        decimal subtotal
+    }
+    NOTA_FISCAL {
+        bigint id PK
+        string numero_nota_fiscal UK
+        date   data_emissao
+        decimal valor_total
+        bigint pedido_compra_id FK
+    }
+    ESTOQUE {
+        bigint id PK
+        bigint produto_id FK
+        int    quantidade
+        string localizacao
+    }
+    MOVIMENTACAO_ESTOQUE {
+        bigint id PK
+        bigint produto_id FK
+        decimal quantidade
+        string tipo_movimentacao
+        datetime data_movimentacao
+        string referencia
+    }
