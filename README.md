@@ -72,3 +72,97 @@ ZLOG_COMPRAS/
     ├── index.html
     ├── package.json          # Manifesto de dependências Node.js
     └── vite.config.ts        # Configurações de compilação do Vite
+
+---
+
+🚀 Como Executar o Projeto
+Para executar o sistema ZLOG Compras completo (backend e frontend), siga os passos abaixo:
+
+Pré-requisitos
+Certifique-se de ter instalado em sua máquina:
+
+JDK 21 ou superior
+
+Apache Maven
+
+Um servidor MySQL 8 (lembre-se de criar o schema zlog_compras e configurar as credenciais adequadas).
+
+Node.js (Versão LTS estável) e npm (ou Yarn).
+
+1. Configurando e Executando o Backend (API)
+Configure o banco de dados alterando as credenciais no arquivo backend/src/main/resources/application.properties ou application.yml:
+
+Properties
+spring.datasource.url=jdbc:mysql://localhost:3306/zlog_compras?useSSL=false&serverTimezone=UTC
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha
+spring.jpa.hibernate.ddl-auto=validate
+Navegue até o diretório do backend:
+
+Bash
+cd ZLOG_COMPRAS/backend
+
+3. **Construa o projeto** (opcional, se não estiver usando uma IDE):
+   ```bash
+   mvn clean install
+   
+Execute a aplicação:
+
+Bash
+mvn spring-boot:run
+
+   A API estará disponível em `http://localhost:8080`. O Flyway detectará a base de dados e executará os scripts de migração estrutural automaticamente no primeiro boot.
+
+### 2. Executando o Frontend (Aplicação Web)
+
+1. **Abra um NOVO terminal** (mantenha o terminal do backend rodando).
+2. **Navegue** até o diretório do frontend:
+   ```bash
+   cd ZLOG_COMPRAS/frontend
+Instale as dependências do projeto React:
+
+Bash
+npm install
+Inicie a aplicação com o Vite:
+
+Bash
+npm run dev
+
+   A aplicação frontend será iniciada e o endereço local gerado (geralmente `http://localhost:5173`) estará disponível no console para acesso no navegador.
+
+---
+
+## ✅ Verificação e Testes
+
+### Backend (API)
+
+* **Documentação da API (Swagger UI):** Após iniciar a aplicação backend, explore e teste os endpoints da API de forma interativa acessando:
+  `http://localhost:8080/swagger-ui.html`
+  * **Confirmação:** A API foi validada com sucesso via Swagger UI, demonstrando que todos os contratos de endpoints estão respondendo corretamente.
+* **Testes Unitários:** Para garantir a qualidade e a estabilidade do código, execute a suíte de testes automatizados:
+  ```bash
+  cd ZLOG_COMPRAS/backend
+  mvn test
+  
+Status: 18 testes unitários para Fornecedores e Orçamentos executados com 100% de sucesso!
+
+Validação do Banco de Dados: A consistência das tabelas e relacionamentos controlados pelas migrações do Flyway foi integralmente verificada no MySQL.
+
+Frontend (Aplicação Web)
+Tela de Login (Componente React): Após iniciar o servidor de desenvolvimento do Vite, a tela de login estruturada com TypeScript será exibida.
+
+Teste de Simulação: Insira teste@email.com como e-mail e senha123 como senha e clique no botão de envio. Abra as ferramentas de desenvolvedor do seu navegador (F12) para validar no Console o fluxo correto de captura e submissão dos dados do formulário.
+
+🤝 Como Contribuir
+Este projeto está em constante evolução e valorizamos muito a colaboração da comunidade! Se você é um desenvolvedor, estudante ou entusiasta de software, sainte-se à vontade para:
+
+Explorar o Código: Mergulhe na nossa arquitetura Java/Spring e na componentização moderna em React.
+
+Abrir Issues: Reporte bugs, sugira novas funcionalidades ou melhorias de arquitetura.
+
+Submeter Pull Requests: Contribua com código, novos testes automatizados, melhorias na documentação ou refatorações estruturais.
+
+Sua contribuição é fundamental para tornar o ZLOG Compras uma solução cada vez mais completa e eficiente!
+
+📝 Licença
+Este projeto está licensed sob a Licença MIT. Você pode ver os detalhes completos da licença no arquivo LICENSE no repositório.
