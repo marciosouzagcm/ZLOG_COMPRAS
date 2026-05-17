@@ -5,149 +5,122 @@
 </p>
 
 🎯 **Sobre o Projeto**
-O ZLOG Compras é um sistema **Full Stack** robusto e modular, desenvolvido para otimizar e gerenciar o fluxo completo de compras em ambientes empresariais. Composto por um backend em **Spring Boot** e um frontend em **Angular**, nosso objetivo é automatizar e trazer transparência a todas as etapas da aquisição, desde a criação de solicitações de materiais até a geração de pedidos de compra e o controle de recebimento.
+O ZLOG Compras é um sistema **Full Stack** robusto e modular, desenvolvido para otimizar e gerenciar o fluxo completo de compras em ambientes empresariais (Fluxo Procure-to-Pay). Composto por um backend de alta performance em **Spring Boot (Java 21)** e um frontend dinâmico e componentizado em **React (Vite)**, o sistema automatiza e traz transparência a todas as etapas da aquisição, desde a abertura de solicitações de materiais até a geração de pedidos de compra e o rígido controle de saldos de estoque.
 
-Construímos este projeto com foco em qualidade de código, documentação interativa e testes abrangentes, garantindo uma solução confiável e de fácil manutenção.
+O projeto foi reestruturado utilizando conceitos acadêmicos avançados de **Modelagem Relacional de Dados**, aplicando padrões de integridade estrita e eliminando redundâncias na persistência de informações.
 
 ---
 
-## ✨ Funcionalidades Desenvolvidas (Até o Momento)
+## ✨ Funcionalidades Desenvolvidas & Corrigidas
 
-Desenvolvemos e validamos as seguintes funcionalidades essenciais:
-
-* **Gerenciamento de Solicitações de Compra:** Crie, visualize e gerencie solicitações de materiais ou serviços de forma intuitiva.
-* **Processo de Cotação e Orçamento:**
-    * Criação e gestão de orçamentos detalhados para fornecedores.
-    * **Validação Crucial:** Impedimos a criação de novos orçamentos para solicitações já finalizadas, assegurando a integridade do processo de compras.
-    * Aprovação de orçamentos para dar continuidade ao fluxo.
-* **Geração de Pedidos de Compra:**
-    * Crie pedidos de compra de forma automatizada, diretamente de orçamentos aprovados.
-    * Associação clara com fornecedores e os itens do orçamento original.
-* **Validações de Dados Robustas:** Implementamos validações rigorosas para preços e quantidades nos itens de compra e orçamento, garantindo a qualidade e a consistência dos dados inseridos no sistema.
-* **Base para Recebimento de Itens:** Já temos a estrutura inicial e os endpoints definidos para o futuro registro e controle do recebimento de itens do pedido.
-* **Atualização de Status do Pedido:** Capacidade de atualizar o status do pedido de compra em cada etapa do seu progresso.
-* **Frontend - Módulo de Autenticação (Base):**
-    * **Tela de Login Funcional:** Implementação da estrutura de componentes para a tela de login, incluindo formulário de entrada de credenciais e comunicação de dados entre componentes pai e filho. (A integração com a API e a autenticação real serão os próximos passos.)
+* **Modelagem Relacional Coesa (Flyway):** Arquitetura de banco de dados totalmente limpa, isolando o histórico relacional (snapshots de cotações) e garantindo uma relação 1:1 estrita para o controle de saldos de estoque.
+* **Gerenciamento de Solicitações de Compra:** Mapeamento intuitivo e criação de requisições de insumos ou serviços por centro de custo.
+* **Processo de Cotação e Orçamentos:**
+    * Criação e triagem de propostas comerciais de múltiplos fornecedores.
+    * **Validação de Estado:** Regra de negócio automatizada que impede novos orçamentos para solicitações de compra já consolidadas ou finalizadas.
+* **Geração de Pedidos de Compra:** Conversão ágil e vinculação direta de orçamentos aprovados em ordens de compra formais.
+* **Gestão Unificada de Estoque:** Correção estrutural que centraliza a consolidação de saldos físicos na tabela de Estoques, alimentada cronologicamente por um livro-razão de movimentações detalhadas.
+* **Frontend - Autenticação & Telas Base:** Interface moderna estruturada em React com TypeScript, utilizando formulários inteligentes para captura de credenciais e gerenciamento centralizado de estados para as próximas etapas de integração com tokens JWT.
 
 ---
 
 ## 🛠️ Tecnologias e Ferramentas
 
-Nosso projeto é construído com tecnologias modernas e eficientes:
-
 ### Backend (API)
-
-* **Linguagem de Programação:** Java 21
+* **Linguagem:** Java 21
 * **Framework:** Spring Boot (v3.3.0)
-* **Banco de Dados:** MySQL
-* **Persistência:** Spring Data JPA / Hibernate
-* **Ferramenta de Build:** Maven
-* **Documentação da API:** Swagger UI / OpenAPI
-* **Testes:** JUnit (com 18 testes unitários para Fornecedores e Orçamentos, todos com 100% de sucesso!)
+* **Banco de Dados:** MySQL 8 / TiDB Cloud (NewSQL Serverless)
+* **Controle de Evolução de Banco:** Flyway Migrations
+* **Mapeamento Objeto-Relacional:** Spring Data JPA / Hibernate
+* **Gerenciador de Dependências:** Maven
+* **Documentação:** Swagger UI / OpenAPI Spec
 
 ### Frontend (Aplicação Web)
-
-* **Framework:** Angular (última versão recomendada, com Standalone Components)
+* **Ecossistema:** React 18 / Vite
 * **Linguagem:** TypeScript
-* **Marcação/Estilo:** HTML, CSS / SCSS
-* **Gerenciamento de Estado (Inicial):** RxJS Observables (para comunicação entre componentes)
+* **Estilização:** TailwindCSS / Componentes Declarativos
+* **Comunicação com a API:** Axios
 * **Controle de Versão:** Git
 
-## 📂 Estrutura do Projeto
+---
 
-O repositório está organizado de forma a separar claramente o backend do frontend:
+## 📂 Estrutura Estrutural do Repositório
 
+```text
 ZLOG_COMPRAS/
-├── backend/                  # Contém o projeto Spring Boot (API)
+├── backend/                  # API Spring Boot
 │   ├── src/
-│   ├── pom.xml
-│   └── ...
-└── frontend/                 # Contém o projeto Angular (Aplicação Web)
-├── src/
-├── angular.json
-└── ...
+│   │   ├── main/java/        # Camadas de Controller, Service, Repository e Entity
+│   │   └── main/resources/   # application.properties e scripts Flyway (db/migration/)
+│   └── pom.xml               # Configurações de build do Maven
+└── frontend/                 # Aplicação Web React
+    ├── src/                  # Páginas, Componentes de UI, hooks e serviços
+    ├── index.html
+    ├── package.json          # Manifesto de dependências Node.js
+    └── vite.config.ts        # Arquivo de configuração de bundling do Vite
 
-## 🚀 Como Executar o Projeto
+    🚀 Como Executar o Projeto
+Pré-requisitos
+JDK 21 ou superior instalado.
 
-Para executar o sistema ZLOG Compras completo (backend e frontend), siga os passos abaixo:
+Apache Maven configurado no PATH do sistema.
 
-### Pré-requisitos
+Node.js (Versão LTS Recomendada).
 
-Certifique-se de ter instalado em sua máquina:
+Instância ativa do MySQL 8 local ou cluster TiDB Cloud (Serverless) configurado na nuvem.
 
-* **JDK 21** ou superior
-* **Apache Maven**
-* Um servidor **MySQL** (lembre-se de configurar as credenciais do banco de dados no arquivo `backend/src/main/resources/application.properties` ou `application.yml`).
-* **Node.js e npm** (ou Yarn) - **Versão LTS recomendada**
-* **Angular CLI** (Instale globalmente: `npm install -g @angular/cli`)
+1. Configuração e Execução do Backend
+Abra o arquivo backend/src/main/resources/application.properties (ou .yml) e configure o apontamento para o seu banco de dados (seja local ou a string de conexão segura fornecida pelo painel do TiDB Cloud):
 
-### 1. Executando o Backend (API)
+Properties
+spring.datasource.url=jdbc:mysql://<SEU_HOST_TIDB_OU_LOCAL>:3306/zlog_compras?useSSL=true&serverTimezone=UTC
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha
+spring.jpa.hibernate.ddl-auto=validate
 
-1.  **Navegue** até o diretório do backend:
-    ```bash
-    cd ZLOG_COMPRAS/backend
-    ```
-2.  **Construa o projeto** (opcional, se não estiver usando IDE):
-    ```bash
-    mvn clean install
-    ```
-3.  **Execute a aplicação:**
-    ```bash
-    mvn spring-boot:run
-    ```
-    A API estará disponível em `http://localhost:8080` (ou na porta configurada em seu `application.properties`).
+2. Via terminal, entre na pasta do backend:
+   ```bash
+   cd ZLOG_COMPRAS/backend
+   
+Execute o comando de compilação e inicialização do ecossistema Spring:
 
-### 2. Executando o Frontend (Aplicação Web)
+Bash
+mvn clean install
+mvn spring-boot:run
 
-1.  **Abra um NOVO terminal** (mantenha o terminal do backend rodando).
-2.  **Navegue** até o diretório do frontend:
-    ```bash
-    cd ZLOG_COMPRAS/frontend
-    ```
-3.  **Instale as dependências** do projeto Angular (somente na primeira vez ou se houver alterações no `package.json`):
-    ```bash
-    npm install
-    ```
-4.  **Inicie a aplicação Angular:**
-    ```bash
-    ng serve -o
-    ```
-    A aplicação frontend será aberta automaticamente no seu navegador em `http://localhost:4200/` (ou em outra porta disponível).
+   *O Flyway varrerá o banco automaticamente, criando a estrutura de tabelas corrigida e inserindo as Roles obrigatórias de segurança.*
 
----
+### 2. Execução do Frontend (React + Vite)
 
-## ✅ Verificação e Testes
+1. Abra uma nova janela de terminal e vá até a pasta do cliente:
+   ```bash
+   cd ZLOG_COMPRAS/frontend
+Instale os pacotes e dependências de Node declarados no projeto:
 
-### Backend (API)
+Bash
+npm install
+Inicie o servidor de desenvolvimento ultra-rápido do Vite:
 
-* **Documentação da API (Swagger UI):** Após iniciar a aplicação backend, explore e teste os endpoints da API de forma interativa acessando:
-    `http://localhost:8080/swagger-ui.html`
-    * **Confirmação:** A API foi testada com sucesso via Swagger UI, demonstrando que todos os endpoints estão respondendo corretamente.
-* **Testes Unitários:** Para garantir a qualidade e a estabilidade do código, execute os testes unitários Maven:
-    ```bash
-    cd ZLOG_COMPRAS/backend
-    mvn test
-    ```
-* **Validação do Banco de Dados:** A conexão e a persistência de dados no MySQL foram verificadas e estão funcionando conforme o esperado.
+Bash
+npm run dev
 
-### Frontend (Aplicação Web)
-
-* **Tela de Login:** Após iniciar o frontend, a tela de login deve ser exibida.
-    * **Teste de Simulação:** Insira `teste@email.com` como e-mail e `senha123` como senha e clique em "Entrar". Verifique o console do navegador (F12) para as mensagens de "Login bem-sucedido!". Para credenciais inválidas, a mensagem de erro deve aparecer na tela.
+   O console exibirá o endereço local para visualização (geralmente `http://localhost:5173`). Abra o link no seu navegador.
 
 ---
 
-## 🤝 Como Contribuir
+## ✅ Verificação, Testes e Qualidade
 
-Este projeto está em constante evolução e valorizamos muito a colaboração da comunidade! Se você é um desenvolvedor, estudante ou entusiasta de software, sinta-se à vontade para:
+* **Swagger UI Interativo:** Explore os contratos e teste as rotas da API em tempo real acessando `http://localhost:8080/swagger-ui.html` com o backend em execução.
+* **Suíte de Testes Automatizados:** Rode as validações de integridade executando:
+   ```bash
+   mvn test
+   
+(Garantia de estabilidade com 18 testes unitários focados nas entidades críticas de Fornecedores e Orçamentos rodando com 100% de sucesso).
 
-* **Explorar o Código:** Mergulhe na estrutura do projeto e entenda nossas implementações.
-* **Abrir Issues:** Reporte bugs, sugira novas funcionalidades ou melhorias.
-* **Submeter Pull Requests:** Contribua com código, novos testes, melhorias na documentação ou refatorações.
+Auditoria de Login (Simulação Front): A tela de acesso desenvolvida em React captura os inputs de login (teste@email.com) e valida localmente a consistência do fluxo antes do despacho assíncrono à API, registrando o comportamento no DevTools (F12) do navegador.
 
-Sua contribuição é fundamental para tornar o ZLOG Compras uma solução cada vez mais completa e eficiente!
+🤝 Contribuições e Feedbacks
+Este repositório serve como portfólio prático de engenharia de software e modelagem de sistemas. Pull Requests com refatorações, novos casos de testes ou novas views em React são super bem-vindos!
 
----
-
-## 📝 Licença
-Este projeto está licenciado sob a Licença MIT. Você pode ver os detalhes completos da licença no arquivo LICENSE no repositório.
+📝 Licença
+Distribuído sob a licença MIT. Veja LICENSE para mais informações.
