@@ -19,7 +19,7 @@ import com.zlogcompras.model.ItemPedidoCompra;
 import com.zlogcompras.model.Orcamento;
 import com.zlogcompras.model.PedidoCompra;
 import com.zlogcompras.model.Produto;
-import com.zlogcompras.model.StatusPedidoCompra; // Importe o enum
+import com.zlogcompras.model.StatusPedidoCompra;
 import com.zlogcompras.model.dto.ItemPedidoCompraRequestDTO;
 import com.zlogcompras.model.dto.PedidoCompraRequestDTO;
 import com.zlogcompras.model.dto.PedidoCompraUpdateDTO;
@@ -56,7 +56,7 @@ public class PedidoCompraService {
 
         pedidoCompra.setFornecedor(fornecedor);
         pedidoCompra.setDataPedido(LocalDate.now());
-        pedidoCompra.setStatus(StatusPedidoCompra.AGUARDANDO_APROVACAO); // Correção: Usando o nome completo do enum
+        pedidoCompra.setStatus(StatusPedidoCompra.AGUARDANDO_APROVACAO);
         pedidoCompra.setObservacoes(requestDTO.getObservacoes());
 
         List<ItemPedidoCompra> itensPedido = new ArrayList<>();
@@ -74,15 +74,15 @@ public class PedidoCompraService {
             ItemPedidoCompra itemPedido = new ItemPedidoCompra();
             itemPedido.setPedidoCompra(pedidoCompra);
             itemPedido.setProduto(produto);
-            itemPedido.setQuantidade(itemDTO.getQuantidade());
+            
+            // Converte Integer do DTO para BigDecimal da Entidade
+            BigDecimal qtdBigDecimal = itemDTO.getQuantidade() != null ? BigDecimal.valueOf(itemDTO.getQuantidade().longValue()) : BigDecimal.ZERO;
+            itemPedido.setQuantidade(qtdBigDecimal);
+            
             itemPedido.setPrecoUnitario(itemDTO.getPrecoUnitario());
             itemPedido.setObservacoes(itemDTO.getObservacoes());
 
-            itemPedido.setNomeProduto(produto.getNome());
-            itemPedido.setCodigoProduto(produto.getCodigo());
-            itemPedido.setUnidadeMedida(produto.getUnidadeMedida());
-
-            BigDecimal subtotal = itemDTO.getPrecoUnitario().multiply(new BigDecimal(itemDTO.getQuantidade()));
+            BigDecimal subtotal = itemDTO.getPrecoUnitario().multiply(qtdBigDecimal);
             itemPedido.setSubtotal(subtotal);
             valorTotal = valorTotal.add(subtotal);
 
@@ -100,7 +100,7 @@ public class PedidoCompraService {
         PedidoCompra pedidoCompra = new PedidoCompra();
         pedidoCompra.setFornecedor(orcamento.getFornecedor());
         pedidoCompra.setDataPedido(LocalDate.now());
-        pedidoCompra.setStatus(StatusPedidoCompra.AGUARDANDO_ENVIO); // Correção: Usando o nome completo do enum
+        pedidoCompra.setStatus(StatusPedidoCompra.AGUARDANDO_ENVIO);
         pedidoCompra.setOrcamento(orcamento);
 
         List<ItemPedidoCompra> itensPedido = new ArrayList<>();
@@ -120,17 +120,15 @@ public class PedidoCompraService {
             ItemPedidoCompra itemPedido = new ItemPedidoCompra();
             itemPedido.setPedidoCompra(pedidoCompra);
             itemPedido.setProduto(produto);
-            // Assumindo que getQuantidade() de ItemOrcamento é BigDecimal e setQuantidade() de ItemPedidoCompra aceita int ou BigDecimal.
-            // Se ItemPedidoCompra.quantidade for int, certifique-se de que itemOrcamento.getQuantidade() não tem decimais.
-            itemPedido.setQuantidade(itemOrcamento.getQuantidade().intValue()); // Ajuste se ItemPedidoCompra.quantidade for BigDecimal
+            
+            // Converte Integer do ItemOrcamento para BigDecimal da Entidade
+            BigDecimal qtdBigDecimal = itemOrcamento.getQuantidade() != null ? BigDecimal.valueOf(itemOrcamento.getQuantidade().longValue()) : BigDecimal.ZERO;
+            itemPedido.setQuantidade(qtdBigDecimal);
+            
             itemPedido.setPrecoUnitario(itemOrcamento.getPrecoUnitarioCotado());
             itemPedido.setObservacoes(itemOrcamento.getObservacoes());
 
-            itemPedido.setNomeProduto(itemOrcamento.getNomeProduto());
-            itemPedido.setCodigoProduto(itemOrcamento.getCodigoProduto());
-            itemPedido.setUnidadeMedida(itemOrcamento.getUnidadeMedidaProduto());
-
-            BigDecimal subtotal = itemOrcamento.getPrecoUnitarioCotado().multiply(itemOrcamento.getQuantidade());
+            BigDecimal subtotal = itemOrcamento.getPrecoUnitarioCotado().multiply(qtdBigDecimal);
             itemPedido.setSubtotal(subtotal);
             valorTotal = valorTotal.add(subtotal);
 
@@ -162,8 +160,9 @@ public class PedidoCompraService {
 
     @Transactional(readOnly = true)
     public List<PedidoCompra> buscarPedidosPorFornecedor(Long fornecedorId) {
-        Fornecedor fornecedor = fornecedorRepository.findById(fornecedorId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado."));
+        if (!fornecedorRepository.existsById(fornecedorId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado.");
+        }
         return pedidoCompraRepository.findByFornecedorId(fornecedorId);
     }
 
@@ -183,7 +182,7 @@ public class PedidoCompraService {
 
         if (updateDTO.getStatus() != null && !updateDTO.getStatus().equals(pedidoExistente.getStatus().name())) {
             try {
-                pedidoExistente.setStatus(StatusPedidoCompra.valueOf(updateDTO.getStatus().toUpperCase())); // Correção: Usando o nome completo do enum
+                pedidoExistente.setStatus(StatusPedidoCompra.valueOf(updateDTO.getStatus().toUpperCase()));
             } catch (IllegalArgumentException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status inválido: " + updateDTO.getStatus());
             }
@@ -202,7 +201,6 @@ public class PedidoCompraService {
             pedidoExistente.setItens(new ArrayList<>());
             pedidoExistente.getItens().addAll(itensAtuais);
 
-
             BigDecimal novoValorTotal = BigDecimal.ZERO;
             for (ItemPedidoCompraRequestDTO itemDTO : updateDTO.getItens()) {
                 if (itemDTO.getId() != null) {
@@ -216,7 +214,9 @@ public class PedidoCompraService {
                         if (q <= 0)
                             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                     "Quantidade do item deve ser maior que zero.");
-                        itemExistente.setQuantidade(q);
+                        
+                        // Converte Integer do DTO para BigDecimal da Entidade
+                        itemExistente.setQuantidade(BigDecimal.valueOf(q.longValue()));
                     });
                     Optional.ofNullable(itemDTO.getPrecoUnitario()).ifPresent(p -> {
                         if (p.compareTo(BigDecimal.ZERO) < 0)
@@ -226,8 +226,7 @@ public class PedidoCompraService {
                     });
                     Optional.ofNullable(itemDTO.getObservacoes()).ifPresent(itemExistente::setObservacoes);
 
-                    itemExistente.setSubtotal(
-                            itemExistente.getPrecoUnitario().multiply(new BigDecimal(itemExistente.getQuantidade())));
+                    itemExistente.setSubtotal(itemExistente.getPrecoUnitario().multiply(itemExistente.getQuantidade()));
                 } else {
                     Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -236,15 +235,15 @@ public class PedidoCompraService {
                     ItemPedidoCompra novoItem = new ItemPedidoCompra();
                     novoItem.setPedidoCompra(pedidoExistente);
                     novoItem.setProduto(produto);
-                    novoItem.setQuantidade(itemDTO.getQuantidade());
+                    
+                    // Converte Integer do DTO para BigDecimal da Entidade
+                    BigDecimal qtdBigDecimal = itemDTO.getQuantidade() != null ? BigDecimal.valueOf(itemDTO.getQuantidade().longValue()) : BigDecimal.ZERO;
+                    novoItem.setQuantidade(qtdBigDecimal);
+                    
                     novoItem.setPrecoUnitario(itemDTO.getPrecoUnitario());
                     novoItem.setObservacoes(itemDTO.getObservacoes());
 
-                    novoItem.setNomeProduto(produto.getNome());
-                    novoItem.setCodigoProduto(produto.getCodigo());
-                    novoItem.setUnidadeMedida(produto.getUnidadeMedida());
-
-                    BigDecimal subtotal = itemDTO.getPrecoUnitario().multiply(new BigDecimal(itemDTO.getQuantidade()));
+                    BigDecimal subtotal = itemDTO.getPrecoUnitario().multiply(qtdBigDecimal);
                     novoItem.setSubtotal(subtotal);
                     pedidoExistente.getItens().add(novoItem);
                 }
@@ -265,13 +264,13 @@ public class PedidoCompraService {
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido de Compra não encontrado."));
 
-        if (pedido.getStatus() == StatusPedidoCompra.CONCLUIDO || // Correção: Usando o nome completo do enum
-            pedido.getStatus() == StatusPedidoCompra.CANCELADO) { // Correção: Usando o nome completo do enum
+        if (pedido.getStatus() == StatusPedidoCompra.CONCLUIDO || 
+            pedido.getStatus() == StatusPedidoCompra.CANCELADO) { 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Não é possível cancelar um pedido com status: " + pedido.getStatus().getDescricao());
         }
 
-        pedido.setStatus(StatusPedidoCompra.CANCELADO); // Correção: Usando o nome completo do enum
+        pedido.setStatus(StatusPedidoCompra.CANCELADO);
         pedidoCompraRepository.save(pedido);
     }
 
@@ -298,15 +297,15 @@ public class PedidoCompraService {
             ItemPedidoCompra novoItem = new ItemPedidoCompra();
             novoItem.setPedidoCompra(pedidoExistente);
             novoItem.setProduto(produto);
-            novoItem.setQuantidade(itemDTO.getQuantidade());
+            
+            // Converte Integer do DTO para BigDecimal da Entidade
+            BigDecimal qtdBigDecimal = itemDTO.getQuantidade() != null ? BigDecimal.valueOf(itemDTO.getQuantidade().longValue()) : BigDecimal.ZERO;
+            novoItem.setQuantidade(qtdBigDecimal);
+            
             novoItem.setPrecoUnitario(itemDTO.getPrecoUnitario());
             novoItem.setObservacoes(itemDTO.getObservacoes());
 
-            novoItem.setNomeProduto(produto.getNome());
-            novoItem.setCodigoProduto(produto.getCodigo());
-            novoItem.setUnidadeMedida(produto.getUnidadeMedida());
-
-            BigDecimal subtotal = itemDTO.getPrecoUnitario().multiply(new BigDecimal(itemDTO.getQuantidade()));
+            BigDecimal subtotal = itemDTO.getPrecoUnitario().multiply(qtdBigDecimal);
             novoItem.setSubtotal(subtotal);
             valorTotalAdicional = valorTotalAdicional.add(subtotal);
 

@@ -2,7 +2,10 @@ package com.zlogcompras.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction; // Atualizado para o Hibernate 6
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,38 +21,45 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
+/**
+ * Entidade JPA que representa a tabela 'produtos' no banco de dados.
+ * Mapeamento ajustado para refletir o script V1__init.sql e V12, 
+ * contendo suporte a Soft Delete e precisão decimal estendida.
+ */
 @Entity
 @Table(name = "produtos")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@SQLDelete(sql = "UPDATE produtos SET deleted_at = NOW() WHERE id = ? AND version = ?")
+@SQLRestriction("deleted_at IS NULL") // CORREÇÃO: Substituiu o @Where(clause = ...) depreciado no Hibernate 6
 public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Código alfanumérico universal do produto (ex: SKU, Part Number)
     @Column(name = "codigo", nullable = false, unique = true, length = 50)
-    private String codigo; // Campo para o código interno exigido pelo banco
+    private String codigo;
 
-    @Column(name = "codigo_produto", nullable = false, unique = true, length = 50)
-    private String codigoProduto;
-
+    @Column(name = "nome", nullable = false, length = 255)
     private String nome;
+
+    @Column(name = "descricao", columnDefinition = "TEXT")
     private String descricao;
 
-    @Column(name = "unidade_medida", nullable = false)
+    @Column(name = "unidade_medida", nullable = false, length = 20)
     private String unidadeMedida;
 
-    @Column(name = "preco_unitario", nullable = false, precision = 10, scale = 2)
+    // Precisão unificada para 15 inteiros e 4 casas decimais para evitar perdas fiscais
+    @Column(name = "preco_unitario", nullable = false, precision = 15, scale = 4)
     private BigDecimal precoUnitario;
 
     @Column(name = "categoria", nullable = false, length = 50)
     private String categoria;
 
-    @Column(name = "estoque", nullable = false)
-    private Integer estoque;
-
     @Version
+    @Column(name = "version", nullable = false)
     private Long version;
 
     @CreatedDate
@@ -60,24 +70,33 @@ public class Produto {
     @Column(name = "data_atualizacao", nullable = false)
     private LocalDateTime dataAtualizacao;
 
-    // Construtor padrão
+    // Captura o momento da exclusão lógica para a estratégia de Soft Delete
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    /**
+     * CONSTRUTORES
+     */
+
+    // Construtor padrão obrigatório para o ciclo de vida do JPA/Hibernate
     public Produto() {
     }
 
-    // Construtor completo (ajuste conforme seus campos)
-    public Produto(String codigo, String codigoProduto, String nome, String descricao, String unidadeMedida,
-            BigDecimal precoUnitario, String categoria, Integer estoque) {
+    // Construtor completo para facilitar a instanciação interna da aplicação
+    public Produto(String codigo, String nome, String descricao, String unidadeMedida,
+                   BigDecimal precoUnitario, String categoria) {
         this.codigo = codigo;
-        this.codigoProduto = codigoProduto;
         this.nome = nome;
         this.descricao = descricao;
         this.unidadeMedida = unidadeMedida;
         this.precoUnitario = precoUnitario;
         this.categoria = categoria;
-        this.estoque = estoque;
     }
 
-    // --- Getters e Setters ---
+    /**
+     * GETTERS E SETTERS
+     */
+
     public Long getId() {
         return id;
     }
@@ -92,14 +111,6 @@ public class Produto {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
-    }
-
-    public String getCodigoProduto() {
-        return codigoProduto;
-    }
-
-    public void setCodigoProduto(String codigoProduto) {
-        this.codigoProduto = codigoProduto;
     }
 
     public String getNome() {
@@ -142,14 +153,6 @@ public class Produto {
         this.categoria = categoria;
     }
 
-    public Integer getEstoque() {
-        return estoque;
-    }
-
-    public void setEstoque(Integer estoque) {
-        this.estoque = estoque;
-    }
-
     public Long getVersion() {
         return version;
     }
@@ -162,18 +165,50 @@ public class Produto {
         return dataCriacao;
     }
 
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
     public LocalDateTime getDataAtualizacao() {
         return dataAtualizacao;
     }
 
-    @jakarta.persistence.PrePersist
-    protected void onCreate() {
-        dataCriacao = LocalDateTime.now();
-        dataAtualizacao = LocalDateTime.now();
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
     }
 
-    @jakarta.persistence.PreUpdate
-    protected void onUpdate() {
-        dataAtualizacao = LocalDateTime.now();
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    // --- ADICIONADO: Métodos equals e hashCode seguros para JPA ---
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Produto produto = (Produto) o;
+        return Objects.equals(id, produto.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    // --- ADICIONADO: Método toString para facilitar logs de auditoria ---
+    @Override
+    public String toString() {
+        return "Produto{" +
+                "id=" + id +
+                ", codigo='" + codigo + '\'' +
+                ", nome='" + nome + '\'' +
+                ", unidadeMedida='" + unidadeMedida + '\'' +
+                ", precoUnitario=" + precoUnitario +
+                ", categoria='" + categoria + '\'' +
+                '}';
     }
 }

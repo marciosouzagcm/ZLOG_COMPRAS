@@ -1,0 +1,1 @@
+ALTER TABLE notas_fiscais ADD COLUMN version INT DEFAULT 0;

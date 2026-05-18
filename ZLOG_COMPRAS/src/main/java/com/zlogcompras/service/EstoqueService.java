@@ -167,10 +167,11 @@ public class EstoqueService {
         }
 
         public EstoqueResponseDTO buscarEstoquePorCodigoProduto(String codigoProduto) {
-                // Busca um estoque pelo código do produto ou lança exceção se não encontrado
-                Estoque estoque = estoqueRepository.findByProduto_CodigoProduto(codigoProduto)
+                // Converte o código recebido em String para Long e busca usando o novo método estrutural
+                Long idProduto = Long.valueOf(codigoProduto);
+                Estoque estoque = estoqueRepository.findByProdutoId(idProduto)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Estoque não encontrado para o código do produto: " + codigoProduto));
+                                                "Estoque não encontrado para o ID do produto: " + codigoProduto));
                 // Mapeia e retorna o DTO de resposta
                 return modelMapper.map(estoque, EstoqueResponseDTO.class);
         }
@@ -198,7 +199,7 @@ public class EstoqueService {
 
                 // Atualiza campos do estoque apenas se os valores não forem nulos no DTO
                 Optional.ofNullable(estoqueRequestDTO.getQuantidade())
-                                .ifPresent(estoqueExistente::setQuantidade); // Removido .intValue()
+                                .ifPresent(estoqueExistente::setQuantidade);
 
                 Optional.ofNullable(estoqueRequestDTO.getLocalizacao())
                                 .ifPresent(estoqueExistente::setLocalizacao);

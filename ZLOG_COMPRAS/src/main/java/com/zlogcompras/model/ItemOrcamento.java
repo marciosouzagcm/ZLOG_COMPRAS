@@ -16,6 +16,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
+/**
+ * Entidade JPA que representa a tabela 'itens_orcamento'.
+ * Mapeamento refatorado para remover campos replicados de dados cadastrais do produto,
+ * consolidando uma arquitetura relacional limpa e unificando as precisões decimais.
+ */
 @Entity
 @Table(name = "itens_orcamento")
 public class ItemOrcamento {
@@ -24,58 +29,53 @@ public class ItemOrcamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // A relação com Produto ainda é importante para buscar detalhes ou para validação
+    // Relacionamento relacional centralizado com o cadastro de produtos
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
-    // --- NOVOS CAMPOS PARA ARMAZENAR DADOS DO PRODUTO NO MOMENTO DA COTAÇÃO ---
-    @Column(name = "nome_produto", nullable = false, length = 255) // Adicionado nome_produto
-    private String nomeProduto;
-
-    @Column(name = "codigo_produto", length = 50) // Adicionado codigo_produto
-    private String codigoProduto;
-
-    @Column(name = "unidade_medida_produto", length = 20) // Adicionado unidade_medida_produto
-    private String unidadeMedidaProduto;
-    // --- FIM DOS NOVOS CAMPOS ---
-
-
-    @Column(nullable = false, precision = 10, scale = 3)
+    // Precisão ajustada para 4 casas decimais em conformidade com o script V1__init.sql
+    @Column(name = "quantidade", nullable = false, precision = 15, scale = 4)
     private BigDecimal quantidade;
 
-    @Column(name = "preco_unitario_cotado", nullable = false, precision = 12, scale = 2)
+    @Column(name = "preco_unitario_cotado", nullable = false, precision = 15, scale = 4)
     private BigDecimal precoUnitarioCotado;
 
-    @Column(length = 255)
+    @Column(name = "observacoes", length = 255)
     private String observacoes;
 
+    // Relacionamento com o cabeçalho da cotação/orçamento
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orcamento_id", nullable = false)
     private Orcamento orcamento;
 
     @Version
+    @Column(name = "version", nullable = false)
     private Long version;
 
+    /**
+     * CONSTRUTORES
+     */
+    
+    // Construtor padrão obrigatório para o ciclo de vida do Hibernate
     public ItemOrcamento() {
     }
 
-    // Você pode querer atualizar este construtor para incluir os novos campos,
-    // ou criar um novo construtor mais completo se usar múltiplos.
-    public ItemOrcamento(Produto produto, BigDecimal quantidade, BigDecimal precoUnitarioCotado, String observacoes,
-                         Orcamento orcamento, String nomeProduto, String codigoProduto, String unidadeMedidaProduto) {
+    // Construtor completo limpo, sem os atributos obsoletos de texto do produto
+    public ItemOrcamento(Produto produto, BigDecimal quantidade, BigDecimal precoUnitarioCotado, 
+                         String observacoes, Orcamento orcamento) {
         this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitarioCotado = precoUnitarioCotado;
         this.observacoes = observacoes;
         this.orcamento = orcamento;
-        this.nomeProduto = nomeProduto;
-        this.codigoProduto = codigoProduto;
-        this.unidadeMedidaProduto = unidadeMedidaProduto;
     }
 
-    // --- Getters e Setters ---
+    /**
+     * GETTERS E SETTERS
+     */
+    
     public Long getId() {
         return id;
     }
@@ -91,33 +91,6 @@ public class ItemOrcamento {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
-
-    // --- Getters e Setters para os novos campos ---
-    public String getNomeProduto() {
-        return nomeProduto;
-    }
-
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
-    }
-
-    public String getCodigoProduto() {
-        return codigoProduto;
-    }
-
-    public void setCodigoProduto(String codigoProduto) {
-        this.codigoProduto = codigoProduto;
-    }
-
-    public String getUnidadeMedidaProduto() {
-        return unidadeMedidaProduto;
-    }
-
-    public void setUnidadeMedidaProduto(String unidadeMedidaProduto) {
-        this.unidadeMedidaProduto = unidadeMedidaProduto;
-    }
-    // --- FIM dos Getters e Setters para novos campos ---
-
 
     public BigDecimal getQuantidade() {
         return quantidade;
@@ -159,12 +132,14 @@ public class ItemOrcamento {
         this.version = version;
     }
 
+    /**
+     * CONTRATOS DE IDENTIDADE E COMPARAÇÃO
+     */
+    
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         ItemOrcamento that = (ItemOrcamento) o;
         return Objects.equals(id, that.id);
     }
@@ -179,12 +154,8 @@ public class ItemOrcamento {
         return "ItemOrcamento{" +
                 "id=" + id +
                 ", produtoId=" + (produto != null ? produto.getId() : "null") +
-                ", nomeProduto='" + nomeProduto + '\'' + // Adicionado no toString
-                ", codigoProduto='" + codigoProduto + '\'' + // Adicionado no toString
-                ", unidadeMedidaProduto='" + unidadeMedidaProduto + '\'' + // Adicionado no toString
                 ", quantidade=" + quantidade +
                 ", precoUnitarioCotado=" + precoUnitarioCotado +
-                ", observacoes='" + observacoes + '\'' +
                 ", orcamentoId=" + (orcamento != null ? orcamento.getId() : "null") +
                 ", version=" + version +
                 '}';

@@ -56,7 +56,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Permite a origem do Vite/React
+        // Permite a integração nativa com o front-end Vite/React
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));
@@ -71,37 +71,67 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // 1. Desabilita CSRF (necessário para APIs Stateless/JWT)
+            // 1. Desabilita proteção CSRF para arquiteturas baseadas em Tokens/JWT (Stateless)
             .csrf(AbstractHttpConfigurer::disable)
             
-            // 2. Configura o CORS antes de qualquer filtro de segurança
+            // 2. Vincula as configurações globais de CORS
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
-            // 3. Define as regras de autorização
+            // 3. Regras estritas de interceptação de requisições HTTP
             .authorizeHttpRequests(auth -> auth
-                // Libera o "Pre-flight" (OPTIONS) que o navegador envia
+                // Permite requisições de checagem prévia (Pre-flight OPTIONS) feitas pelos navegadores
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 
-                // Endpoints públicos (Auth e Erros)
-                .requestMatchers("/api/auth/**", "/error").permitAll()
+                // [Controlador de Autenticação] -> Totalmente Público
+                .requestMatchers("/api/auth/**").permitAll()
                 
-                // Swagger e Documentação
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                // Rotas globais de erro do Spring
+                .requestMatchers("/error").permitAll()
                 
-                // Dashboard e Produtos: Exige apenas estar autenticado (evita erro de Role/Prefixo)
-                .requestMatchers("/api/dashboard/**").authenticated()
+                // Documentação e Swagger UI -> Totalmente Público para testes locais
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**",
+                    "/v3/api-docs.yaml",
+                    "/swagger-resources/**",
+                    "/webjars/**"
+                ).permitAll()
+                
+                // [Solicitação de Compra] -> Exige autenticação JWT
+                .requestMatchers("/api/solicitacoes-compra/**").authenticated()
+                
+                // [Processo de Compra] -> Exige autenticação JWT
+                .requestMatchers("/api/processo-compra/**").authenticated()
+                
+                // [Pedido de Compra] -> Exige autenticação JWT
+                .requestMatchers("/api/pedidos-compra/**").authenticated()
+                
+                // [Orquestração / Orçamentos] -> Exige autenticação JWT
+                .requestMatchers("/api/orcamentos/**").authenticated()
+                
+                // [Fornecedores] -> Exige autenticação JWT
+                .requestMatchers("/api/fornecedores/**").authenticated()
+                
+                // [Estoque] -> Exige autenticação JWT (Trata variações com e sem acento)
+                .requestMatchers("/api/estoques/**", "/api/estóques/**").authenticated()
+                
+                // [Produtos] -> Exige autenticação JWT
                 .requestMatchers("/api/produtos/**").authenticated()
                 
-                // Qualquer outra rota exige autenticação
+                // [Painel de Controle / Dashboard] -> Exige autenticação JWT
+                .requestMatchers("/api/dashboard/**", "/api/painel/**").authenticated()
+                
+                // Qualquer outro endpoint não explicitado acima exigirá autenticação por padrão
                 .anyRequest().authenticated()
             )
             
-            // 4. Configura a gestão de sessão como STATELESS
+            // 4. Desabilita gerenciamento de estados no servidor (Garante arquitetura REST pura)
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             
-            // 5. Define o Provider e insere o filtro JWT na ordem correta
+            // 5. Acopla o Provedor customizado e insere o Filtro de validação do Token antes do padrão
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

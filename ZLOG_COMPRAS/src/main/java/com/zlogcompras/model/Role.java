@@ -16,7 +16,8 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Configura a geração automática de IDs pelo banco de dados
     private Long id;
 
-    @Column(nullable = false, unique = true) // 'name' não pode ser nulo e deve ser único
+    // Mapeia o atributo 'name' para a coluna física 'nome' do TiDB
+    @Column(name = "nome", nullable = false, unique = true) 
     private String name; // Ex: "ROLE_ADMIN", "ROLE_USER" (convenção do Spring Security)
 
     // Construtor adicional para facilitar a criação de Role apenas com o nome.

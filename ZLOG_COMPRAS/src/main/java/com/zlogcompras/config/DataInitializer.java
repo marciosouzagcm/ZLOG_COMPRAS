@@ -15,13 +15,13 @@ public class DataInitializer {
         return args -> {
             // Verifica e cria ROLE_USER
             if (roleRepository.findByName(RoleName.ROLE_USER.name()).isEmpty()) {
-                roleRepository.save(new Role(null, RoleName.ROLE_USER.name()));
+                roleRepository.save(new Role(RoleName.ROLE_USER.name()));
                 System.out.println("Role '" + RoleName.ROLE_USER.name() + "' criada com sucesso!");
             }
 
             // Verifica e cria ROLE_ADMIN
             if (roleRepository.findByName(RoleName.ROLE_ADMIN.name()).isEmpty()) {
-                roleRepository.save(new Role(null, RoleName.ROLE_ADMIN.name()));
+                roleRepository.save(new Role(RoleName.ROLE_ADMIN.name()));
                 System.out.println("Role '" + RoleName.ROLE_ADMIN.name() + "' criada com sucesso!");
             }
 

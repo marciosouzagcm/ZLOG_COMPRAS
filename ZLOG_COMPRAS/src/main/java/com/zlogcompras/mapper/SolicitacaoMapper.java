@@ -38,11 +38,12 @@ public interface SolicitacaoMapper {
                 .collect(java.util.stream.Collectors.toList());
     }
 
-    // Este método é essencial para mapear cada ItemSolicitacaoCompra para seu DTO
-    // correspondente.
-    // Se ItemSolicitacaoCompraResponseDTO tiver campos com nomes diferentes de
-    // ItemSolicitacaoCompra,
-    // você precisará adicionar @Mapping aqui também.
+    // CORRIGIDO: Adicionado mapeamento das propriedades do relacionamento com o Produto para eliminar o Warning
+    @Mapping(target = "produtoId", source = "produto.id")
+    @Mapping(target = "nomeProduto", source = "produto.nome")
+    @Mapping(target = "codigoProduto", source = "produto.codigo")
+    @Mapping(target = "unidadeMedidaProduto", source = "produto.unidadeMedida")
+    @Mapping(target = "status", expression = "java(item.getStatus().name())") // Garante a conversão correta do Enum de status do item para String
     ItemSolicitacaoCompraResponseDTO toItemSolicitacaoCompraResponseDTO(ItemSolicitacaoCompra item);
 
     // Se você tiver um DTO de requisição, adicione mapeamentos de DTO para Entidade

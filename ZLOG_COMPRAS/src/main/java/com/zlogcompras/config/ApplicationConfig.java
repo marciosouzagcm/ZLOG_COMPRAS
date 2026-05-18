@@ -28,8 +28,8 @@ public class ApplicationConfig {
                     mapper.map(src -> src.getProduto().getId(), EstoqueResponseDTO::setProdutoId);
                     // Mapeia produto.nome para nomeProduto
                     mapper.map(src -> src.getProduto().getNome(), EstoqueResponseDTO::setNomeProduto);
-                    // Mapeia produto.codigoProduto para codigoProduto
-                    mapper.map(src -> src.getProduto().getCodigoProduto(), EstoqueResponseDTO::setCodigoProduto);
+                    // Mapeia produto.codigoProduto para codigoProduto (CORRIGIDO: alterado de getCodigoProduto() para getCodigo())
+                    mapper.map(src -> src.getProduto().getCodigo(), EstoqueResponseDTO::setCodigoProduto);
 
                     // Mapeia 'quantidade' da entidade para 'quantidadeAtual' do DTO
                     mapper.map(Estoque::getQuantidade, EstoqueResponseDTO::setQuantidadeAtual);

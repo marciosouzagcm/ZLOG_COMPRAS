@@ -53,16 +53,18 @@ public interface OrcamentoMapper {
 
     // --- Mapeamento de Entidade para OrcamentoResponseDTO ---
     @Mapping(source = "solicitacaoCompra.id", target = "solicitacaoCompraId")
-    @Mapping(source = "fornecedor.razaoSocial", target = "nomeFornecedor") // <--- AJUSTE AQUI
+    @Mapping(source = "fornecedor.id", target = "fornecedorId") 
+    @Mapping(source = "fornecedor.razaoSocial", target = "nomeFornecedor") 
     @Mapping(source = "fornecedor.cnpj", target = "cnpjFornecedor")
     @Mapping(source = "solicitacaoCompra.descricao", target = "descricaoSolicitacaoCompra")
     @Mapping(source = "status", target = "status", qualifiedByName = "mapStatusOrcamentoToString")
     @Mapping(source = "itensOrcamento", target = "itensOrcamento")
+    @Mapping(target = "orcamentoAprovado", ignore = true) 
     OrcamentoResponseDTO toResponseDto(Orcamento orcamento);
 
     // --- Mapeamento de Entidade para OrcamentoListaDTO (visão de lista/resumo) ---
     @Mapping(source = "solicitacaoCompra.id", target = "solicitacaoCompraId")
-    @Mapping(source = "fornecedor.razaoSocial", target = "nomeFornecedor") // <--- AJUSTE AQUI
+    @Mapping(source = "fornecedor.razaoSocial", target = "nomeFornecedor") 
     OrcamentoListaDTO toListaDto(Orcamento orcamento);
 
     List<OrcamentoListaDTO> toListaDtoList(List<Orcamento> orcamentos);
@@ -78,17 +80,14 @@ public interface OrcamentoMapper {
     // --- Mapeamento de ItemOrcamento (Entidade) para ItemOrcamentoResponseDTO ---
     @Mapping(source = "produto.id", target = "produtoId")
     @Mapping(source = "produto.nome", target = "nomeProduto")
-    @Mapping(source = "produto.codigoProduto", target = "codigoProduto")
+    @Mapping(source = "produto.codigo", target = "codigoProduto") 
     @Mapping(source = "produto.unidadeMedida", target = "unidadeMedidaProduto")
     @Mapping(source = "precoUnitarioCotado", target = "precoUnitarioCotado")
     @Mapping(source = "observacoes", target = "observacoes")
     @Mapping(source = "version", target = "version")
-    // CORRIGIDO: Removido BigDecimal.valueOf() redundante. Agora multiplica
-    // BigDecimal por BigDecimal.
     @Mapping(target = "subtotal", expression = "java(itemOrcamento.getQuantidade() != null && itemOrcamento.getPrecoUnitarioCotado() != null ? "
-            +
-            "itemOrcamento.getQuantidade().multiply(itemOrcamento.getPrecoUnitarioCotado()) " +
-            ": null)")
+            + "itemOrcamento.getQuantidade().multiply(itemOrcamento.getPrecoUnitarioCotado()) " 
+            + ": null)")
     ItemOrcamentoResponseDTO toItemOrcamentoResponseDto(ItemOrcamento itemOrcamento);
 
     List<ItemOrcamentoResponseDTO> toItemOrcamentoResponseDtoList(List<ItemOrcamento> itensOrcamento);
@@ -114,8 +113,7 @@ public interface OrcamentoMapper {
         return statusEnum.name();
     }
 
-    // --- Método auxiliar para mapear um ID para uma entidade Produto (referência)
-    // ---
+    // --- Método auxiliar para mapear um ID para uma entidade Produto (referência) ---
     @Named("mapProdutoIdToProduto")
     default Produto mapProdutoIdToProduto(Long produtoId) {
         if (produtoId == null) {

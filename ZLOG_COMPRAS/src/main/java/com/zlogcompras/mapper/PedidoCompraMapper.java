@@ -31,8 +31,8 @@ public interface PedidoCompraMapper {
     // Mapeia ItemPedidoCompra para ItemPedidoCompraResponseDTO
     @Mapping(target = "produtoId", source = "produto.id")
     @Mapping(target = "nomeProduto", source = "produto.nome")
-    @Mapping(target = "codigoProduto", source = "produto.codigoProduto") // Adicionado, se necessário
-    @Mapping(target = "unidadeMedida", source = "produto.unidadeMedida") // Adicionado, se necessário
+    @Mapping(target = "codigoProduto", source = "produto.codigo") // CORRIGIDO: de produto.codigoProduto para produto.codigo
+    @Mapping(target = "unidadeMedida", source = "produto.unidadeMedida") // Alinhado com o DTO corrigido
     // Se ItemPedidoCompraResponseDTO.quantidade for BigDecimal, MapStruct converte Integer automaticamente
     ItemPedidoCompraResponseDTO toItemPedidoCompraResponseDto(ItemPedidoCompra itemPedidoCompra);
 

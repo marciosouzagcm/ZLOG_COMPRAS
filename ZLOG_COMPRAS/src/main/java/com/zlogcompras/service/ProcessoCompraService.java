@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.zlogcompras.mapper.SolicitacaoMapper; // Importe seu mapper
+import com.zlogcompras.mapper.SolicitacaoMapper;
 import com.zlogcompras.model.Fornecedor;
 import com.zlogcompras.model.ItemOrcamento;
 import com.zlogcompras.model.ItemPedidoCompra;
@@ -26,7 +26,7 @@ import com.zlogcompras.model.StatusPedidoCompra;
 import com.zlogcompras.model.StatusSolicitacaoCompra;
 import com.zlogcompras.model.dto.ItemOrcamentoRequestDTO;
 import com.zlogcompras.model.dto.OrcamentoRequestDTO;
-import com.zlogcompras.model.dto.SolicitacaoCompraResponseDTO; // Importe o DTO de resposta
+import com.zlogcompras.model.dto.SolicitacaoCompraResponseDTO;
 import com.zlogcompras.repository.FornecedorRepository;
 import com.zlogcompras.repository.ItemPedidoCompraRepository;
 import com.zlogcompras.repository.OrcamentoRepository;
@@ -42,7 +42,7 @@ public class ProcessoCompraService {
     private final OrcamentoRepository orcamentoRepository;
     private final PedidoCompraRepository pedidoCompraRepository;
     private final ItemPedidoCompraRepository itemPedidoCompraRepository;
-    private final SolicitacaoMapper solicitacaoMapper; // Novo: Injeção do mapper
+    private final SolicitacaoMapper solicitacaoMapper;
 
     @Autowired
     public ProcessoCompraService(SolicitacaoCompraRepository solicitacaoCompraRepository,
@@ -51,14 +51,14 @@ public class ProcessoCompraService {
             OrcamentoRepository orcamentoRepository,
             PedidoCompraRepository pedidoCompraRepository,
             ItemPedidoCompraRepository itemPedidoCompraRepository,
-            SolicitacaoMapper solicitacaoMapper) { // Novo: Adicionado ao construtor
+            SolicitacaoMapper solicitacaoMapper) {
         this.solicitacaoCompraRepository = solicitacaoCompraRepository;
         this.orcamentoService = orcamentoService;
         this.fornecedorRepository = fornecedorRepository;
         this.orcamentoRepository = orcamentoRepository;
         this.pedidoCompraRepository = pedidoCompraRepository;
         this.itemPedidoCompraRepository = itemPedidoCompraRepository;
-        this.solicitacaoMapper = solicitacaoMapper; // Novo: Inicialização
+        this.solicitacaoMapper = solicitacaoMapper;
     }
 
     /**
@@ -67,10 +67,6 @@ public class ProcessoCompraService {
      *
      * @param solicitacaoId ID da solicitação de compra.
      * @return A SolicitacaoCompra atualizada.
-     * @throws ResponseStatusException se a solicitação não for encontrada, se o
-     *                                 status for inválido,
-     *                                 se a quantidade de um item for inválida ou se
-     *                                 o fornecedor padrão não for encontrado.
      */
     @Transactional
     public SolicitacaoCompra iniciarProcessoCompraPorSolicitacaoId(Long solicitacaoId) {
@@ -78,8 +74,6 @@ public class ProcessoCompraService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Solicitação de Compra não encontrada com ID: " + solicitacaoId));
 
-        // Impede que o processo de compra seja iniciado para solicitações já
-        // concluídas, canceladas ou com pedido gerado.
         if (solicitacao.getStatus() == StatusSolicitacaoCompra.CONCLUIDA ||
                 solicitacao.getStatus() == StatusSolicitacaoCompra.CANCELADA ||
                 solicitacao.getStatus() == StatusSolicitacaoCompra.PEDIDO_GERADO) {
@@ -88,13 +82,11 @@ public class ProcessoCompraService {
                             + solicitacao.getStatus().getDescricao());
         }
 
-        // Altera o status da solicitação para EM_ANDAMENTO, se ainda não estiver.
         if (solicitacao.getStatus() != StatusSolicitacaoCompra.EM_ANDAMENTO) {
             solicitacao.setStatus(StatusSolicitacaoCompra.EM_ANDAMENTO);
             solicitacaoCompraRepository.save(solicitacao);
         }
 
-        // Busca um fornecedor padrão para a criação do orçamento.
         Fornecedor fornecedorParaOrcamento = fornecedorRepository.findById(1L)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Nenhum fornecedor padrão encontrado para criar orçamento. Configure um fornecedor padrão (ID 1)."));
@@ -146,10 +138,6 @@ public class ProcessoCompraService {
      *
      * @param orcamentoId ID do orçamento aprovado.
      * @return O PedidoCompra recém-criado.
-     * @throws ResponseStatusException se o orçamento não for encontrado, não
-     *                                 estiver APROVADO,
-     *                                 já houver um pedido gerado para ele, ou se
-     *                                 houver itens inválidos.
      */
     @Transactional
     public PedidoCompra gerarPedidoDeCompra(Long orcamentoId) {
@@ -192,21 +180,13 @@ public class ProcessoCompraService {
                 }
 
                 ItemPedidoCompra itemPedido = new ItemPedidoCompra();
+                itemPedido.setPedidoCompra(pedidoCompra);
                 itemPedido.setProduto(produto);
-                itemPedido.setQuantidade(quantidade.intValueExact());
-
+                itemPedido.setQuantidade(quantidade);
                 itemPedido.setPrecoUnitario(precoUnitarioCotado);
                 itemPedido.setObservacoes(itemOrcamento.getObservacoes());
 
-                itemPedido.setNomeProduto(produto.getNome());
-                itemPedido.setCodigoProduto(produto.getCodigo());
-                if (produto.getUnidadeMedida() != null) {
-                    itemPedido.setUnidadeMedida(produto.getUnidadeMedida());
-                } else {
-                    itemPedido.setUnidadeMedida("N/A");
-                }
-
-                BigDecimal subtotalItem = precoUnitarioCotado.multiply(new BigDecimal(itemPedido.getQuantidade()));
+                BigDecimal subtotalItem = precoUnitarioCotado.multiply(itemPedido.getQuantidade());
                 itemPedido.setSubtotal(subtotalItem);
 
                 itensPedido.add(itemPedido);
@@ -240,7 +220,6 @@ public class ProcessoCompraService {
      * @param solicitacaoId ID da solicitação.
      * @param novoStatus    O novo status a ser definido.
      * @return A SolicitacaoCompraResponseDTO atualizada.
-     * @throws ResponseStatusException se a solicitação não for encontrada.
      */
     @Transactional
     public SolicitacaoCompraResponseDTO atualizarStatusSolicitacao(Long solicitacaoId,
@@ -253,7 +232,6 @@ public class ProcessoCompraService {
         solicitacao.setDataAtualizacao(LocalDateTime.now());
         SolicitacaoCompra solicitacaoAtualizada = solicitacaoCompraRepository.save(solicitacao);
 
-        // CORRIGIDO: Chame o método toResponseDto() na instância do solicitacaoMapper
         return solicitacaoMapper.toResponseDto(solicitacaoAtualizada);
     }
 }

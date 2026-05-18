@@ -8,7 +8,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id; // Importar BigDecimal
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
@@ -20,11 +22,13 @@ public class MovimentacaoEstoque {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String codigoMaterial;
+    // 1. ATUALIZAÇÃO: Substituição de codigoMaterial pelo relacionamento JPA correto
+    @ManyToOne
+    @JoinColumn(name = "produto_id", nullable = false)
+    private Produto produto;
 
-    @Column(nullable = false, precision = 10, scale = 3) // Precisão para quantidades
-    private BigDecimal quantidade; // Alterado para BigDecimal
+    @Column(nullable = false, precision = 10, scale = 3)
+    private BigDecimal quantidade;
 
     @Column(nullable = false)
     private String tipoMovimentacao; // Ex: "ENTRADA", "SAIDA"
@@ -41,9 +45,9 @@ public class MovimentacaoEstoque {
     public MovimentacaoEstoque() {
     }
 
-    // Construtor com campos
-    public MovimentacaoEstoque(String codigoMaterial, BigDecimal quantidade, String tipoMovimentacao, LocalDateTime dataMovimentacao, String referencia) {
-        this.codigoMaterial = codigoMaterial;
+    // Construtor com campos atualizado
+    public MovimentacaoEstoque(Produto produto, BigDecimal quantidade, String tipoMovimentacao, LocalDateTime dataMovimentacao, String referencia) {
+        this.produto = produto;
         this.quantidade = quantidade;
         this.tipoMovimentacao = tipoMovimentacao;
         this.dataMovimentacao = dataMovimentacao;
@@ -59,12 +63,12 @@ public class MovimentacaoEstoque {
         this.id = id;
     }
 
-    public String getCodigoMaterial() {
-        return codigoMaterial;
+    public Produto getProduto() {
+        return produto;
     }
 
-    public void setCodigoMaterial(String codigoMaterial) {
-        this.codigoMaterial = codigoMaterial;
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 
     public BigDecimal getQuantidade() {
@@ -121,12 +125,12 @@ public class MovimentacaoEstoque {
         return Objects.hash(id);
     }
 
-    // --- Método toString ---
+    // --- Método toString atualizado ---
     @Override
     public String toString() {
         return "MovimentacaoEstoque{" +
                "id=" + id +
-               ", codigoMaterial='" + codigoMaterial + '\'' +
+               ", produto=" + (produto != null ? produto.getId() : null) +
                ", quantidade=" + quantidade +
                ", tipoMovimentacao='" + tipoMovimentacao + '\'' +
                ", dataMovimentacao=" + dataMovimentacao +

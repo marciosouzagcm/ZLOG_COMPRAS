@@ -41,50 +41,30 @@ public interface SolicitacaoCompraMapper {
     @Mapping(target = "solicitacaoCompra", ignore = true)
     @Mapping(target = "produto", ignore = true) // Ignorar o mapeamento direto de produto aqui
     @Mapping(target = "status", source = "status", qualifiedByName = "mapStringToStatusItemSolicitacao")
+    @Mapping(target = "version", ignore = true) // CORRIGIDO: Omitindo Warning de propriedade não mapeada no destino
     ItemSolicitacaoCompra toItemEntity(ItemSolicitacaoCompraRequestDTO dto);
 
-    // Mapeamentos diretos para as propriedades do produto no DTO, o MapStruct pode
-    // fazer isso se os nomes batem ou com 'source'
-    // O AfterMapping é útil para lógicas mais complexas ou para garantir
-    // inicialização de proxies Lazy
+    // Mapeamentos diretos para as propriedades do produto no DTO.
     @Mapping(source = "produto.id", target = "produtoId")
     @Mapping(source = "produto.nome", target = "nomeProduto")
-    @Mapping(source = "produto.codigoProduto", target = "codigoProduto") // <-- CORREÇÃO AQUI! DEVE SER codigoProduto
+    @Mapping(source = "produto.codigo", target = "codigoProduto") // <-- AJUSTADO PARA O PADRÃO 'codigo' DA ENTIDADE PRODUTO
     @Mapping(source = "produto.unidadeMedida", target = "unidadeMedidaProduto")
     @Mapping(target = "status", source = "status", qualifiedByName = "mapStatusItemSolicitacaoToString")
     ItemSolicitacaoCompraResponseDTO toItemResponseDto(ItemSolicitacaoCompra entity);
 
-    // O método @AfterMapping para preencher detalhes do produto não é mais
-    // estritamente necessário
-    // se os @Mapping acima já resolvem. No entanto, se houver lógica adicional ou
-    // para depuração
-    // de proxies Lazy, ele pode ser mantido, mas com a CORREÇÃO do método
-    // getCodigoProduto().
-    // Se preferir, pode remover o @AfterMapping abaixo e confiar apenas nos
-    // @Mapping diretos.
-    // Eu vou mantê-lo com a correção para mostrar como seria, mas ele se tornaria
-    // redundante
-    // se os @Mapping diretos funcionarem perfeitamente.
-
     // *** REVISADO: Método @AfterMapping para preencher detalhes do produto ***
-    // Este método será executado automaticamente pelo MapStruct APÓS o mapeamento
-    // inicial
-    // de ItemSolicitacaoCompra para ItemSolicitacaoCompraResponseDTO.
     @AfterMapping
     default void mapProdutoDetailsAfter(@MappingTarget ItemSolicitacaoCompraResponseDTO dto,
             ItemSolicitacaoCompra entity) {
         // Garante que o produto existe e não é um proxy não inicializado
         if (entity != null && entity.getProduto() != null) {
-            // Acessa os getters do Produto. Se LAZY, a inicialização ocorre aqui dentro da
-            // transação.
-            // Apenas para ter certeza, caso o MapStruct direto não consiga por algum motivo
-            // (ex: proxy não inicializado)
+            // Acessa os getters do Produto. Se LAZY, a inicialização ocorre aqui dentro da transação.
             if (dto.getProdutoId() == null)
                 dto.setProdutoId(entity.getProduto().getId());
             if (dto.getNomeProduto() == null)
                 dto.setNomeProduto(entity.getProduto().getNome());
             if (dto.getCodigoProduto() == null)
-                dto.setCodigoProduto(entity.getProduto().getCodigoProduto()); // <-- CORRIGIDO AQUI!
+                dto.setCodigoProduto(entity.getProduto().getCodigo()); // <-- CORRIGIDO PARA O MÉTODO getCodigo()
             if (dto.getUnidadeMedidaProduto() == null)
                 dto.setUnidadeMedidaProduto(entity.getProduto().getUnidadeMedida());
         } else {
@@ -112,6 +92,11 @@ public interface SolicitacaoCompraMapper {
 
     @Named("mapItemSolicitacaoCompraRequestDtoListToEntitySet")
     @Mapping(target = "produto", ignore = true)
+    @Mapping(target = "solicitacaoCompra", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dataCriacao", ignore = true)
+    @Mapping(target = "dataAtualizacao", ignore = true)
+    @Mapping(target = "version", ignore = true) // CORRIGIDO: Omitindo warnings de propriedades estruturais na conversão de List para Set
     Set<ItemSolicitacaoCompra> mapItemSolicitacaoCompraRequestDtoListToEntitySet(
             List<ItemSolicitacaoCompraRequestDTO> itemDtos);
 

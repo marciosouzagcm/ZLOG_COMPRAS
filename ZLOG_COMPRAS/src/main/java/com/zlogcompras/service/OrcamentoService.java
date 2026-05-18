@@ -107,12 +107,6 @@ public class OrcamentoService {
             itemOrcamento.setPrecoUnitarioCotado(itemDTO.getPrecoUnitarioCotado());
             itemOrcamento.setObservacoes(itemDTO.getObservacoes());
             itemOrcamento.setOrcamento(orcamento); // Garante a associação bidirecional
-
-            // POPULA OS CAMPOS OBRIGATÓRIOS DO PRODUTO NO ITEM DO ORÇAMENTO
-            itemOrcamento.setNomeProduto(produto.getNome());
-            itemOrcamento.setCodigoProduto(produto.getCodigoProduto()); // ou getCodigo() dependendo da sua entidade
-                                                                        // Produto
-            itemOrcamento.setUnidadeMedidaProduto(produto.getUnidadeMedida());
             // --- FIM DA CORREÇÃO CRÍTICA ---
 
             itensOrcamento.add(itemOrcamento);
@@ -148,10 +142,7 @@ public class OrcamentoService {
         }
 
         // Limpa a coleção existente para lidar com órfãos (se orphanRemoval=true
-        // estiver configurado
-        // na entidade Orcamento para a coleção de itens).
-        // Se não houver orphanRemoval=true, você precisará iterar e deletar/atualizar
-        // itens individualmente.
+        // estiver configurado na entidade Orcamento para a coleção de itens).
         orcamentoExistente.getItensOrcamento().clear();
 
         for (ItemOrcamentoRequestDTO itemDTO : orcamentoRequestDTO.getItensOrcamento()) {
@@ -177,8 +168,7 @@ public class OrcamentoService {
                 itemAtualizado = orcamentoExistente.getItensOrcamento().stream()
                         .filter(item -> item.getId() != null && item.getId().equals(itemDTO.getId()))
                         .findFirst()
-                        .orElse(new ItemOrcamento()); // Cria novo se não encontrar (ou lance erro se ID inválido para
-                                                      // update)
+                        .orElse(new ItemOrcamento()); // Cria novo se não encontrar
             } else {
                 itemAtualizado = new ItemOrcamento(); // Novo item
             }
@@ -188,12 +178,6 @@ public class OrcamentoService {
             itemAtualizado.setPrecoUnitarioCotado(itemDTO.getPrecoUnitarioCotado());
             itemAtualizado.setObservacoes(itemDTO.getObservacoes());
             itemAtualizado.setOrcamento(orcamentoExistente); // Garante a associação bidirecional
-
-            // POPULA OS CAMPOS OBRIGATÓRIOS DO PRODUTO NO ITEM DO ORÇAMENTO
-            itemAtualizado.setNomeProduto(produto.getNome());
-            itemAtualizado.setCodigoProduto(produto.getCodigoProduto()); // ou getCodigo() dependendo da sua entidade
-                                                                         // Produto
-            itemAtualizado.setUnidadeMedidaProduto(produto.getUnidadeMedida());
             // --- FIM DA CORREÇÃO CRÍTICA PARA ATUALIZAÇÃO ---
 
             novosItensOrcamento.add(itemAtualizado);
