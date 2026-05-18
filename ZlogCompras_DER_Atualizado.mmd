@@ -1,0 +1,153 @@
+erDiagram
+    USERS ||--o{ USER_ROLES : possui
+    ROLES ||--o{ USER_ROLES : atribuida
+    FORNECEDORES ||--o{ ORCAMENTOS : fornece
+    FORNECEDORES ||--o{ PEDIDOS_COMPRA : recebe
+    SOLICITACOES_COMPRA ||--o{ ITENS_SOLICITACAO_COMPRA : contem
+    SOLICITACOES_COMPRA ||--o{ ORCAMENTOS : gera
+    PRODUTOS ||--o{ ITENS_SOLICITACAO_COMPRA : referencia
+    PRODUTOS ||--o{ ITENS_ORCAMENTO : referencia
+    PRODUTOS ||--o{ ITENS_PEDIDO_COMPRA : referencia
+    PRODUTOS ||--o{ ESTOQUE : possui
+    ORCAMENTOS ||--o{ ITENS_ORCAMENTO : contem
+    ORCAMENTOS ||--o| PEDIDOS_COMPRA : origina
+    PEDIDOS_COMPRA ||--o{ ITENS_PEDIDO_COMPRA : contem
+    PEDIDOS_COMPRA ||--o{ NOTAS_FISCAIS : possui
+
+    USERS {
+        bigint id PK
+        string username UK
+        string password
+        boolean enabled
+    }
+    ROLES {
+        bigint id PK
+        string name UK
+    }
+    USER_ROLES {
+        bigint user_id FK
+        bigint role_id FK
+    }
+    FORNECEDORES {
+        bigint id PK
+        string cnpj UK
+        string razao_social
+        string contato
+        string email UK
+        string endereco
+        string telefone
+        bigint version
+    }
+    PRODUTOS {
+        bigint id PK
+        string codigo UK
+        string codigo_produto UK
+        string nome
+        string descricao
+        string unidade_medida
+        decimal preco_unitario
+        string categoria
+        int estoque
+        datetime data_criacao
+        datetime data_atualizacao
+        bigint version
+    }
+    ESTOQUE {
+        bigint id PK
+        bigint produto_id FK
+        int quantidade
+        string localizacao
+        datetime data_ultima_entrada
+        datetime data_ultima_saida
+        string observacoes
+        datetime data_criacao
+        datetime data_atualizacao
+        bigint version
+    }
+    MOVIMENTACOES_ESTOQUE {
+        bigint id PK
+        string codigo_material
+        decimal quantidade
+        string tipo_movimentacao
+        datetime data_movimentacao
+        string referencia
+        bigint version
+    }
+    SOLICITACOES_COMPRA {
+        bigint id PK
+        date data_solicitacao
+        string solicitante
+        string status
+        string descricao
+        datetime data_criacao
+        datetime data_atualizacao
+        bigint version
+    }
+    ITENS_SOLICITACAO_COMPRA {
+        bigint id PK
+        bigint solicitacao_compra_id FK
+        bigint produto_id FK
+        decimal quantidade
+        string descricao_adicional
+        string status
+        datetime data_criacao
+        datetime data_atualizacao
+        bigint version
+    }
+    ORCAMENTOS {
+        bigint id PK
+        bigint solicitacao_compra_id FK
+        bigint fornecedor_id FK
+        date data_cotacao
+        decimal valor_total
+        string numero_orcamento
+        string prazo_entrega
+        string condicoes_pagamento
+        string observacoes
+        string status
+        datetime data_criacao
+        datetime data_atualizacao
+        bigint version
+    }
+    ITENS_ORCAMENTO {
+        bigint id PK
+        bigint orcamento_id FK
+        bigint produto_id FK
+        string nome_produto
+        string codigo_produto
+        string unidade_medida_produto
+        decimal quantidade
+        decimal preco_unitario_cotado
+        string observacoes
+        bigint version
+    }
+    PEDIDOS_COMPRA {
+        bigint id PK
+        bigint fornecedor_id FK
+        bigint orcamento_id FK
+        date data_pedido
+        decimal valor_total
+        string status
+        string observacoes
+    }
+    ITENS_PEDIDO_COMPRA {
+        bigint id PK
+        bigint pedido_compra_id FK
+        bigint produto_id FK
+        int quantidade
+        decimal preco_unitario
+        decimal subtotal
+        string observacoes
+        string nome_produto
+        string codigo_produto
+        string unidade_medida
+        bigint version
+    }
+    NOTAS_FISCAIS {
+        bigint id PK
+        string numero_nota_fiscal UK
+        date data_emissao
+        decimal valor_total
+        bigint pedido_compra_id FK
+        bigint version
+    }
