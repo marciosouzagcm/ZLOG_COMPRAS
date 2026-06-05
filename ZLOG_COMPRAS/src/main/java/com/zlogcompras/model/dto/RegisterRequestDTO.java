@@ -1,47 +1,25 @@
 package com.zlogcompras.model.dto;
 
-// Não precisa de muitos imports para um DTO simples como este
-// import java.util.Set; // Exemplo: se fosse receber roles diretamente, mas não é o caso aqui
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+@Data
 public class RegisterRequestDTO {
 
+    @NotBlank(message = "O nome não pode estar em branco")
+    private String nome;
+
+    @NotBlank(message = "O email não pode estar em branco")
+    @Email(message = "O email deve ser válido")
+    private String email;
+
+    @NotBlank(message = "O username não pode estar em branco")
+    @Size(min = 4, max = 50, message = "O username deve ter entre 4 e 50 caracteres")
     private String username;
+
+    @NotBlank(message = "A senha não pode estar em branco")
+    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
     private String password;
-    // Não inclua o password criptografado aqui, nem roles, etc.
-    // Este DTO é apenas para receber as informações cruas do cliente.
-
-    // --- Construtores (Opcional, mas boa prática para alguns cenários) ---
-    public RegisterRequestDTO() {
-    }
-
-    public RegisterRequestDTO(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    // --- Getters e Setters (Essenciais para o Spring Mapear o JSON) ---
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    // --- toString() (Opcional, útil para depuração) ---
-    @Override
-    public String toString() {
-        return "RegisterRequestDTO{" +
-                "username='" + username + '\'' +
-                ", password='[PROTECTED]'" + // Não imprima a senha real no log!
-                '}';
-    }
 }

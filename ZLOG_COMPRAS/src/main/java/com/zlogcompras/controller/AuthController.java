@@ -16,6 +16,8 @@ import com.zlogcompras.service.AuthService;
 import com.zlogcompras.service.JwtService;
 import com.zlogcompras.service.UserDetailsServiceImpl;
 
+import jakarta.validation.Valid; // Importação adicionada para ativar as validações do DTO
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -23,12 +25,12 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtService jwtService;
-    private final AuthService authService; // Injetado o novo serviço
+    private final AuthService authService; 
 
     public AuthController(AuthenticationManager authenticationManager,
                           UserDetailsServiceImpl userDetailsService,
                           JwtService jwtService,
-                          AuthService authService) { // Construtor simplificado
+                          AuthService authService) { 
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
@@ -47,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterRequestDTO registerRequest) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) { // @Valid adicionado aqui
         try {
             authService.registerNewUser(registerRequest);
             return ResponseEntity.ok("Usuário registrado com sucesso!");

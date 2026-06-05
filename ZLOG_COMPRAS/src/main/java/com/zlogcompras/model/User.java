@@ -1,12 +1,13 @@
 package com.zlogcompras.model;
 
-import java.util.Collection; // Importa Collection
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails; // Importa UserDetails
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,37 +18,76 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import lombok.Data; // Importa a anotação @Data do Lombok
+import lombok.Data;
 
-@Data // Anotação do Lombok para gerar getters, setters, toString, equals e hashCode
-@Entity // Marca esta classe como uma entidade JPA
-@Table(name = "users") // Mapeia esta entidade para a tabela 'users' no banco de dados
-public class User implements UserDetails { // <-- ADICIONADO: implements UserDetails
+@Data
+@Entity
+@Table(name = "users")
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String nome;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = "senha_hash", nullable = false)
     private String password;
+
+    // SOLUÇÃO DE CONTORNO: Mapeia a coluna legada do banco para evitar o erro de falta de valor padrão
+    @Column(name = "password", nullable = true)
+    private String passwordAntigo;
 
     private boolean enabled = true;
 
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    private LocalDateTime dataCriacao;
+
+    @Column(name = "data_atualizacao", nullable = false)
+    private LocalDateTime dataAtualizacao;
+
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(
+        name = "user_roles", 
+        joinColumns = @JoinColumn(name = "user_id"), 
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles;
 
-    // --- Métodos da interface UserDetails ---
+    // GATILHO DE INSERÇÃO: Preenche os campos de data e contorna a coluna legada obrigatória do banco
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime agora = LocalDateTime.now();
+        this.dataCriacao = agora;
+        this.dataAtualizacao = agora;
+        
+        // Alimenta a coluna antiga com uma marcação para satisfazer a restrição NOT NULL física
+        this.passwordAntigo = "legacy_schema_bypass";
+    }
+
+    // GATILHO DE ALTERAÇÃO: Atualiza o campo automaticamente quando o usuário for modificado no futuro
+    @PreUpdate
+    protected void onUpdate() {
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    // --- Métodos do UserDetails ---
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList()); // Ou Collectors.toSet(), ambos funcionam. toList() é comum.
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -62,21 +102,21 @@ public class User implements UserDetails { // <-- ADICIONADO: implements UserDet
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // Implemente sua lógica de expiração de conta aqui, se houver
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Implemente sua lógica de bloqueio de conta aqui, se houver
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Implemente sua lógica de expiração de credenciais aqui, se houver
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return enabled; // Retorna o valor do seu campo 'enabled'
+        return enabled;
     }
 }

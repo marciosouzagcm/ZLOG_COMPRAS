@@ -167,11 +167,23 @@ public class EstoqueService {
         }
 
         public EstoqueResponseDTO buscarEstoquePorCodigoProduto(String codigoProduto) {
-                // Converte o código recebido em String para Long e busca usando o novo método estrutural
-                Long idProduto = Long.valueOf(codigoProduto);
+                Long idProduto;
+                try {
+                        // Tenta converter diretamente caso o valor enviado seja o próprio ID numérico
+                        idProduto = Long.valueOf(codigoProduto);
+                } catch (NumberFormatException e) {
+                        // Se falhar (ex: "PROD-INF-101"), interceptamos o erro e buscamos o ID real do produto pelo código de barras/SKU
+                        Produto produto = produtoRepository.findByCodigoProduto(codigoProduto)
+                                        .orElseThrow(() -> new ResourceNotFoundException(
+                                                        "Produto não encontrado com o código informado: " + codigoProduto));
+                        idProduto = produto.getId();
+                }
+
+                // Executa a busca estrutural pelo ID numérico do produto sem causar falhas de conversão de tipos
                 Estoque estoque = estoqueRepository.findByProdutoId(idProduto)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Estoque não encontrado para o ID do produto: " + codigoProduto));
+                                                "Estoque não encontrado para o produto informado: " + codigoProduto));
+                
                 // Mapeia e retorna o DTO de resposta
                 return modelMapper.map(estoque, EstoqueResponseDTO.class);
         }
