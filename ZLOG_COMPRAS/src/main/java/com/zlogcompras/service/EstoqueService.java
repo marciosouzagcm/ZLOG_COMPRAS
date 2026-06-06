@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +23,14 @@ import com.zlogcompras.repository.ProdutoRepository;
 @Service
 public class EstoqueService {
 
+        private static final Logger auditLogger = LoggerFactory.getLogger(EstoqueService.class);
+
         private final EstoqueRepository estoqueRepository;
         private final ProdutoRepository produtoRepository;
         private final ModelMapper modelMapper;
 
         @Autowired
-        public EstoqueService(EstoqueRepository estoqueRepository, ProdutoRepository produtoRepository,
-                        ModelMapper modelMapper) {
+        public EstoqueService(EstoqueRepository estoqueRepository, ProdutoRepository produtoRepository, ModelMapper modelMapper) {
                 this.estoqueRepository = estoqueRepository;
                 this.produtoRepository = produtoRepository;
                 this.modelMapper = modelMapper;
@@ -35,24 +38,21 @@ public class EstoqueService {
 
         @Transactional
         public EstoqueResponseDTO criarEstoque(EstoqueRequestDTO estoqueRequestDTO) {
-                // Busca o produto pelo ID fornecido no DTO
                 Produto produto = produtoRepository.findById(estoqueRequestDTO.getProdutoId())
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Produto não encontrado com ID: " + estoqueRequestDTO.getProdutoId()));
+                                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + estoqueRequestDTO.getProdutoId()));
 
-                // Mapeia o DTO para a entidade Estoque
                 Estoque estoque = modelMapper.map(estoqueRequestDTO, Estoque.class);
-                // Associa o produto encontrado ao estoque
                 estoque.setProduto(produto);
 
-                // Define a data da última entrada se não for fornecida no DTO
                 if (estoque.getDataUltimaEntrada() == null) {
                         estoque.setDataUltimaEntrada(LocalDateTime.now());
                 }
 
-                // Salva o novo estoque no repositório
                 Estoque salvo = estoqueRepository.save(estoque);
-                // Mapeia a entidade salva de volta para um DTO de resposta e o retorna
+                
+                auditLogger.info("AUDIT - ESTOQUE CRIADO - Estoque ID: {} | Produto ID: {} (SKU: {}) | Quantidade Inicial: {}", 
+                                salvo.getId(), produto.getId(), produto.getCodigo(), salvo.getQuantidade());
+
                 return modelMapper.map(salvo, EstoqueResponseDTO.class);
         }
 
@@ -60,18 +60,12 @@ public class EstoqueService {
         public List<EstoqueResponseDTO> criarMultiplosEstoques(List<EstoqueRequestDTO> estoqueRequestDTOs) {
                 List<Estoque> estoquesParaSalvar = estoqueRequestDTOs.stream()
                                 .map(dto -> {
-                                        // Para cada DTO, busca o produto associado
                                         Produto produto = produtoRepository.findById(dto.getProdutoId())
-                                                        .orElseThrow(
-                                                                        () -> new ResourceNotFoundException(
-                                                                                        "Produto não encontrado com ID: "
-                                                                                                        + dto.getProdutoId()));
-                                        // Mapeia o DTO para a entidade Estoque
+                                                        .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + dto.getProdutoId()));
+                                        
                                         Estoque estoque = modelMapper.map(dto, Estoque.class);
-                                        // Associa o produto encontrado ao estoque
                                         estoque.setProduto(produto);
 
-                                        // Define a data da última entrada se não for fornecida no DTO
                                         if (estoque.getDataUltimaEntrada() == null) {
                                                 estoque.setDataUltimaEntrada(LocalDateTime.now());
                                         }
@@ -80,164 +74,122 @@ public class EstoqueService {
                                 })
                                 .collect(Collectors.toList());
 
-                // Salva todos os estoques em lote
                 List<Estoque> estoquesSalvos = estoqueRepository.saveAll(estoquesParaSalvar);
+                auditLogger.info("AUDIT - MULTIPLOS ESTOQUES CRIADOS - Total de registros processados: {}", estoquesSalvos.size());
 
-                // Mapeia a lista de entidades salvas para uma lista de DTOs de resposta
                 return estoquesSalvos.stream()
                                 .map(estoque -> modelMapper.map(estoque, EstoqueResponseDTO.class))
                                 .collect(Collectors.toList());
         }
 
-        // Métodos de Movimentação de Estoque
-
         @Transactional
         public EstoqueResponseDTO adicionarQuantidadeEstoque(Long estoqueId, Integer quantidadeASomar) {
-                // Busca o registro de estoque pelo ID
                 Estoque estoqueExistente = estoqueRepository.findById(estoqueId)
-                                .orElseThrow(
-                                                () -> new ResourceNotFoundException(
-                                                                "Registro de estoque não encontrado com ID: "
-                                                                                + estoqueId));
+                                .orElseThrow(() -> new ResourceNotFoundException("Registro de estoque não encontrado com ID: " + estoqueId));
 
-                // Valida se a quantidade a ser adicionada é positiva
                 if (quantidadeASomar == null || quantidadeASomar <= 0) {
                         throw new IllegalArgumentException("A quantidade a ser adicionada deve ser um valor positivo.");
                 }
 
-                // Adiciona a quantidade ao estoque existente
-                estoqueExistente.setQuantidade(estoqueExistente.getQuantidade() + quantidadeASomar);
-                // Atualiza a data da última entrada
+                int qtdAnterior = estoqueExistente.getQuantidade();
+                estoqueExistente.setQuantidade(qtdAnterior + quantidadeASomar);
                 estoqueExistente.setDataUltimaEntrada(LocalDateTime.now());
 
-                // Salva o estoque atualizado
                 Estoque estoqueAtualizado = estoqueRepository.save(estoqueExistente);
-                // Mapeia e retorna o DTO de resposta
+
+                auditLogger.info("AUDIT - ESTOQUE INCREMENTADO - Estoque ID: {} | Produto: {} (SKU: {}) | Qtd Anterior: {} | Adicionado: {} | Nova Qtd: {}", 
+                                estoqueId, estoqueExistente.getProduto().getNome(), estoqueExistente.getProduto().getCodigo(), qtdAnterior, quantidadeASomar, estoqueExistente.getQuantidade());
+
                 return modelMapper.map(estoqueAtualizado, EstoqueResponseDTO.class);
         }
 
         @Transactional
         public EstoqueResponseDTO retirarQuantidadeEstoque(Long estoqueId, Integer quantidadeARetirar) {
-                // Busca o registro de estoque pelo ID
                 Estoque estoqueExistente = estoqueRepository.findById(estoqueId)
-                                .orElseThrow(
-                                                () -> new ResourceNotFoundException(
-                                                                "Registro de estoque não encontrado com ID: "
-                                                                                + estoqueId));
+                                .orElseThrow(() -> new ResourceNotFoundException("Registro de estoque não encontrado com ID: " + estoqueId));
 
-                // Valida se a quantidade a ser retirada é positiva
                 if (quantidadeARetirar == null || quantidadeARetirar <= 0) {
                         throw new IllegalArgumentException("A quantidade a ser retirada deve ser um valor positivo.");
                 }
 
-                // Valida se há estoque suficiente para a retirada
                 if (estoqueExistente.getQuantidade() < quantidadeARetirar) {
-                        throw new IllegalArgumentException(
-                                        "Não há estoque suficiente para esta retirada. Quantidade disponível: "
-                                                        + estoqueExistente.getQuantidade());
+                        auditLogger.warn("AUDIT - TENTATIVA DE RETIRADA INVÁLIDA - Estoque ID: {} | SKU: {} | Disponível: {} | Tentativa de Retirada: {}", 
+                                        estoqueId, estoqueExistente.getProduto().getCodigo(), estoqueExistente.getQuantidade(), quantidadeARetirar);
+                        
+                        throw new IllegalArgumentException("Não há estoque suficiente para esta retirada. Quantidade disponível: " + estoqueExistente.getQuantidade());
                 }
 
-                // Retira a quantidade do estoque existente
-                estoqueExistente.setQuantidade(estoqueExistente.getQuantidade() - quantidadeARetirar);
-                // Atualiza a data da última saída
+                int qtdAnterior = estoqueExistente.getQuantidade();
+                estoqueExistente.setQuantidade(qtdAnterior - quantidadeARetirar);
                 estoqueExistente.setDataUltimaSaida(LocalDateTime.now());
 
-                // Salva o estoque atualizado
                 Estoque estoqueAtualizado = estoqueRepository.save(estoqueExistente);
-                // Mapeia e retorna o DTO de resposta
+
+                auditLogger.info("AUDIT - ESTOQUE DECREMENTADO - Estoque ID: {} | Produto: {} (SKU: {}) | Qtd Anterior: {} | Retirado: {} | Nova Qtd: {}", 
+                                estoqueId, estoqueExistente.getProduto().getNome(), estoqueExistente.getProduto().getCodigo(), qtdAnterior, quantidadeARetirar, estoqueExistente.getQuantidade());
+
                 return modelMapper.map(estoqueAtualizado, EstoqueResponseDTO.class);
         }
 
-        // Métodos de Consulta e Gerenciamento
-
         public List<EstoqueResponseDTO> listarTodosEstoques() {
-                // Busca todos os estoques e os mapeia para DTOs de resposta
                 return estoqueRepository.findAll().stream()
                                 .map(estoque -> modelMapper.map(estoque, EstoqueResponseDTO.class))
                                 .collect(Collectors.toList());
         }
 
         public EstoqueResponseDTO buscarEstoquePorId(Long id) {
-                // Busca um estoque pelo ID ou lança exceção se não encontrado
                 Estoque estoque = estoqueRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Estoque não encontrado com ID: " + id));
-                // Mapeia e retorna o DTO de resposta
+                                .orElseThrow(() -> new ResourceNotFoundException("Estoque não encontrado com ID: " + id));
                 return modelMapper.map(estoque, EstoqueResponseDTO.class);
         }
 
         public EstoqueResponseDTO buscarEstoquePorCodigoProduto(String codigoProduto) {
                 Long idProduto;
                 try {
-                        // Tenta converter diretamente caso o valor enviado seja o próprio ID numérico
                         idProduto = Long.valueOf(codigoProduto);
                 } catch (NumberFormatException e) {
-                        // Se falhar (ex: "PROD-INF-101"), interceptamos o erro e buscamos o ID real do produto pelo código de barras/SKU
                         Produto produto = produtoRepository.findByCodigoProduto(codigoProduto)
-                                        .orElseThrow(() -> new ResourceNotFoundException(
-                                                        "Produto não encontrado com o código informado: " + codigoProduto));
+                                        .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o código informado: " + codigoProduto));
                         idProduto = produto.getId();
                 }
 
-                // Executa a busca estrutural pelo ID numérico do produto sem causar falhas de conversão de tipos
                 Estoque estoque = estoqueRepository.findByProdutoId(idProduto)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Estoque não encontrado para o produto informado: " + codigoProduto));
+                                .orElseThrow(() -> new ResourceNotFoundException("Estoque não encontrado para o produto informado: " + codigoProduto));
                 
-                // Mapeia e retorna o DTO de resposta
                 return modelMapper.map(estoque, EstoqueResponseDTO.class);
         }
 
         @Transactional
         public EstoqueResponseDTO atualizarEstoque(Long id, EstoqueRequestDTO estoqueRequestDTO) {
-                // Busca o estoque existente pelo ID
                 Estoque estoqueExistente = estoqueRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Estoque não encontrado com ID: " + id));
+                                .orElseThrow(() -> new ResourceNotFoundException("Estoque não encontrado com ID: " + id));
 
-                // Verifica se o ID do produto no DTO é diferente do produto atual do estoque
-                // ou se o estoque ainda não tem um produto associado
                 if (estoqueRequestDTO.getProdutoId() != null &&
-                                (estoqueExistente.getProduto() == null ||
-                                                !estoqueExistente.getProduto().getId()
-                                                                .equals(estoqueRequestDTO.getProdutoId()))) {
-                        // Busca o novo produto pelo ID e o associa ao estoque existente
+                                (estoqueExistente.getProduto() == null || !estoqueExistente.getProduto().getId().equals(estoqueRequestDTO.getProdutoId()))) {
+                        
                         Produto novoProduto = produtoRepository.findById(estoqueRequestDTO.getProdutoId())
-                                        .orElseThrow(() -> new ResourceNotFoundException(
-                                                        "Novo Produto não encontrado com ID: "
-                                                                        + estoqueRequestDTO.getProdutoId()));
+                                        .orElseThrow(() -> new ResourceNotFoundException("Novo Produto não encontrado com ID: " + estoqueRequestDTO.getProdutoId()));
                         estoqueExistente.setProduto(novoProduto);
                 }
 
-                // Atualiza campos do estoque apenas se os valores não forem nulos no DTO
-                Optional.ofNullable(estoqueRequestDTO.getQuantidade())
-                                .ifPresent(estoqueExistente::setQuantidade);
+                Optional.ofNullable(estoqueRequestDTO.getQuantidade()).ifPresent(estoqueExistente::setQuantidade);
+                Optional.ofNullable(estoqueRequestDTO.getLocalizacao()).ifPresent(estoqueExistente::setLocalizacao);
+                Optional.ofNullable(estoqueRequestDTO.getDataUltimaEntrada()).ifPresent(estoqueExistente::setDataUltimaEntrada);
+                Optional.ofNullable(estoqueRequestDTO.getDataUltimaSaida()).ifPresent(estoqueExistente::setDataUltimaSaida);
+                Optional.ofNullable(estoqueRequestDTO.getObservacoes()).ifPresent(estoqueExistente::setObservacoes);
 
-                Optional.ofNullable(estoqueRequestDTO.getLocalizacao())
-                                .ifPresent(estoqueExistente::setLocalizacao);
-
-                Optional.ofNullable(estoqueRequestDTO.getDataUltimaEntrada())
-                                .ifPresent(estoqueExistente::setDataUltimaEntrada);
-
-                Optional.ofNullable(estoqueRequestDTO.getDataUltimaSaida())
-                                .ifPresent(estoqueExistente::setDataUltimaSaida);
-
-                Optional.ofNullable(estoqueRequestDTO.getObservacoes())
-                                .ifPresent(estoqueExistente::setObservacoes);
-
-                // Salva o estoque atualizado
                 Estoque estoqueAtualizado = estoqueRepository.save(estoqueExistente);
-                // Mapeia e retorna o DTO de resposta
+                auditLogger.info("AUDIT - METADADOS DE ESTOQUE ATUALIZADOS - Estoque ID: {} | SKU: {}", id, estoqueExistente.getProduto().getCodigo());
+
                 return modelMapper.map(estoqueAtualizado, EstoqueResponseDTO.class);
         }
 
         @Transactional
         public void deletarEstoque(Long id) {
-                // Verifica se o estoque existe antes de tentar deletar
                 if (!estoqueRepository.existsById(id)) {
                         throw new ResourceNotFoundException("Estoque não encontrado com ID: " + id);
                 }
-                // Deleta o estoque pelo ID
                 estoqueRepository.deleteById(id);
+                auditLogger.warn("AUDIT - REMOÇÃO DE REGISTRO - Registro de Estoque ID: {} foi deletado permanentemente.", id);
         }
 }

@@ -77,7 +77,16 @@ public class SecurityConfig {
             // 2. Vincula as configurações globais de CORS
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
-            // 3. Regras estritas de interceptação de requisições HTTP
+            // 3. Incremento OWASP: Proteção de Cabeçalhos HTTP (HSTS, Clickjacking e MIME Sniffing)
+            .headers(headers -> headers
+                .httpStrictTransportSecurity(hsts -> hsts
+                    .includeSubDomains(true)
+                    .maxAgeInSeconds(31536000) // 1 Ano de retenção de cache de segurança
+                )
+                .frameOptions(frame -> frame.deny()) // Previne ataques de Clickjacking (OWASP A05)
+            )
+            
+            // 4. Regras estritas de interceptação de requisições HTTP
             .authorizeHttpRequests(auth -> auth
                 // Permite requisições de checagem prévia (Pre-flight OPTIONS) feitas pelos navegadores
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -126,12 +135,12 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             
-            // 4. Desabilita gerenciamento de estados no servidor (Garante arquitetura REST pura)
+            // 5. Desabilita gerenciamento de estados no servidor (Garante arquitetura REST pura)
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             
-            // 5. Acopla o Provedor customizado e insere o Filtro de validação do Token antes do padrão
+            // 6. Acopla o Provedor customizado e insere o Filtro de validação do Token antes do padrão
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
