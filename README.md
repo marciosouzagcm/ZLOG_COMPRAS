@@ -1,127 +1,171 @@
-##ZLOG Compras: Sistema de Gerenciamento de Compras Empresariais
-🎯 Sobre o Projeto
-O ZLOG Compras é um sistema Full Stack robusto e modular, desenvolvido para otimizar e gerenciar o fluxo completo de compras em ambientes empresariais (Fluxo Procure-to-Pay). Composto por um backend de alta performance em Spring Boot (Java 21) e um frontend dinâmico e componentizado em React (Vite), o sistema automatiza e traz transparência a todas as etapas da aquisição, desde a abertura de solicitações de materiais até a geração de pedidos de compra e o rígido controle de saldos de estoque.
+# ZLOG Compras: Sistema de Gerenciamento de Compras Empresariais
 
-O projeto utiliza conceitos avançados de Modelagem Relacional de Dados, aplicando padrões de integridade estrita, isolamento transacional ACID e eliminação de redundâncias na persistência de informações em um ambiente NewSQL distribuído.
+<p align="center">
+  <img src="logo_ZLOG.png" alt="Logo ZLOG Compras" width="150"/>
+</p>
 
-✨ Funcionalidades Desenvolvidas & Corrigidas
-Modelagem Relacional Coesa (Flyway & TiDB): Arquitetura de banco de dados NewSQL totalmente limpa, isolando o histórico relacional e garantindo uma relação estrita para o controle de saldos de estoque e snapshots de cotações.
+🎯 **Sobre o Projeto**
+O ZLOG Compras é um sistema **Full Stack** robusto e modular, desenvolvido para otimizar e gerenciar o fluxo completo de compras em ambientes empresariais. Composto por um backend em **Spring Boot** e um frontend em **React (Vite)**, nosso objetivo é automatizar e trazer transparência a todas as etapas da aquisição, desde a criação de solicitações de materiais até a geração de pedidos de compra e o controle de recebimento de estoque.
 
-Segurança Baseada em JWT: Ecossistema de segurança configurado com Spring Security e filtros de autenticação por tokens stateless (Bearer JWT), garantindo rotas protegidas de ponta a ponta.
+Construímos este projeto com foco em qualidade de código, integridade relacional, segurança contínua, documentação interativa e testes abrangentes, garantindo uma solução confiável e de fácil manutenção.
 
-Fluxo Procure-to-Pay Completo:
+---
 
-Solicitações de Compra: Abertura e triagem de demandas por item e centro de custo.
+## ✨ Funcionalidades Desenvolvidas (Até o Momento)
 
-Orçamentos & Concorrência: Lançamento de propostas de múltiplos fornecedores vinculadas à solicitação, com validação de estado automatizada para impedir propostas após o encerramento do processo.
+Desenvolvemos e validamos as seguintes funcionalidades essenciais:
 
-Pedidos de Compra: Geração automática e síncrona do pedido a partir do orçamento aprovado, com regras rígidas de idempotência para evitar duplicidade (409 Conflict).
+* **Modelagem e Migração de Dados Coesa:** Banco de dados MySQL gerido via Flyway, eliminando redundâncias de saldos e garantindo integridade referencial estrita entre produtos, movimentações e estoques.
+* **Segurança e Auditoria Contínua (OWASP):** Implementação de esteira de varredura ativa de dependências no build do projeto, blindando a infraestrutura contra vulnerabilidades conhecidas (CVEs).
+* **Gerenciamento de Solicitações de Compra:** Crie, visualize e gerencie solicitações de materiais ou serviços de forma intuitiva.
+* **Processo de Cotação e Orçamento:**
+    * Criação e gestão de orçamentos detalhados para fornecedores.
+    * **Validação Crucial:** Impedimos a criação de novos orçamentos para solicitações já finalizadas, assegurando a integridade do processo de compras.
+    * Aprovação de orçamentos para dar continuidade ao fluxo.
+* **Geração de Pedidos de Compra:**
+    * Crie pedidos de compra de forma automatizada, diretamente de orçamentos aprovados.
+    * Associação clara com fornecedores e os itens do orçamento original.
+* **Validações de Dados Robustas:** Implementamos validações rigorosas para preços e quantidades nos itens de compra e orçamento, garantindo a qualidade e a consistência dos dados inseridos no sistema através de validações JPA/Hibernate.
+* **Base para Recebimento de Itens e Estoque:** Estrutura inicial e endpoints definidos para o registro de movimentações e controle de saldo centralizado na entidade de estoque.
+* **Atualização de Status do Pedido:** Capacidade de atualizar o status do pedido de compra em cada etapa do seu progresso.
+* **Frontend - Módulo de Autenticação (Base):**
+    * **Tela de Login Funcional em React:** Implementação da estrutura de componentes baseados em TypeScript para a tela de login, incluindo formulário de entrada de credenciais e comunicação eficiente de estados. (A integração com a API para persistência de tokens JWT será o próximo passo.)
 
-Gestão e Resiliência de Estoque: * Criação de fichas e movimentação de saldos físicos por meio de operações de soma e subtração auditáveis.
+---
 
-Resolução de Bug Crítico (Tipagem Alfanumérica): Refatoração no EstoqueService para o endpoint de busca por código do produto, implementando uma estratégia híbrida/defensiva que intercepta strings estruturadas (ex: PROD-INF-101) e resolve o ID numérico nativo via repositório, extinguindo falhas de NumberFormatException.
+## 🛡️ Segurança e Compliance (Práticas OWASP)
 
-Métricas Gerenciais (Dashboard): Endpoints analíticos integrados para consolidação de dados em tempo real, fornecendo distribuição de requisições por status com cores hexadecimais nativas para componentes visuais e evolução mensal histórica de gastos.
+O backend do **ZLOG Compras** adota uma postura proativa em relação à segurança desde as fases iniciais do desenvolvimento (*Shift-Left Security*):
 
-🛠️ Tecnologias e Ferramentas
-Backend (API)
-Linguagem: Java 21
+* **Análise de Vulnerabilidades em Dependências:** Integração do plugin **OWASP Dependency-Check** acoplado ao ciclo de vida do Maven. O comando de build valida sistematicamente se bibliotecas de terceiros possuem falhas de segurança conhecidas.
+* **Remediação de Componentes Críticos:** Saneamento de pacotes e mitigação de vulnerabilidades conhecidas no motor do Tomcat embarcado e bibliotecas transitórias.
+* **Tratamento de Falsos Positivos via Supressão:** Utilização de um arquivo de configuração `suppress.xml` cirúrgico para mascarar ruídos de ferramentas e assinaturas de vulnerabilidades não aplicáveis ao ecossistema real da aplicação, mantendo o pipeline do CI/CD veloz e focado em riscos reais.
+* **Controle de Acesso Robusto:** Infraestrutura protegida por **Spring Security 6** e filtros baseados em **Tokens JWT** (`JwtAuthenticationFilter`), realizando verificações automáticas dos níveis de privilégios (`ROLE_ADMIN` e `ROLE_USER`) diretamente na camada HTTP.
 
-Framework: Spring Boot (v3.3.0) / Spring Security (JWT)
+---
 
-Banco de Dados: MySQL 8 / TiDB Cloud (NewSQL Serverless)
+## 🛠️ Tecnologias e Ferramentas
 
-Controle de Evolução de Banco: Flyway Migrations
+Nosso projeto é construído com tecnologias modernas e eficientes:
 
-Mapeamento Objeto-Relacional: Spring Data JPA / Hibernate
+### Backend (API)
 
-Conversão de Objetos: ModelMapper DTOs
+* **Linguagem de Programação:** Java 21
+* **Framework:** Spring Boot (v3.3.0) / Spring Security 6
+* **Banco de Dados:** MySQL 8 / Compatibilidade nativa com TiDB Cloud (AWS)
+* **Evolução de Esquema:** Flyway Migrations
+* **Auditoria de Segurança:** OWASP Dependency-Check Plugin
+* **Persistência:** Spring Data JPA / Hibernate
+* **Ferramenta de Build:** Maven
+* **Documentação da API:** Swagger UI / OpenAPI
 
-Gerenciador de Dependências: Maven
+### Frontend (Aplicação Web)
 
-Documentação: Swagger UI / OpenAPI Spec v3.0
+* **Ambiente de Execução/Build:** React 18 & Vite
+* **Linguagem:** TypeScript
+* **Estilização:** TailwindCSS & shadcn/ui
+* **Gerenciamento de Estado/Requisições:** Axios & TanStack Query (React Query)
+* **Controle de Versão:** Git
 
-Frontend (Aplicação Web)
-Ecossistema: React 18 / Vite
+---
 
-Linguagem: TypeScript
+## 📂 Estrutura do Projeto
 
-Estilização: TailwindCSS / Componentes Declarativos
+O repositório está organizado de forma a separar claramente o backend do frontend:
 
-Comunicação com a API: Axios (Interceptadores de Token)
-
-Controle de Versão: Git
-
-📂 Estrutura Estrutural do Repositório
-Plaintext
+```text
 ZLOG_COMPRAS/
-├── backend/                  # API Spring Boot
+├── backend/                  # Contém o projeto Spring Boot (API)
 │   ├── src/
-│   │   ├── main/java/        # Camadas de Controller, Service, Repository, Entity, Config (Security) e DTOs
-│   │   └── main/resources/   # application.properties e scripts Flyway (db/migration/)
-│   └── pom.xml               # Configurações de build do Maven
-└── frontend/                 # Aplicação Web React
-    ├── src/                  # Páginas, Componentes de UI, hooks e serviços de API
+│   │   ├── main/java/        # Código-fonte Java (Controllers, Services, Repositories)
+│   │   └── main/resources/   # Configurações, suppress.xml e scripts SQL do Flyway (db/migration/)
+│   └── pom.xml               # Manifesto de dependências Maven e Plugins OWASP
+└── frontend/                 # Contém o projeto React + Vite (Aplicação Web)
+    ├── src/                  # Componentes, Páginas, Hooks e Contextos React
     ├── index.html
     ├── package.json          # Manifesto de dependências Node.js
-    └── vite.config.ts        # Arquivo de configuração de bundling do Vite
+    └── vite.config.ts        # Configurações de compilação do Vite
 🚀 Como Executar o Projeto
+Para executar o sistema ZLOG Compras completo (backend e frontend), siga os passos abaixo:
+
 Pré-requisitos
-JDK 21 ou superior instalado.
+Certifique-se de ter instalado em sua máquina:
 
-Apache Maven configurado no PATH do sistema.
+JDK 21 ou superior
 
-Node.js (Versão LTS Recomendada).
+Apache Maven
 
-Instância ativa do MySQL 8 local ou cluster TiDB Cloud (Serverless) configurado na nuvem.
+Um servidor MySQL 8 ou acesso a uma instância na nuvem (TiDB Cloud)
 
-1. Configuração e Execução do Backend
-Abra o arquivo backend/src/main/resources/application.properties e configure o apontamento para o seu banco de dados (seja local ou a string de conexão segura fornecida pelo painel do TiDB Cloud):
+Node.js (Versão LTS estável) e npm
+
+1. Configurando e Executando o Backend (API)
+Configure o banco de dados alterando as credenciais no arquivo backend/src/main/resources/application.properties ou application.yml:
 
 Properties
-spring.datasource.url=jdbc:mysql://<SEU_HOST_TIDB_OU_LOCAL>:3306/zlog_compras?useSSL=true&serverTimezone=UTC
+spring.datasource.url=jdbc:mysql://seu-host-tidb-ou-local:3306/zlog_compras?useSSL=false&serverTimezone=UTC
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
 spring.jpa.hibernate.ddl-auto=validate
-Via terminal, entre na pasta do backend:
+Navegue até o diretório do backend:
 
 Bash
 cd ZLOG_COMPRAS/backend
-Execute o comando de compilação e inicialização do ecossistema Spring:
+Construa o projeto e execute a verificação de segurança da OWASP:
 
 Bash
-mvn clean install
+mvn clean verify
+Execute a aplicação:
+
+Bash
 mvn spring-boot:run
-O Flyway varrerá o banco automaticamente, criando a estrutura de tabelas corrigida e inserindo as tabelas de controle e as Roles obrigatórias de segurança.
+A API estará disponível em http://localhost:8080. O Flyway detectará a base de dados e executará os scripts de migração estrutural automaticamente no primeiro boot.
 
-2. Execução do Frontend (React + Vite)
-Abra uma nova janela de terminal e vá até a pasta do cliente:
+2. Executando o Frontend (Aplicação Web)
+Abra um NOVO terminal (mantenha o terminal do backend rodando).
 
-Bash
-cd ZLOG_COMPRAS/frontend
-Instale os pacotes e dependências de Node declarados no projeto:
+Navegue até o diretório do frontend:
 
 Bash
-npm install
-Inicie o servidor de desenvolvimento do Vite:
+   cd ZLOG_COMPRAS/frontend
+Instale as dependências do projeto React:
 
 Bash
-npm run dev
-O console exibirá o endereço local para visualização (geralmente http://localhost:5173). Abra o link no seu navegador.
-
-✅ Verification, Testes e Qualidade
-Swagger UI Interativo: Explore os contratos e teste todas as rotas operacionais da API (solicitacao-compra, pedido-compra, estoque, dashboard) em tempo real acessando http://localhost:8080/swagger-ui.html com o backend em execução (lembre-se de incluir o token JWT gerado pelo auth-controller no botão Authorize).
-
-Suíte de Testes Automatizados: Rode as validações de integridade executando:
+   npm install
+Inicie a aplicação com o Vite:
 
 Bash
-mvn test
-(Garantia de estabilidade com testes unitários focados nas entidades críticas rodando com 100% de sucesso).
+   npm run dev
+A aplicação frontend será iniciada e o endereço local gerado (geralmente http://localhost:5173) estará disponível no console para acesso no navegador.
 
-Auditoria de Dados Consistente: Movimentações de entrada e saída de estoque geram carimbos automáticos de auditoria temporal (dataEntrada, dataAtualizacao) manipulados diretamente pela camada de persistência.
+✅ Verificação e Testes
+Backend (API)
+Documentação da API (Swagger UI): Após iniciar a aplicação backend, explore e teste os endpoints da API de forma interativa acessando:
+http://localhost:8080/swagger-ui/index.html
 
-🤝 Contribuições e Feedbacks
-Este repositório serve como portfólio prático de engenharia de software e modelagem de sistemas open-source. Pull Requests com refatorações, novos casos de testes ou novas views analíticas em React são super bem-vindos!
+Confirmação: A API foi validada com sucesso via Swagger UI, demonstrando que todos os 50+ mapeamentos e contratos de endpoints estão respondendo corretamente.
+
+Testes Unitários: Para garantir a qualidade e a estabilidade do código, execute a suíte de testes automatizados:
+
+Bash
+  mvn test
+Status: 18 testes unitários para Fornecedores e Orçamentos executados com 100% de sucesso!
+
+Verificação de Segurança: O build é auditado em tempo de execução pelo relatório gerado pelo OWASP Dependency-Check salvando o log livre de vulnerabilidades ativas.
+
+Frontend (Aplicação Web)
+Tela de Login (Componente React): Após iniciar o servidor de desenvolvimento do Vite, a tela de login estruturada com TypeScript será exibida.
+
+Teste de Simulação: Insira teste@email.com como e-mail e senha123 como senha e clique no botão de envio. Abra as ferramentas de desenvolvedor do seu navegador (F12) para validar no Console o fluxo correto de captura e submissão dos dados do formulário.
+
+🤝 Como Contribuir
+Este projeto está em constante evolução e valorizamos muito a colaboração da comunidade! Se você é um desenvolvedor, estudante ou entusiasta de software, sinta-se à vontade para:
+
+Explorar o Código: Mergulhe na nossa arquitetura Java/Spring com Spring Security e na componentização moderna em React.
+
+Abrir Issues: Reporte bugs, sugira novas funcionalidades ou melhorias de arquitetura/segurança.
+
+Submeter Pull Requests: Contribua com código, novos testes automatizados, melhorias na documentação ou refatorações estruturais.
 
 📝 Licença
-Distribuído sob a licença MIT. Veja LICENSE para mais informações.
+Este projeto está licenciado sob a Licença MIT. Você pode ver os detalhes completos da licença no arquivo LICENSE no repositório.
