@@ -1,4 +1,0 @@
--- Adiciona as colunas exigidas pelo mapeamento JPA da entidade Estoque
-ALTER TABLE estoque
-    ADD COLUMN IF NOT EXISTS data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ADD COLUMN IF NOT EXISTS data_atualizacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;

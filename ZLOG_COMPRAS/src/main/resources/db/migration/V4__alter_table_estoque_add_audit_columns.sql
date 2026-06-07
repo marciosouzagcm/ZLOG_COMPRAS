@@ -1,1 +1,0 @@
--- 1. Limpa resquícios da V4 para evitar erros de duplicidade

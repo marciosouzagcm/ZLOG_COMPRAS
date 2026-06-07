@@ -1,4 +1,0 @@
-CREATE TABLE estoque (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    quantidade INT NOT NULL
-);

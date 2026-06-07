@@ -1,0 +1,1 @@
+ALTER TABLE movimentacoes_estoque ADD COLUMN codigo_material VARCHAR(255);

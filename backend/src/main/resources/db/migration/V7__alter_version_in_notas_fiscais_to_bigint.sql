@@ -1,0 +1,1 @@
+ALTER TABLE notas_fiscais MODIFY COLUMN version BIGINT DEFAULT 0;
